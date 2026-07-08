@@ -105,4 +105,27 @@ object MemCollector {
 
     private fun readLongFile(file: File): Long =
         runCatching { file.readText().trim().toLong() }.getOrDefault(0L)
+
+    fun optimizeMemory(): Boolean {
+        var success = false
+        runCatching {
+            val file = File("/proc/sys/vm/drop_caches")
+            if (file.exists()) {
+                file.writeText("3")
+                success = true
+            }
+        }
+        runCatching {
+            val file = File("/proc/sys/vm/compact_memory")
+            if (file.exists()) {
+                file.writeText("1")
+                success = true
+            }
+        }
+        runCatching {
+            System.gc()
+            Runtime.getRuntime().gc()
+        }
+        return success
+    }
 }

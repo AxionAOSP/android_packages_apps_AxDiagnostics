@@ -72,12 +72,15 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
 
     LaunchedEffect(Unit) {
         while (true) {
-            val nextReport = withContext(Dispatchers.IO) { HealthAnalyzer.analyze(context) }
-            report = nextReport
-            cpuHistory = appendHistory(cpuHistory, nextReport.cpuUsage)
-            memHistory = appendHistory(memHistory, nextReport.memUsage)
-            storageHistory = appendHistory(storageHistory, nextReport.storageUsage)
-            batteryHistory = appendHistory(batteryHistory, nextReport.batteryLevel.toFloat())
+            try {
+                val nextReport = withContext(Dispatchers.IO) { HealthAnalyzer.analyze(context) }
+                report = nextReport
+                cpuHistory = appendHistory(cpuHistory, nextReport.cpuUsage)
+                memHistory = appendHistory(memHistory, nextReport.memUsage)
+                storageHistory = appendHistory(storageHistory, nextReport.storageUsage)
+                batteryHistory = appendHistory(batteryHistory, nextReport.batteryLevel.toFloat())
+            } catch (e: Exception) {
+            }
             delay(3000)
         }
     }

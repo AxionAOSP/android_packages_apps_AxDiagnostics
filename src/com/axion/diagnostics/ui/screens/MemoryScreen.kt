@@ -51,12 +51,19 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.UsageBar
 import com.axion.diagnostics.ui.components.formatKb
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 @Composable
 fun MemoryScreen(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var optimizing by remember { mutableStateOf(false) }
+
     var mem by remember { mutableStateOf<MemSnapshot?>(null) }
     var processes by remember { mutableStateOf<List<ProcessSnapshot>>(emptyList()) }
     var usageHistory by remember { mutableStateOf<List<Float>>(emptyList()) }
@@ -96,6 +103,42 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
                     values = usageHistory,
                     color = MaterialTheme.colorScheme.primary
                 )
+            }
+
+            StatCard(stringResource(R.string.mem_optimize)) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        stringResource(R.string.mem_optimize_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    androidx.compose.material3.Button(
+                        onClick = {
+                            optimizing = true
+                            scope.launch {
+                                withContext(Dispatchers.IO) {
+                                    MemCollector.optimizeMemory()
+                                }
+                                optimizing = false
+                                android.widget.Toast.makeText(
+                                    context,
+                                    context.getString(R.string.mem_optimized),
+                                    android.widget.Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        enabled = !optimizing,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            if (optimizing) {
+                                stringResource(R.string.mem_optimizing)
+                            } else {
+                                stringResource(R.string.mem_optimize)
+                            }
+                        )
+                    }
+                }
             }
 
             StatCard(stringResource(R.string.mem_breakdown)) {

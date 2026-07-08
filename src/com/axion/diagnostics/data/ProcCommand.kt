@@ -22,16 +22,18 @@ import java.util.concurrent.TimeUnit
 internal object ProcCommand {
 
     private const val TIMEOUT_MS = 3_000L
+    private val executor = Executors.newSingleThreadExecutor { runnable ->
+        Thread(runnable, "proc-command-reader").apply { isDaemon = true }
+    }
 
     fun readOutput(vararg command: String): String? {
         var process: Process? = null
-        val reader = Executors.newSingleThreadExecutor()
         return try {
             val proc = ProcessBuilder(*command)
                 .redirectErrorStream(true)
                 .start()
             process = proc
-            val output = reader.submit<String> {
+            val output = executor.submit<String> {
                 proc.inputStream.bufferedReader().use { it.readText() }
             }
             if (!proc.waitFor(TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
@@ -44,7 +46,6 @@ internal object ProcCommand {
             null
         } finally {
             process?.destroy()
-            reader.shutdownNow()
         }
     }
 }

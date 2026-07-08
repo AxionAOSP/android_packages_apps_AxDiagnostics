@@ -77,8 +77,80 @@ object GpuCollector {
             )
         }
 
+        val mtkGedDir = listOf(
+            File("/sys/kernel/ged/hal/"),
+            File("/sys/kernel/debug/ged/hal/")
+        ).firstOrNull { it.exists() }
+
+        if (mtkGedDir != null) {
+            val curFreqRaw = readLongFile(File(mtkGedDir, "current_freqency"))
+            val curFreq = if (curFreqRaw > 1000) (curFreqRaw / 1000).toInt() else curFreqRaw.toInt()
+            
+            val busyRaw = readLongFile(File(mtkGedDir, "gpu_utilization"))
+            val busy = busyRaw.toInt().coerceIn(0, 100)
+
+            if (curFreq > 0) {
+                return GpuSnapshot(
+                    frequencyMhz = curFreq,
+                    maxFrequencyMhz = 0,
+                    minFrequencyMhz = 0,
+                    busyPercent = busy,
+                    governor = "ged",
+                    availableFrequencies = emptyList(),
+                    available = true
+                )
+            }
+        }
+
+        val mtkGpuFreqDir = File("/sys/class/devfreq/gpufreq/")
+        if (mtkGpuFreqDir.exists()) {
+            val curFreqRaw = readLongFile(File(mtkGpuFreqDir, "cur_freq"))
+            val curFreq = if (curFreqRaw > 1000) (curFreqRaw / 1000).toInt() else curFreqRaw.toInt()
+
+            val busyFile = File(mtkGpuFreqDir, "mali_ondemand/utilisation")
+            val busy = if (busyFile.exists()) {
+                readLongFile(busyFile).toInt().coerceIn(0, 100)
+            } else {
+                val mtkMaliUtilFile = File("/proc/mtk_mali/gpu_utilization")
+                if (mtkMaliUtilFile.exists()) {
+                    runCatching { mtkMaliUtilFile.readText().trim().toInt() }.getOrDefault(0).coerceIn(0, 100)
+                } else {
+                    0
+                }
+            }
+
+            if (curFreq > 0) {
+                return GpuSnapshot(
+                    frequencyMhz = curFreq,
+                    maxFrequencyMhz = 0,
+                    minFrequencyMhz = 0,
+                    busyPercent = busy,
+                    governor = runCatching { File(mtkGpuFreqDir, "governor").readText().trim() }.getOrDefault("unknown"),
+                    availableFrequencies = emptyList(),
+                    available = true
+                )
+            }
+        }
+
+        val mtkMaliUtil = File("/proc/mtk_mali/gpu_utilization")
+        if (mtkMaliUtil.exists()) {
+            val busy = runCatching { mtkMaliUtil.readText().trim().toInt() }.getOrDefault(0).coerceIn(0, 100)
+            return GpuSnapshot(
+                frequencyMhz = 0,
+                maxFrequencyMhz = 0,
+                minFrequencyMhz = 0,
+                busyPercent = busy,
+                governor = "mtk_mali",
+                availableFrequencies = emptyList(),
+                available = true
+            )
+        }
+
         return GpuSnapshot(0, 0, 0, 0, "unavailable", emptyList(), false)
     }
+
+    private fun readLongFile(file: File): Long =
+        runCatching { file.readText().trim().toLong() }.getOrDefault(0L)
 
     private fun readFreq(dir: File, vararg names: String): Int {
         for (name in names) {

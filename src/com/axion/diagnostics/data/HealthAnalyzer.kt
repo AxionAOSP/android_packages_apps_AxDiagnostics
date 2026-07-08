@@ -52,14 +52,28 @@ object HealthAnalyzer {
     fun analyze(context: Context): HealthReport {
         val insights = mutableListOf<HealthInsight>()
 
-        val cpu = CpuCollector.collect()
-        val mem = MemCollector.collect()
-        val battery = BatteryCollector.collect(context)
-        val thermal = ThermalCollector.collect()
-        val io = IoCollector.collect()
-        val storage = StorageCollector.collect()
+        val cpu = runCatching { CpuCollector.collect() }.getOrElse {
+            CpuSnapshot(0f, 0f, 0f, 0f, 0f, emptyList(), 0f, 0f, 0f, 0L, 0L, 0L, 0L, 0, 0)
+        }
+        val mem = runCatching { MemCollector.collect() }.getOrElse {
+            MemSnapshot(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)
+        }
+        val battery = runCatching { BatteryCollector.collect(context) }.getOrElse {
+            BatterySnapshot(0, 100, "Unknown", "Unknown", "Unplugged", "unknown", 0f, 0f, 0, 0, 0, 0L, 0, 0, 0f)
+        }
+        val thermal = runCatching { ThermalCollector.collect() }.getOrElse {
+            ThermalSnapshot(emptyList(), emptyList(), 0f, "none")
+        }
+        val io = runCatching { IoCollector.collect() }.getOrElse {
+            IoSnapshot(emptyList(), 0f, 0f, IoPressure(0f, 0f, 0f, 0f, 0f, 0f))
+        }
+        val storage = runCatching { StorageCollector.collect() }.getOrElse {
+            StorageSnapshot(emptyList(), null, null)
+        }
         val processes = runCatching { ProcessCollector.collect(30) }.getOrDefault(emptyList())
-        val gpu = GpuCollector.collect()
+        val gpu = runCatching { GpuCollector.collect() }.getOrElse {
+            GpuSnapshot(0, 0, 0, 0, "unavailable", emptyList(), false)
+        }
 
         analyzeCpu(cpu, insights)
         analyzeMemory(mem, insights)

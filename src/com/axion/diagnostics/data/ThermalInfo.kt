@@ -48,14 +48,19 @@ object ThermalCollector {
 
     fun collect(): ThermalSnapshot {
         val zones = mutableListOf<ThermalZone>()
-        val thermalDir = File("/sys/class/thermal/")
+        var thermalDir = File("/sys/class/thermal/")
+        if (!thermalDir.exists() || thermalDir.listFiles()?.isEmpty() == true) {
+            thermalDir = File("/sys/devices/virtual/thermal/")
+        }
+
         if (thermalDir.exists()) {
             thermalDir.listFiles()?.filter { it.name.startsWith("thermal_zone") }?.sortedBy {
                 it.name.removePrefix("thermal_zone").toIntOrNull() ?: 0
             }?.forEach { zoneDir ->
                 val type = readFileText(File(zoneDir, "type"))
                 val temp = readFileText(File(zoneDir, "temp")).toLongOrNull() ?: 0L
-                val tempC = temp / 1000f
+                // Support both millidegrees (standard, e.g. 43000) and degrees (legacy, e.g. 43)
+                val tempC = if (kotlin.math.abs(temp) > 200L) temp / 1000f else temp.toFloat()
 
                 val trips = mutableListOf<TripPoint>()
                 var tripIdx = 0
@@ -65,7 +70,8 @@ object ThermalCollector {
                     if (!tripTempFile.exists()) break
                     val tripTemp = readFileText(tripTempFile).toLongOrNull() ?: 0L
                     val tripType = readFileText(tripTypeFile)
-                    trips.add(TripPoint(tripType, tripTemp / 1000f))
+                    val tripTempC = if (kotlin.math.abs(tripTemp) > 200L) tripTemp / 1000f else tripTemp.toFloat()
+                    trips.add(TripPoint(tripType, tripTempC))
                     tripIdx++
                     if (tripIdx > 20) break
                 }

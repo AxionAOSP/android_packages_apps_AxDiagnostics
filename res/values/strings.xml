@@ -67,6 +67,7 @@
     <string name="tab_memory">Memory</string>
     <string name="tab_battery">Battery</string>
     <string name="tab_thermal">Thermal</string>
+    <string name="tab_more">More</string>
 
     <string name="label_cpu">CPU</string>
     <string name="label_memory">Memory</string>
@@ -299,4 +300,46 @@
     <string name="storage_vendor">Vendor</string>
     <string name="storage_external">External</string>
     <string name="storage_usage_detail">%1$.1f%% (%2$s free)</string>
+
+    <string name="cpu_overlay_title">Performance HUD Overlay</string>
+    <string name="cpu_overlay_desc">Show real-time floating overlay with CPU, GPU, RAM, and temperature metrics over other apps</string>
+    <string name="cpu_overlay_permission_title">Overlay Permission Required</string>
+    <string name="cpu_overlay_permission_desc">AxDiagnostics needs permission to draw over other apps to display the performance overlay.</string>
+    <string name="cpu_overlay_grant">Grant Permission</string>
+    <string name="cpu_overlay_enabled">Overlay enabled</string>
+    <string name="cpu_overlay_disabled">Overlay disabled</string>
+
+    <!-- Physical Storage Health and RAM Optimization -->
+    <string name="more_storage_health">Storage Hardware Health</string>
+    <string name="more_storage_lifetime">Estimated Lifetime Used</string>
+    <string name="more_storage_eol">Reserve Block Wear</string>
+    <string name="mem_optimize">Optimize RAM</string>
+    <string name="mem_optimize_hint">Flushes system caches and forces page compaction to free up active memory.</string>
+    <string name="mem_optimizing">Optimizing RAM…</string>
+    <string name="mem_optimized">RAM Optimized!</string>
+    <string name="cpu_bus_freq">System Bus Frequencies</string>
+    <string name="cpu_ddr_bus">DDR Memory Bus</string>
+    <string name="cpu_l3_cache">L3 Cache Interconnect</string>
+    <string name="more_storage_health_warning">Note: Storage health values are coarse estimations provided directly by the hardware controller firmware and may not reflect real-time wear immediately.</string>
+
+    <!-- GPU Diagnostics Section -->
+    <string name="tab_gpu">GPU</string>
+    <string name="gpu_usage">GPU Usage</string>
+    <string name="gpu_usage_history">GPU Usage History</string>
+    <string name="gpu_freq_gov">Frequency &amp; Governor</string>
+    <string name="gpu_clock_current">Current Frequency</string>
+    <string name="gpu_clock_min">Minimum Frequency</string>
+    <string name="gpu_clock_max">Maximum Frequency</string>
+    <string name="gpu_active_governor">Active Governor</string>
+    <string name="gpu_avail_freqs">Available Frequencies</string>
+    <string name="gpu_unsupported_title">GPU Diagnostics Unsupported</string>
+    <string name="gpu_unsupported_desc">This device\'s graphics driver statistics are not exposed in standard sysfs/devfreq paths.</string>
+
+    <!-- Notification panel settings and minimal state -->
+    <string name="monitor_service_active_minimal">Monitoring system health in the background</string>
+    <string name="more_notification_stats">Notification Battery Stats</string>
+    <string name="more_notification_stats_desc">Show detailed battery, current, and drainage stats inside the notification panel</string>
+
+    <string name="common_enabled">Enabled</string>
+    <string name="common_disabled">Disabled</string>
 </resources>

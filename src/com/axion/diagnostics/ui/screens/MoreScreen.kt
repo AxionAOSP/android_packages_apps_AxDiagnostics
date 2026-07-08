@@ -38,32 +38,40 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.axion.diagnostics.R
-import com.axion.diagnostics.data.StorageCollector
-import com.axion.diagnostics.data.StorageSnapshot
-import com.axion.diagnostics.data.StorageVolumeRole
 import com.axion.diagnostics.export.ReportExporter
-import com.axion.diagnostics.ui.components.ProgressSegment
-import com.axion.diagnostics.ui.components.SectionHeader
-import com.axion.diagnostics.ui.components.SegmentLegend
-import com.axion.diagnostics.ui.components.SegmentedProgressBar
 import com.axion.diagnostics.ui.components.StatCard
-import com.axion.diagnostics.ui.components.StatRow
-import com.axion.diagnostics.util.formatBytes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Switch
+import com.axion.diagnostics.service.CpuOverlayService
+import com.axion.diagnostics.service.MonitorService
+
 @Composable
 fun MoreScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var storage by remember { mutableStateOf<StorageSnapshot?>(null) }
+    var hasOverlayPermission by remember { mutableStateOf(Settings.canDrawOverlays(context)) }
+    var overlayActive by remember { mutableStateOf(CpuOverlayService.isRunning) }
+    var notificationStatsActive by remember {
+        mutableStateOf(
+            Settings.Secure.getInt(context.contentResolver, "ax_diagnostics_notification_enabled", 1) == 1
+        )
+    }
 
     LaunchedEffect(Unit) {
         while (true) {
-            storage = withContext(Dispatchers.IO) { StorageCollector.collect() }
-            delay(3000)
+            hasOverlayPermission = Settings.canDrawOverlays(context)
+            overlayActive = CpuOverlayService.isRunning
+            notificationStatsActive = Settings.Secure.getInt(context.contentResolver, "ax_diagnostics_notification_enabled", 1) == 1
+            delay(1000)
         }
     }
 
@@ -98,58 +106,114 @@ fun MoreScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        storage?.let { s ->
-            if (s.volumes.isNotEmpty()) {
-                StatCard(stringResource(R.string.more_storage)) {
-                    s.volumes.forEach { volume ->
-                        SectionHeader(stringResource(storageLabelRes(volume.role)))
-                        val segments = listOf(
-                            ProgressSegment(
-                                label = stringResource(R.string.label_used),
-                                percent = volume.usedPercent,
-                                color = MaterialTheme.colorScheme.primary
-                            ),
-                            ProgressSegment(
-                                label = stringResource(R.string.label_available),
-                                percent = volume.availablePercent,
-                                color = MaterialTheme.colorScheme.surfaceVariant
-                            )
+        StatCard(stringResource(R.string.cpu_overlay_title)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.cpu_overlay_desc),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                
+                if (!hasOverlayPermission) {
+                    Text(
+                        text = stringResource(R.string.cpu_overlay_permission_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    Button(
+                        onClick = {
+                            val intent = Intent(
+                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                Uri.parse("package:${context.packageName}")
+                            ).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            }
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.cpu_overlay_grant))
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (overlayActive) {
+                                stringResource(R.string.cpu_overlay_enabled)
+                            } else {
+                                stringResource(R.string.cpu_overlay_disabled)
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                            color = if (overlayActive) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
                         )
-                        SegmentedProgressBar(
-                            segments = segments,
-                            totalPercent = volume.usedPercent
+                        Switch(
+                            checked = overlayActive,
+                            onCheckedChange = { checked ->
+                                if (checked) {
+                                    CpuOverlayService.start(context)
+                                    overlayActive = true
+                                } else {
+                                    CpuOverlayService.stop(context)
+                                    overlayActive = false
+                                }
+                            }
                         )
-                        SegmentLegend(segments)
-                        StatRow(
-                            stringResource(R.string.label_used),
-                            stringResource(
-                                R.string.storage_usage_detail,
-                                volume.usedPercent,
-                                formatBytes(volume.availableBytes)
-                            )
-                        )
-                        StatRow(
-                            stringResource(R.string.label_total),
-                            formatBytes(volume.totalBytes)
-                        )
-                        StatRow(
-                            stringResource(R.string.label_available),
-                            formatBytes(volume.availableBytes)
-                        )
-                        StatRow(stringResource(R.string.label_path), volume.path)
                     }
                 }
             }
         }
-    }
-}
 
-private fun storageLabelRes(role: StorageVolumeRole): Int = when (role) {
-    StorageVolumeRole.DATA -> R.string.storage_data
-    StorageVolumeRole.CACHE -> R.string.storage_cache
-    StorageVolumeRole.SYSTEM -> R.string.storage_system
-    StorageVolumeRole.SYSTEM_EXT -> R.string.storage_system_ext
-    StorageVolumeRole.PRODUCT -> R.string.storage_product
-    StorageVolumeRole.VENDOR -> R.string.storage_vendor
-    StorageVolumeRole.EXTERNAL -> R.string.storage_external
+        StatCard(stringResource(R.string.more_notification_stats)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.more_notification_stats_desc),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if (notificationStatsActive) {
+                            stringResource(R.string.common_enabled)
+                        } else {
+                            stringResource(R.string.common_disabled)
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                        color = if (notificationStatsActive) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                    Switch(
+                        checked = notificationStatsActive,
+                        onCheckedChange = { checked ->
+                            Settings.Secure.putInt(
+                                context.contentResolver,
+                                "ax_diagnostics_notification_enabled",
+                                if (checked) 1 else 0
+                            )
+                            notificationStatsActive = checked
+                            if (MonitorService.isRunning) {
+                                val intent = Intent(context, MonitorService::class.java)
+                                runCatching { context.startService(intent) }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
 }

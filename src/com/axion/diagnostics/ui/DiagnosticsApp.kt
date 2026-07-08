@@ -47,22 +47,27 @@ import com.android.axion.compose.theme.AxionTheme
 import com.axion.diagnostics.DiagnosticsActivity
 import com.axion.diagnostics.R
 import com.axion.diagnostics.service.MonitorService
+import com.axion.diagnostics.service.CpuOverlayService
 import com.axion.diagnostics.ui.screens.AppPowerScreen
 import com.axion.diagnostics.ui.screens.BatteryScreen
 import com.axion.diagnostics.ui.screens.CpuScreen
+import com.axion.diagnostics.ui.screens.GpuScreen
 import com.axion.diagnostics.ui.screens.MemoryScreen
 import com.axion.diagnostics.ui.screens.MoreScreen
 import com.axion.diagnostics.ui.screens.OverviewScreen
+import com.axion.diagnostics.ui.screens.StorageScreen
 import com.axion.diagnostics.ui.screens.ThermalScreen
 
 private val tabTitles = listOf(
     R.string.tab_overview,
     R.string.tab_apps,
     R.string.tab_cpu,
+    R.string.tab_gpu,
     R.string.tab_memory,
     R.string.tab_battery,
     R.string.tab_thermal,
-    R.string.more_storage
+    R.string.more_storage,
+    R.string.tab_more
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,6 +109,7 @@ fun DiagnosticsApp() {
                                 onClick = {
                                     Settings.Secure.putInt(cr, DiagnosticsActivity.SETTING_KEY, 0)
                                     MonitorService.stop(context)
+                                    CpuOverlayService.stop(context)
                                     MonitorService.setComponentEnabled(context, false)
                                     enabled = false
                                 },
@@ -133,10 +139,12 @@ fun DiagnosticsApp() {
                 0 -> OverviewScreen(Modifier.padding(padding))
                 1 -> AppPowerScreen(Modifier.padding(padding))
                 2 -> CpuScreen(Modifier.padding(padding))
-                3 -> MemoryScreen(Modifier.padding(padding))
-                4 -> BatteryScreen(Modifier.padding(padding))
-                5 -> ThermalScreen(Modifier.padding(padding))
-                6 -> MoreScreen(Modifier.padding(padding))
+                3 -> GpuScreen(Modifier.padding(padding))
+                4 -> MemoryScreen(Modifier.padding(padding))
+                5 -> BatteryScreen(Modifier.padding(padding))
+                6 -> ThermalScreen(Modifier.padding(padding))
+                7 -> StorageScreen(Modifier.padding(padding))
+                8 -> MoreScreen(Modifier.padding(padding))
             }
         }
     }

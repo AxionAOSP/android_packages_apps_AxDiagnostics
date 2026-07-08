@@ -150,6 +150,17 @@ fun CpuScreen(modifier: Modifier = Modifier) {
                     }
                 }
             }
+
+            if (c.ddrFreqMhz > 0 || c.l3FreqMhz > 0) {
+                StatCard(stringResource(R.string.cpu_bus_freq)) {
+                    if (c.ddrFreqMhz > 0) {
+                        StatRow(stringResource(R.string.cpu_ddr_bus), "${c.ddrFreqMhz} MHz")
+                    }
+                    if (c.l3FreqMhz > 0) {
+                        StatRow(stringResource(R.string.cpu_l3_cache), "${c.l3FreqMhz} MHz")
+                    }
+                }
+            }
         }
 
         if (processes.isNotEmpty()) {

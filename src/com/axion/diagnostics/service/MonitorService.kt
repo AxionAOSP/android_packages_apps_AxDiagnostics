@@ -69,6 +69,7 @@ class MonitorService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        isRunning = true
         NotificationHelper.createChannels(this)
     }
 
@@ -104,6 +105,7 @@ class MonitorService : Service() {
 
     override fun onDestroy() {
         destroyed = true
+        isRunning = false
         notificationRefreshTask?.cancel(false)
         notificationRefreshTask = null
         unregisterThermalListener()
@@ -196,12 +198,18 @@ class MonitorService : Service() {
 
     private fun updateServiceNotification() {
         val nm = getSystemService(NotificationManager::class.java)
+        val showStats = Settings.Secure.getInt(contentResolver, "ax_diagnostics_notification_enabled", 1) == 1
+        val details = if (showStats) {
+            buildServiceDetails(DrainTracker.getSummary())
+        } else {
+            getString(R.string.monitor_service_active_minimal)
+        }
         nm.notify(
             NotificationHelper.NOTIFICATION_SERVICE_ID,
             NotificationHelper.buildServiceNotification(
                 this,
                 getString(R.string.monitor_service_title),
-                buildServiceDetails(DrainTracker.getSummary())
+                details
             )
         )
     }
@@ -376,6 +384,9 @@ class MonitorService : Service() {
     companion object {
         private const val TAG = "AxDiagMonitor"
         private const val NOTIFICATION_REFRESH_INTERVAL_MS = 10_000L
+
+        @Volatile var isRunning = false
+            internal set
 
         fun setComponentEnabled(context: Context, enabled: Boolean) {
             val component = ComponentName(context, MonitorService::class.java)

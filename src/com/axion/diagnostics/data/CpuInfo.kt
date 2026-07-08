@@ -41,7 +41,9 @@ data class CpuSnapshot(
     val contextSwitches: Long,
     val processes: Long,
     val procsRunning: Long,
-    val procsBlocked: Long
+    val procsBlocked: Long,
+    val ddrFreqMhz: Int = 0,
+    val l3FreqMhz: Int = 0
 )
 
 data class CpuRawTicks(
@@ -68,7 +70,11 @@ object CpuCollector {
         val statLines = File("/proc/stat").readLines()
         val loadAvgParts = File("/proc/loadavg").readText().trim().split("\\s+".toRegex())
 
-        val totalLine = statLines.first { it.startsWith("cpu ") }
+        val totalLine = statLines.firstOrNull { it.startsWith("cpu ") } ?: return CpuSnapshot(
+            totalUsage = 0f, userPercent = 0f, systemPercent = 0f, iowaitPercent = 0f, irqPercent = 0f,
+            cores = emptyList(), loadAvg1 = 0f, loadAvg5 = 0f, loadAvg15 = 0f,
+            contextSwitches = 0L, processes = 0L, procsRunning = 0L, procsBlocked = 0L
+        )
         val currentTotal = parseCpuLine(totalLine)
         val totalUsage = calculateUsage(previousTotalTicks, currentTotal)
         val userPct = calculateComponent(previousTotalTicks, currentTotal) { it.user + it.nice }
@@ -110,6 +116,9 @@ object CpuCollector {
             }
         }
 
+        val ddrFreq = getBusFrequencyMhz("DDR")
+        val l3Freq = getBusFrequencyMhz("L3")
+
         CpuSnapshot(
             totalUsage = totalUsage,
             userPercent = userPct,
@@ -123,8 +132,56 @@ object CpuCollector {
             contextSwitches = ctxSwitches,
             processes = processes,
             procsRunning = procsRunning,
-            procsBlocked = procsBlocked
+            procsBlocked = procsBlocked,
+            ddrFreqMhz = ddrFreq,
+            l3FreqMhz = l3Freq
         )
+    }
+
+    private fun getBusFrequencyMhz(busType: String): Int {
+        val path = "/sys/devices/system/cpu/bus_dcvs/$busType"
+        val dir = File(path)
+        if (dir.exists()) {
+            val files = dir.listFiles() ?: emptyArray()
+            for (f in files) {
+                if (f.isDirectory) {
+                    val curFreqFile = File(f, "cur_freq")
+                    if (curFreqFile.exists()) {
+                        val freqHz = runCatching { curFreqFile.readText().trim().toLong() }.getOrNull() ?: 0L
+                        if (freqHz > 0) {
+                            return normalizeToMhz(freqHz)
+                        }
+                    }
+                }
+            }
+        }
+        if (busType == "DDR") {
+            val devfreqDir = File("/sys/class/devfreq")
+            if (devfreqDir.exists()) {
+                val devfreqs = devfreqDir.listFiles() ?: emptyArray()
+                for (df in devfreqs) {
+                    if (df.name.contains("ddr") || df.name.contains("bwmon") || df.name.contains("mem") || df.name.contains("bimc")) {
+                        val curFreqFile = File(df, "cur_freq")
+                        if (curFreqFile.exists()) {
+                            val freqHz = runCatching { curFreqFile.readText().trim().toLong() }.getOrNull() ?: 0L
+                            if (freqHz > 0) {
+                                return normalizeToMhz(freqHz)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 0
+    }
+
+    private fun normalizeToMhz(freq: Long): Int {
+        return when {
+            freq > 10_000_000_000L -> (freq / 1_000_000_000L).toInt()
+            freq > 10_000_000L -> (freq / 1_000_000L).toInt()
+            freq > 10_000L -> (freq / 1_000L).toInt()
+            else -> freq.toInt()
+        }
     }
 
     private fun parseCpuLine(line: String): CpuRawTicks {
