@@ -83,20 +83,47 @@ object GpuCollector {
         ).firstOrNull { it.exists() }
 
         if (mtkGedDir != null) {
-            val curFreqRaw = readLongFile(File(mtkGedDir, "current_freqency"))
+            val curFreqRaw = runCatching {
+                File(mtkGedDir, "current_freqency").readText().trim().split("\\s+".toRegex()).last().toLong()
+            }.getOrDefault(0L)
             val curFreq = if (curFreqRaw > 1000) (curFreqRaw / 1000).toInt() else curFreqRaw.toInt()
             
-            val busyRaw = readLongFile(File(mtkGedDir, "gpu_utilization"))
-            val busy = busyRaw.toInt().coerceIn(0, 100)
+            val mtkLoadingFile = File("/sys/module/ged/parameters/gpu_loading")
+            val busy = if (mtkLoadingFile.exists()) {
+                runCatching { mtkLoadingFile.readText().trim().toInt() }.getOrDefault(0).coerceIn(0, 100)
+            } else {
+                val busyRaw = runCatching {
+                    File(mtkGedDir, "gpu_utilization").readText().trim().split("\\s+".toRegex()).first().toLong()
+                }.getOrDefault(0L)
+                busyRaw.toInt().coerceIn(0, 100)
+            }
+
+            val mtkOppFile = File("/proc/gpufreq/gpufreq_opp_dump")
+            val mtkFreqs = if (mtkOppFile.exists()) {
+                runCatching {
+                    val content = mtkOppFile.readText()
+                    Regex("freq\\s*=\\s*(\\d+)").findAll(content)
+                        .mapNotNull { it.groupValues[1].toLongOrNull()?.let { v -> (v / 1000).toInt() } }
+                        .filter { it > 0 }
+                        .distinct()
+                        .sorted()
+                        .toList()
+                }.getOrDefault(emptyList())
+            } else {
+                emptyList()
+            }
+
+            val maxFreq = mtkFreqs.maxOrNull() ?: 0
+            val minFreq = mtkFreqs.minOrNull() ?: 0
 
             if (curFreq > 0) {
                 return GpuSnapshot(
                     frequencyMhz = curFreq,
-                    maxFrequencyMhz = 0,
-                    minFrequencyMhz = 0,
+                    maxFrequencyMhz = maxFreq,
+                    minFrequencyMhz = minFreq,
                     busyPercent = busy,
                     governor = "ged",
-                    availableFrequencies = emptyList(),
+                    availableFrequencies = mtkFreqs,
                     available = true
                 )
             }

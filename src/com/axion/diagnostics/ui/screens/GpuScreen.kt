@@ -54,12 +54,16 @@ fun GpuScreen(modifier: Modifier = Modifier) {
 
     LaunchedEffect(Unit) {
         while (true) {
-            val snapshot = withContext(Dispatchers.IO) {
-                GpuCollector.collect()
-            }
-            gpu = snapshot
-            if (snapshot.available) {
-                usageHistory = (usageHistory + snapshot.busyPercent.toFloat()).takeLast(32)
+            try {
+                val snapshot = withContext(Dispatchers.IO) {
+                    GpuCollector.collect()
+                }
+                gpu = snapshot
+                if (snapshot.available) {
+                    usageHistory = (usageHistory + snapshot.busyPercent.toFloat()).takeLast(32)
+                }
+            } catch (e: Exception) {
+                gpu = GpuSnapshot(0, 0, 0, 0, "unavailable", emptyList(), false)
             }
             delay(2000)
         }

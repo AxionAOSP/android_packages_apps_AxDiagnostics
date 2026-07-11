@@ -56,7 +56,11 @@ fun StorageScreen(modifier: Modifier = Modifier) {
 
     LaunchedEffect(Unit) {
         while (true) {
-            storage = withContext(Dispatchers.IO) { StorageCollector.collect() }
+            try {
+                storage = withContext(Dispatchers.IO) { StorageCollector.collect() }
+            } catch (e: Exception) {
+                storage = StorageSnapshot(emptyList(), null, null)
+            }
             delay(3000)
         }
     }

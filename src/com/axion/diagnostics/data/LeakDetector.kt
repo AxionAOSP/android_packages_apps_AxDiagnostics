@@ -106,6 +106,9 @@ object LeakDetector {
         processMemory.keys.retainAll { pid ->
             File("/proc/$pid").exists()
         }
+        val activePids = processMemory.keys
+        processNames.keys.retainAll(activePids)
+        processUids.keys.retainAll(activePids)
     }
 
     fun getLeakCandidates(): List<LeakCandidate> {

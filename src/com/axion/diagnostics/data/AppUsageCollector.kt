@@ -155,6 +155,11 @@ object AppUsageCollector {
 
         previousSystemTotal = systemTotal
 
+        val activeUids = uidGroups.keys
+        uidCpuHistory.keys.retainAll(activeUids)
+        uidRssHistory.keys.retainAll(activeUids)
+        previousUidTicks.keys.retainAll(activeUids)
+
         apps.sortedByDescending { it.cpuPercent }
     }
 

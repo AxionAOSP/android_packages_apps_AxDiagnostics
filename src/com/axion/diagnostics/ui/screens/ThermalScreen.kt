@@ -57,7 +57,11 @@ fun ThermalScreen(modifier: Modifier = Modifier) {
 
     LaunchedEffect(Unit) {
         while (true) {
-            thermal = withContext(Dispatchers.IO) { ThermalCollector.collect() }
+            try {
+                thermal = withContext(Dispatchers.IO) { ThermalCollector.collect() }
+            } catch (e: Exception) {
+                thermal = ThermalSnapshot(emptyList(), emptyList(), 0f, "none")
+            }
             delay(3000)
         }
     }
