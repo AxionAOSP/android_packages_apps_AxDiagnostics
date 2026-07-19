@@ -53,6 +53,7 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.formatKb
 import com.axion.diagnostics.ui.components.severityColor
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -63,7 +64,7 @@ fun AppPowerScreen(modifier: Modifier = Modifier) {
     var apps by remember { mutableStateOf<List<AppUsage>>(emptyList()) }
     var expandedUid by remember { mutableStateOf(-1) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             apps = withContext(Dispatchers.IO) { AppUsageCollector.collect(context) }
             delay(3000)

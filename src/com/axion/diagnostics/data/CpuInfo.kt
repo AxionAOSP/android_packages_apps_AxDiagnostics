@@ -94,11 +94,40 @@ object CpuCollector {
             val online = if (coreIdx == 0) true else {
                 runCatching { File(cpuDir, "online").readText().trim() == "1" }.getOrDefault(true)
             }
-            val freqDir = File(cpuDir, "cpufreq")
-            val curFreq = readIntFile(File(freqDir, "scaling_cur_freq")) / 1000
-            val maxFreq = readIntFile(File(freqDir, "scaling_max_freq")) / 1000
-            val minFreq = readIntFile(File(freqDir, "scaling_min_freq")) / 1000
-            val governor = runCatching { File(freqDir, "scaling_governor").readText().trim() }.getOrDefault("unknown")
+
+            var curFreq = 0
+            var maxFreq = 0
+            var minFreq = 0
+            var governor = "unknown"
+
+            val cluster = findClusterForCore(coreIdx)
+            if (cluster != null) {
+                governor = cluster.governorNode?.let {
+                    val file = File(it)
+                    if (file.exists()) runCatching { file.readText().trim() }.getOrDefault("unknown") else "unknown"
+                } ?: "unknown"
+
+                minFreq = cluster.minNode?.let {
+                    val file = File(it)
+                    if (file.exists()) readIntFile(file) / 1000 else 0
+                } ?: 0
+                maxFreq = cluster.maxNode?.let {
+                    val file = File(it)
+                    if (file.exists()) readIntFile(file) / 1000 else 0
+                } ?: 0
+
+                if (online) {
+                    val directCurFreqFile = File(cpuDir, "cpufreq/scaling_cur_freq")
+                    val policyDir = cluster.minNode?.let { File(it).parentFile }
+                    val policyCurFreqFile = policyDir?.let { File(it, "scaling_cur_freq") }
+                    val freqFile = when {
+                        directCurFreqFile.exists() -> directCurFreqFile
+                        policyCurFreqFile != null && policyCurFreqFile.exists() -> policyCurFreqFile
+                        else -> null
+                    }
+                    curFreq = freqFile?.let { readIntFile(it) / 1000 } ?: 0
+                }
+            }
 
             CpuCoreInfo(coreIdx, usage, curFreq, maxFreq, minFreq, governor, online)
         }
@@ -136,6 +165,35 @@ object CpuCollector {
             ddrFreqMhz = ddrFreq,
             l3FreqMhz = l3Freq
         )
+    }
+
+    private fun findClusterForCore(coreIdx: Int): CpuClusterConfig? {
+        for (cluster in KernelConfig.cpuClusters) {
+            val minNode = cluster.minNode ?: continue
+            val policyDir = File(minNode).parentFile ?: continue
+            val relatedCpusFile = File(policyDir, "related_cpus")
+            val affectedCpusFile = File(policyDir, "affected_cpus")
+            val cpusText = when {
+                relatedCpusFile.exists() -> runCatching { relatedCpusFile.readText().trim() }.getOrNull()
+                affectedCpusFile.exists() -> runCatching { affectedCpusFile.readText().trim() }.getOrNull()
+                else -> null
+            }
+            if (cpusText != null) {
+                val cpus = cpusText.split("\\s+".toRegex()).mapNotNull { it.toIntOrNull() }
+                if (coreIdx in cpus) {
+                    return cluster
+                }
+            } else {
+                val policyName = policyDir.name
+                val policyNum = policyName.removePrefix("policy").toIntOrNull()
+                if (policyNum != null) {
+                    if (policyNum == 0 && coreIdx in 0..3) return cluster
+                    if (policyNum == 4 && coreIdx in 4..5) return cluster
+                    if (policyNum == 6 && coreIdx in 6..7) return cluster
+                }
+            }
+        }
+        return null
     }
 
     private fun getBusFrequencyMhz(busType: String): Int {

@@ -67,6 +67,7 @@ import com.axion.diagnostics.ui.components.formatMs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -78,8 +79,8 @@ fun LeakScreen(modifier: Modifier = Modifier) {
     var expandedPid by remember { mutableStateOf(-1) }
     var elapsed by remember { mutableStateOf(0L) }
 
-    LaunchedEffect(isTracking) {
-        if (!isTracking) return@LaunchedEffect
+    LaunchedActiveEffect(isTracking) {
+        if (!isTracking) return@LaunchedActiveEffect
         while (isTracking) {
             withContext(Dispatchers.IO) { LeakDetector.recordSamples() }
             candidates = LeakDetector.getLeakCandidates()

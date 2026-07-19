@@ -62,6 +62,7 @@ import com.axion.diagnostics.ui.components.formatMs
 import com.axion.diagnostics.ui.components.severityColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -72,8 +73,8 @@ fun DrainScreen(modifier: Modifier = Modifier) {
     var isTracking by remember { mutableStateOf(DrainTracker.isTracking) }
     var summary by remember { mutableStateOf<DrainSummary?>(null) }
 
-    LaunchedEffect(isTracking) {
-        if (!isTracking) return@LaunchedEffect
+    LaunchedActiveEffect(isTracking) {
+        if (!isTracking) return@LaunchedActiveEffect
         while (isTracking) {
             withContext(Dispatchers.IO) { DrainTracker.recordSample(context) }
             summary = DrainTracker.getSummary()

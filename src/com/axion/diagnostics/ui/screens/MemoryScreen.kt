@@ -51,6 +51,7 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.UsageBar
 import com.axion.diagnostics.ui.components.formatKb
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
     var processes by remember { mutableStateOf<List<ProcessSnapshot>>(emptyList()) }
     var usageHistory by remember { mutableStateOf<List<Float>>(emptyList()) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             val snapshot = withContext(Dispatchers.IO) {
                 MemoryUiSnapshot(

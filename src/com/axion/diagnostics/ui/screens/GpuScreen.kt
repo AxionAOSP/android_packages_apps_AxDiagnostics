@@ -43,6 +43,7 @@ import com.axion.diagnostics.ui.components.MonoText
 import com.axion.diagnostics.ui.components.SparklineChart
 import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -52,7 +53,7 @@ fun GpuScreen(modifier: Modifier = Modifier) {
     var gpu by remember { mutableStateOf<GpuSnapshot?>(null) }
     var usageHistory by remember { mutableStateOf<List<Float>>(emptyList()) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             try {
                 val snapshot = withContext(Dispatchers.IO) {

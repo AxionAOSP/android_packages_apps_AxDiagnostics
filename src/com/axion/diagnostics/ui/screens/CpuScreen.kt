@@ -48,6 +48,7 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.UsageBar
 import com.axion.diagnostics.ui.components.severityColor
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -58,7 +59,7 @@ fun CpuScreen(modifier: Modifier = Modifier) {
     var processes by remember { mutableStateOf<List<ProcessSnapshot>>(emptyList()) }
     var usageHistory by remember { mutableStateOf<List<Float>>(emptyList()) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             val snapshot = withContext(Dispatchers.IO) {
                 CpuUiSnapshot(

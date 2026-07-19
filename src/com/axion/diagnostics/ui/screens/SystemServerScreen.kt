@@ -57,6 +57,7 @@ import com.axion.diagnostics.ui.components.formatKb
 import com.axion.diagnostics.ui.components.severityColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -67,7 +68,7 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
     var snapshot by remember { mutableStateOf<SystemServerSnapshot?>(null) }
     var expandedService by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             snapshot = withContext(Dispatchers.IO) { SystemServerAnalyzer.collect() }
             delay(2000)

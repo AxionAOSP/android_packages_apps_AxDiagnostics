@@ -47,6 +47,7 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.util.formatBytes
 import kotlinx.coroutines.Dispatchers
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
@@ -54,7 +55,7 @@ import kotlinx.coroutines.withContext
 fun StorageScreen(modifier: Modifier = Modifier) {
     var storage by remember { mutableStateOf<StorageSnapshot?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             try {
                 storage = withContext(Dispatchers.IO) { StorageCollector.collect() }

@@ -56,6 +56,7 @@ import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.VerticalBarChart
 import com.axion.diagnostics.ui.components.formatMs
 import com.axion.diagnostics.ui.components.severityColor
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlin.math.abs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -70,7 +71,7 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
     var summary by remember { mutableStateOf<DrainSummary?>(null) }
     var levelHistory by remember { mutableStateOf<List<Float>>(emptyList()) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             val snapshot = withContext(Dispatchers.IO) {
                 DrainTracker.recordSample(context)

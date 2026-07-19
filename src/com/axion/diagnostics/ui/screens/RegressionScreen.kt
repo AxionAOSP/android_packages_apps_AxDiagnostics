@@ -70,6 +70,7 @@ import com.axion.diagnostics.ui.components.formatKb
 import com.axion.diagnostics.ui.components.formatMs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -84,8 +85,8 @@ fun RegressionScreen(modifier: Modifier = Modifier) {
     var selectedProcess by remember { mutableStateOf<ProcessHistory?>(null) }
     var elapsedMs by remember { mutableStateOf(0L) }
 
-    LaunchedEffect(isTracking) {
-        if (!isTracking) return@LaunchedEffect
+    LaunchedActiveEffect(isTracking) {
+        if (!isTracking) return@LaunchedActiveEffect
         while (isTracking) {
             val procs = withContext(Dispatchers.IO) { ProcessCollector.collect(50) }
             RegressionTracker.recordSample(procs)

@@ -53,6 +53,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Switch
 import com.axion.diagnostics.service.CpuOverlayService
 import com.axion.diagnostics.service.MonitorService
+import com.axion.diagnostics.util.LaunchedActiveEffect
+import kotlinx.coroutines.delay
 
 @Composable
 fun MoreScreen(modifier: Modifier = Modifier) {
@@ -66,7 +68,7 @@ fun MoreScreen(modifier: Modifier = Modifier) {
         )
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             hasOverlayPermission = Settings.canDrawOverlays(context)
             overlayActive = CpuOverlayService.isRunning
@@ -74,7 +76,6 @@ fun MoreScreen(modifier: Modifier = Modifier) {
             delay(1000)
         }
     }
-
     Column(
         modifier = modifier
             .fillMaxSize()

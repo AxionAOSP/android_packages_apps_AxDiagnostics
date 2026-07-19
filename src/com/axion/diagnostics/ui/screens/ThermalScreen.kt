@@ -47,6 +47,7 @@ import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.UsageBar
 import com.axion.diagnostics.ui.components.VerticalBarChart
 import com.axion.diagnostics.ui.components.severityColor
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -55,7 +56,7 @@ import kotlinx.coroutines.withContext
 fun ThermalScreen(modifier: Modifier = Modifier) {
     var thermal by remember { mutableStateOf<ThermalSnapshot?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             try {
                 thermal = withContext(Dispatchers.IO) { ThermalCollector.collect() }

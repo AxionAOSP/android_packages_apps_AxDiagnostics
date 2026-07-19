@@ -57,6 +57,7 @@ import com.axion.diagnostics.ui.components.SparklineChart
 import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.severityColor
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -70,7 +71,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
     var storageHistory by remember { mutableStateOf<List<Float>>(emptyList()) }
     var batteryHistory by remember { mutableStateOf<List<Float>>(emptyList()) }
 
-    LaunchedEffect(Unit) {
+    LaunchedActiveEffect {
         while (true) {
             try {
                 val nextReport = withContext(Dispatchers.IO) { HealthAnalyzer.analyze(context) }
