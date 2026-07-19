@@ -1,9 +1,0 @@
-com.axion.diagnostics.app-pngs-0 /home/Rve/ax/packages/apps/AxDiagnostics/app/build/generated/res/pngs/release
-com.axion.diagnostics.app-updated_navigation_xml-1 /home/Rve/ax/packages/apps/AxDiagnostics/app/build/generated/updated_navigation_xml/release
-com.axion.diagnostics.app-packageReleaseResources-2 /home/Rve/ax/packages/apps/AxDiagnostics/app/build/intermediates/incremental/release/packageReleaseResources/merged.dir
-com.axion.diagnostics.app-packageReleaseResources-3 /home/Rve/ax/packages/apps/AxDiagnostics/app/build/intermediates/incremental/release/packageReleaseResources/stripped.dir
-com.axion.diagnostics.app-merged-not-compiled-resources-4 /home/Rve/ax/packages/apps/AxDiagnostics/app/build/intermediates/merged-not-compiled-resources/release
-com.axion.diagnostics.app-release-5 /home/Rve/ax/packages/apps/AxDiagnostics/app/build/intermediates/merged_res/release/mergeReleaseResources
-com.axion.diagnostics.app-main-6 /home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/res
-com.axion.diagnostics.app-release-7 /home/Rve/ax/packages/apps/AxDiagnostics/app/src/release/res
-gradleHome-0 /home/Rve/.gradle

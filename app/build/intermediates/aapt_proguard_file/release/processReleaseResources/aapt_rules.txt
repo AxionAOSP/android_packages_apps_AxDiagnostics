@@ -1,6 +1,0 @@
--keep class androidx.core.app.CoreComponentFactory { <init>(); }
--keep class androidx.profileinstaller.ProfileInstallReceiver { <init>(); }
--keep class androidx.startup.InitializationProvider { <init>(); }
--keep class com.axion.diagnostics.DiagnosticsActivity { <init>(); }
--keep class com.axion.diagnostics.service.CpuOverlayService { <init>(); }
--keep class com.axion.diagnostics.service.MonitorService { <init>(); }
