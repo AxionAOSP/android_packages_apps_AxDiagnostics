@@ -59,7 +59,7 @@ android {
 
 dependencies {
     compileOnly(files("libs/ax_compose.jar"))
-    compileOnly(files("/home/Rve/ax/out/soong/.intermediates/frameworks/base/framework-minus-apex/android_common/combined/framework.jar"))
+    compileOnly(files("libs/framework.jar"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
