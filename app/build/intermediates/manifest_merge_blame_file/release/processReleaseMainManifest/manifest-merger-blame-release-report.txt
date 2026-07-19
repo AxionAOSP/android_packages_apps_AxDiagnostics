@@ -1,0 +1,209 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3 Copyright 2025-2026 AxionOS
+4
+5     Licensed under the Apache License, Version 2.0 (the "License");
+6     you may not use this file except in compliance with the License.
+7     You may obtain a copy of the License at
+8
+9          http://www.apache.org/licenses/LICENSE-2.0
+10
+11     Unless required by applicable law or agreed to in writing, software
+12     distributed under the License is distributed on an "AS IS" BASIS,
+13     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+14     See the License for the specific language governing permissions and
+15     limitations under the License.
+16-->
+17<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+18    package="com.axion.diagnostics"
+19    android:sharedUserId="android.uid.system"
+20    android:versionCode="16"
+21    android:versionName="16" >
+22
+23    <uses-sdk
+23-->INJECTED
+24        android:minSdkVersion="34"
+24-->INJECTED
+25        android:targetSdkVersion="37" />
+25-->INJECTED
+26
+27    <uses-permission android:name="android.permission.DUMP" />
+27-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:20:5-63
+27-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:20:22-60
+28    <uses-permission android:name="android.permission.BATTERY_STATS" />
+28-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:21:5-72
+28-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:21:22-69
+29    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+29-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:22:5-80
+29-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:22:22-77
+30    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+30-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:23:5-77
+30-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:23:22-74
+31    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+31-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:24:5-89
+31-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:24:22-86
+32    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+32-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:25:5-77
+32-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:25:22-74
+33    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+33-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:26:5-78
+33-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:26:22-75
+34
+35    <permission
+35-->[androidx.core:core:1.19.0] /home/Rve/.gradle/caches/9.6.1/transforms/4dd045088bb29c72095bd3030d37733c/transformed/core-1.19.0/AndroidManifest.xml:22:5-24:47
+36        android:name="com.axion.diagnostics.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+36-->[androidx.core:core:1.19.0] /home/Rve/.gradle/caches/9.6.1/transforms/4dd045088bb29c72095bd3030d37733c/transformed/core-1.19.0/AndroidManifest.xml:23:9-81
+37        android:protectionLevel="signature" />
+37-->[androidx.core:core:1.19.0] /home/Rve/.gradle/caches/9.6.1/transforms/4dd045088bb29c72095bd3030d37733c/transformed/core-1.19.0/AndroidManifest.xml:24:9-44
+38
+39    <uses-permission android:name="com.axion.diagnostics.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+39-->[androidx.core:core:1.19.0] /home/Rve/.gradle/caches/9.6.1/transforms/4dd045088bb29c72095bd3030d37733c/transformed/core-1.19.0/AndroidManifest.xml:26:5-97
+39-->[androidx.core:core:1.19.0] /home/Rve/.gradle/caches/9.6.1/transforms/4dd045088bb29c72095bd3030d37733c/transformed/core-1.19.0/AndroidManifest.xml:26:22-94
+40
+41    <application
+41-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:28:5-62:19
+42        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+42-->[androidx.core:core:1.19.0] /home/Rve/.gradle/caches/9.6.1/transforms/4dd045088bb29c72095bd3030d37733c/transformed/core-1.19.0/AndroidManifest.xml:28:18-86
+43        android:extractNativeLibs="false"
+43-->INJECTED
+44        android:label="@string/app_name"
+44-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:29:9-41
+45        android:supportsRtl="true"
+45-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:31:9-35
+46        android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
+46-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:30:9-71
+47        <activity
+47-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:33:9-45:20
+48            android:name="com.axion.diagnostics.DiagnosticsActivity"
+48-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:34:13-48
+49            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden"
+49-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:37:13-115
+50            android:exported="true"
+50-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:35:13-36
+51            android:label="@string/app_name" >
+51-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:36:13-45
+52            <intent-filter>
+52-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:38:13-40:29
+53                <action android:name="android.intent.action.MAIN" />
+53-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:39:17-69
+53-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:39:25-66
+54            </intent-filter>
+55            <intent-filter>
+55-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:41:13-44:29
+56                <action android:name="com.axion.diagnostics.LAUNCH" />
+56-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:42:17-71
+56-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:42:25-68
+57
+58                <category android:name="android.intent.category.DEFAULT" />
+58-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:43:17-76
+58-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:43:27-73
+59            </intent-filter>
+60        </activity>
+61
+62        <service
+62-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:47:9-55:19
+63            android:name="com.axion.diagnostics.service.MonitorService"
+63-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:48:13-51
+64            android:enabled="false"
+64-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:50:13-36
+65            android:exported="false"
+65-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:49:13-37
+66            android:foregroundServiceType="specialUse" >
+66-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:51:13-55
+67            <property
+67-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:52:13-54:54
+68                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+68-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:53:17-76
+69                android:value="system_diagnostics" />
+69-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:54:17-51
+70        </service>
+71        <service
+71-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:57:9-60:38
+72            android:name="com.axion.diagnostics.service.CpuOverlayService"
+72-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:58:13-54
+73            android:enabled="true"
+73-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:60:13-35
+74            android:exported="false" />
+74-->/home/Rve/ax/packages/apps/AxDiagnostics/app/src/main/AndroidManifest.xml:59:13-37
+75
+76        <uses-library
+76-->[androidx.window:window:1.5.0] /home/Rve/.gradle/caches/9.6.1/transforms/a95944cf3c8a00e93df1dcb838d15764/transformed/window-1.5.0/AndroidManifest.xml:23:9-25:40
+77            android:name="androidx.window.extensions"
+77-->[androidx.window:window:1.5.0] /home/Rve/.gradle/caches/9.6.1/transforms/a95944cf3c8a00e93df1dcb838d15764/transformed/window-1.5.0/AndroidManifest.xml:24:13-54
+78            android:required="false" />
+78-->[androidx.window:window:1.5.0] /home/Rve/.gradle/caches/9.6.1/transforms/a95944cf3c8a00e93df1dcb838d15764/transformed/window-1.5.0/AndroidManifest.xml:25:13-37
+79        <uses-library
+79-->[androidx.window:window:1.5.0] /home/Rve/.gradle/caches/9.6.1/transforms/a95944cf3c8a00e93df1dcb838d15764/transformed/window-1.5.0/AndroidManifest.xml:26:9-28:40
+80            android:name="androidx.window.sidecar"
+80-->[androidx.window:window:1.5.0] /home/Rve/.gradle/caches/9.6.1/transforms/a95944cf3c8a00e93df1dcb838d15764/transformed/window-1.5.0/AndroidManifest.xml:27:13-51
+81            android:required="false" />
+81-->[androidx.window:window:1.5.0] /home/Rve/.gradle/caches/9.6.1/transforms/a95944cf3c8a00e93df1dcb838d15764/transformed/window-1.5.0/AndroidManifest.xml:28:13-37
+82
+83        <provider
+83-->[androidx.emoji2:emoji2:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/39966e6d80c1e3c097b3d9b80503b9b7/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+84            android:name="androidx.startup.InitializationProvider"
+84-->[androidx.emoji2:emoji2:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/39966e6d80c1e3c097b3d9b80503b9b7/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
+85            android:authorities="com.axion.diagnostics.androidx-startup"
+85-->[androidx.emoji2:emoji2:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/39966e6d80c1e3c097b3d9b80503b9b7/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
+86            android:exported="false" >
+86-->[androidx.emoji2:emoji2:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/39966e6d80c1e3c097b3d9b80503b9b7/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
+87            <meta-data
+87-->[androidx.emoji2:emoji2:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/39966e6d80c1e3c097b3d9b80503b9b7/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+88                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+88-->[androidx.emoji2:emoji2:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/39966e6d80c1e3c097b3d9b80503b9b7/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+89                android:value="androidx.startup" />
+89-->[androidx.emoji2:emoji2:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/39966e6d80c1e3c097b3d9b80503b9b7/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+90            <meta-data
+90-->[androidx.lifecycle:lifecycle-process:2.11.0] /home/Rve/.gradle/caches/9.6.1/transforms/6005fef8fd4f365a547c0f924b275c13/transformed/lifecycle-process-2.11.0/AndroidManifest.xml:29:13-31:52
+91                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+91-->[androidx.lifecycle:lifecycle-process:2.11.0] /home/Rve/.gradle/caches/9.6.1/transforms/6005fef8fd4f365a547c0f924b275c13/transformed/lifecycle-process-2.11.0/AndroidManifest.xml:30:17-78
+92                android:value="androidx.startup" />
+92-->[androidx.lifecycle:lifecycle-process:2.11.0] /home/Rve/.gradle/caches/9.6.1/transforms/6005fef8fd4f365a547c0f924b275c13/transformed/lifecycle-process-2.11.0/AndroidManifest.xml:31:17-49
+93            <meta-data
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+94                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+94-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+95                android:value="androidx.startup" />
+95-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+96        </provider>
+97
+98        <receiver
+98-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+99            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+99-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+100            android:directBootAware="false"
+100-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+101            android:enabled="true"
+101-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+102            android:exported="true"
+102-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+103            android:permission="android.permission.DUMP" >
+103-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+104            <intent-filter>
+104-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+105                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+105-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+105-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+106            </intent-filter>
+107            <intent-filter>
+107-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+108                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+108-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+108-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+109            </intent-filter>
+110            <intent-filter>
+110-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+111                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+111-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+111-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+112            </intent-filter>
+113            <intent-filter>
+113-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+114                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+114-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+114-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/Rve/.gradle/caches/9.6.1/transforms/21290a51289e4ca2c0d34b7e5e757ad6/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+115            </intent-filter>
+116        </receiver>
+117    </application>
+118
+119</manifest>

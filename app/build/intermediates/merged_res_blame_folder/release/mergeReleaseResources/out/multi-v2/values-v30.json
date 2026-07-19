@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.axion.diagnostics.app-mergeReleaseResources-42:/values-v30/values-v30.xml",
+            "map": [
+                {
+                    "source": "/home/Rve/.gradle/caches/9.6.1/transforms/dd6be0543101c3b2bc1356328309f54e/transformed/core-splashscreen-1.2.0/res/values-v30/values-v30.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "7",
+                        "endColumns": "12",
+                        "endOffsets": "433"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "128",
+                        "endLines": "8",
+                        "endColumns": "12",
+                        "endOffsets": "506"
+                    }
+                },
+                {
+                    "source": "/home/Rve/.gradle/caches/9.6.1/transforms/3682e1c225f12d976969a440e4e84a72/transformed/material3/res/values-v30/values-v30.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "72",
+                        "endOffsets": "123"
+                    }
+                }
+            ]
+        }
+    ]
+}
