@@ -88,9 +88,9 @@ class MonitorService : Service() {
             NotificationHelper.buildServiceNotification(
                 this,
                 getString(R.string.monitor_service_title),
-                getString(R.string.monitor_service_starting)
+                getString(R.string.monitor_service_starting),
             ),
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
         )
         Log.i(TAG, "Foreground started, registering event monitor")
 
@@ -156,12 +156,14 @@ class MonitorService : Service() {
         try {
             when (action) {
                 Intent.ACTION_BATTERY_CHANGED -> recordBatteryEvent(intent)
+
                 Intent.ACTION_BATTERY_LOW,
                 Intent.ACTION_BATTERY_OKAY,
                 Intent.ACTION_POWER_CONNECTED,
                 Intent.ACTION_POWER_DISCONNECTED,
                 Intent.ACTION_SCREEN_ON,
-                Intent.ACTION_SCREEN_OFF -> recordBatterySnapshot()
+                Intent.ACTION_SCREEN_OFF,
+                -> recordBatterySnapshot()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Monitor event failed: $action", e)
@@ -192,7 +194,7 @@ class MonitorService : Service() {
             },
             NOTIFICATION_REFRESH_INTERVAL_MS,
             NOTIFICATION_REFRESH_INTERVAL_MS,
-            TimeUnit.MILLISECONDS
+            TimeUnit.MILLISECONDS,
         )
     }
 
@@ -209,8 +211,8 @@ class MonitorService : Service() {
             NotificationHelper.buildServiceNotification(
                 this,
                 getString(R.string.monitor_service_title),
-                details
-            )
+                details,
+            ),
         )
     }
 
@@ -232,63 +234,63 @@ class MonitorService : Service() {
             getString(
                 R.string.monitor_service_now,
                 formatSignedCurrent(currentMa),
-                formatRemainingTime(summary.currentLevel, drainPerHour, summary.isCharging)
+                formatRemainingTime(summary.currentLevel, drainPerHour, summary.isCharging),
             ),
             getString(
                 R.string.monitor_service_average,
                 formatSignedCurrent(averageMa),
                 formatDrainRate(drainPerHour),
-                formatTotalMah(totalConsumedMah(breakdown, summary.isCharging))
+                formatTotalMah(totalConsumedMah(breakdown, summary.isCharging)),
             ),
             getString(
                 R.string.monitor_service_status,
                 summary.currentLevel,
                 formatTemperature(temperatureC),
                 status,
-                formatAbsoluteCurrent(currentMa)
+                formatAbsoluteCurrent(currentMa),
             ),
             getString(
                 R.string.monitor_service_drain,
                 formatDrainRate(summary.screenOnDrainPerHour),
-                formatDrainRate(summary.screenOffDrainPerHour)
-            )
+                formatDrainRate(summary.screenOffDrainPerHour),
+            ),
         )
         if (breakdown != null) {
             val screenBaseMs = (
                 breakdown.deviceScreenOnDurationMs + breakdown.deviceScreenOffDurationMs
-            ).coerceAtLeast(1L)
+                ).coerceAtLeast(1L)
             val sleepBaseMs = (
                 breakdown.deepSleepDurationMs + breakdown.awakeDurationMs
-            ).coerceAtLeast(1L)
+                ).coerceAtLeast(1L)
             if (breakdown.hasDeviceScreenDurations) {
                 lines.add(
                     getString(
                         R.string.monitor_service_screen_on,
                         formatDuration(breakdown.deviceScreenOnDurationMs),
-                        formatPercent(breakdown.deviceScreenOnDurationMs, screenBaseMs)
-                    )
+                        formatPercent(breakdown.deviceScreenOnDurationMs, screenBaseMs),
+                    ),
                 )
                 lines.add(
                     getString(
                         R.string.monitor_service_screen_off,
                         formatDuration(breakdown.deviceScreenOffDurationMs),
-                        formatPercent(breakdown.deviceScreenOffDurationMs, screenBaseMs)
-                    )
+                        formatPercent(breakdown.deviceScreenOffDurationMs, screenBaseMs),
+                    ),
                 )
             }
             lines.add(
                 getString(
                     R.string.monitor_service_deep_sleep,
                     formatDuration(breakdown.deepSleepDurationMs),
-                    formatPercent(breakdown.deepSleepDurationMs, sleepBaseMs)
-                )
+                    formatPercent(breakdown.deepSleepDurationMs, sleepBaseMs),
+                ),
             )
             lines.add(
                 getString(
                     R.string.monitor_service_awake,
                     formatDuration(breakdown.awakeDurationMs),
-                    formatPercent(breakdown.awakeDurationMs, sleepBaseMs)
-                )
+                    formatPercent(breakdown.awakeDurationMs, sleepBaseMs),
+                ),
             )
         }
         return lines.joinToString("\n")
@@ -315,27 +317,20 @@ class MonitorService : Service() {
             summary.last15minDrain.drainPerHour,
             summary.last30minDrain.drainPerHour,
             summary.last1hrDrain.drainPerHour,
-            summary.instantDrainPerHour
+            summary.instantDrainPerHour,
         ).firstOrNull { it > 0f } ?: 0f
     }
 
-    private fun totalConsumedMah(
-        breakdown: MonitorBreakdown?,
-        charging: Boolean
-    ): Float {
+    private fun totalConsumedMah(breakdown: MonitorBreakdown?, charging: Boolean): Float {
         val consumed = (
             (breakdown?.screenOn?.mahConsumed ?: 0f) +
                 (breakdown?.screenOff?.mahConsumed ?: 0f)
-        )
+            )
         if (consumed == 0f) return 0f
         return if (charging) consumed else -consumed
     }
 
-    private fun formatRemainingTime(
-        level: Int,
-        drainPerHour: Float,
-        charging: Boolean
-    ): String {
+    private fun formatRemainingTime(level: Int, drainPerHour: Float, charging: Boolean): String {
         if (charging) return getString(R.string.battery_charging)
         if (drainPerHour <= 0f) return getString(R.string.monitor_service_estimating_short)
         val remainingMs = (level / drainPerHour * 3_600_000L).toLong().coerceAtLeast(0L)
@@ -398,7 +393,7 @@ class MonitorService : Service() {
             context.packageManager.setComponentEnabledSetting(
                 component,
                 state,
-                PackageManager.DONT_KILL_APP
+                PackageManager.DONT_KILL_APP,
             )
         }
 

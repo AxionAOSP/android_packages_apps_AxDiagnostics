@@ -78,7 +78,7 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                 BatteryUiSnapshot(
                     battery = BatteryCollector.collect(context),
                     breakdown = DrainTracker.getBreakdown(context),
-                    summary = DrainTracker.getSummary()
+                    summary = DrainTracker.getSummary(),
                 )
             }
             battery = snapshot.battery
@@ -94,7 +94,7 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         battery?.let { b ->
             val charging = b.status == "Charging"
@@ -107,13 +107,13 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                 primary = "${b.levelPercent}%",
                 secondary = b.status,
                 percent = b.levelPercent.toFloat(),
-                color = batteryLevelColor(b.levelPercent)
+                color = batteryLevelColor(b.levelPercent),
             )
 
             StatCard(stringResource(R.string.battery_level_history)) {
                 SparklineChart(
                     values = levelHistory,
-                    color = batteryLevelColor(b.levelPercent)
+                    color = batteryLevelColor(b.levelPercent),
                 )
             }
 
@@ -121,14 +121,14 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column {
                         Text(
                             "$sign${abs(b.currentNowMa)} mA",
                             style = MaterialTheme.typography.displaySmallEmphasized,
                             fontWeight = FontWeight.Bold,
-                            color = heroColor
+                            color = heroColor,
                         )
                         Text(
                             if (charging) {
@@ -137,7 +137,7 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                                 stringResource(R.string.battery_discharging)
                             },
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     Column(horizontalAlignment = Alignment.End) {
@@ -145,12 +145,12 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                             "${b.levelPercent}%",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Text(
                             "%.1f°C".format(b.temperatureC),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = severityColor(b.temperatureC, 38f, 42f)
+                            color = severityColor(b.temperatureC, 38f, 42f),
                         )
                     }
                 }
@@ -169,7 +169,7 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                 if (b.chargeCounterUah != 0) {
                     StatRow(
                         stringResource(R.string.label_charge_counter),
-                        "${b.chargeCounterUah / 1000} mAh"
+                        "${b.chargeCounterUah / 1000} mAh",
                     )
                 }
                 if (b.cycleCount > 0) {
@@ -185,24 +185,24 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                         BarChartEntry(
                             stringResource(R.string.label_5min),
                             s.last5minDrain.drainPerHour,
-                            severityColor(s.last5minDrain.drainPerHour, 5f, 15f)
+                            severityColor(s.last5minDrain.drainPerHour, 5f, 15f),
                         ),
                         BarChartEntry(
                             stringResource(R.string.label_15min),
                             s.last15minDrain.drainPerHour,
-                            severityColor(s.last15minDrain.drainPerHour, 5f, 15f)
+                            severityColor(s.last15minDrain.drainPerHour, 5f, 15f),
                         ),
                         BarChartEntry(
                             stringResource(R.string.label_30min),
                             s.last30minDrain.drainPerHour,
-                            severityColor(s.last30minDrain.drainPerHour, 5f, 15f)
+                            severityColor(s.last30minDrain.drainPerHour, 5f, 15f),
                         ),
                         BarChartEntry(
                             stringResource(R.string.label_1hr),
                             s.last1hrDrain.drainPerHour,
-                            severityColor(s.last1hrDrain.drainPerHour, 5f, 15f)
-                        )
-                    )
+                            severityColor(s.last1hrDrain.drainPerHour, 5f, 15f),
+                        ),
+                    ),
                 )
             }
         }
@@ -216,7 +216,7 @@ fun BatteryScreen(modifier: Modifier = Modifier) {
                 Text(
                     stringResource(R.string.battery_monitor_hint),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -230,11 +230,7 @@ private fun batteryLevelColor(level: Int): Color = when {
     else -> MaterialTheme.colorScheme.primary
 }
 
-private data class BatteryUiSnapshot(
-    val battery: BatterySnapshot,
-    val breakdown: MonitorBreakdown?,
-    val summary: DrainSummary?
-)
+private data class BatteryUiSnapshot(val battery: BatterySnapshot, val breakdown: MonitorBreakdown?, val summary: DrainSummary?)
 
 @Composable
 private fun ScreenStateCard(title: String, stats: ScreenStateStats) {
@@ -249,8 +245,8 @@ private fun ScreenStateCard(title: String, stats: ScreenStateStats) {
             severityColor(
                 stats.drainPerHour,
                 if (stats.screenOn) 8f else 2f,
-                if (stats.screenOn) 20f else 5f
-            )
+                if (stats.screenOn) 20f else 5f,
+            ),
         )
     }
 }

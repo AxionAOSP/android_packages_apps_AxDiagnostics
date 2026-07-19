@@ -53,37 +53,25 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.max
 import kotlin.math.min
 
-data class ProgressSegment(
-    val label: String,
-    val percent: Float,
-    val color: Color
-)
+data class ProgressSegment(val label: String, val percent: Float, val color: Color)
 
-data class BarChartEntry(
-    val label: String,
-    val value: Float,
-    val color: Color
-)
+data class BarChartEntry(val label: String, val value: Float, val color: Color)
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun StatCard(
-    title: String,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
+fun StatCard(title: String, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.extraLarge,
         color = MaterialTheme.colorScheme.surfaceBright,
-        tonalElevation = 1.dp
+        tonalElevation = 1.dp,
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmallEmphasized,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 12.dp),
             )
             content()
         }
@@ -98,13 +86,13 @@ fun StatRow(label: String, value: String, valueColor: Color = Color.Unspecified)
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.Top,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier.padding(end = 8.dp),
         )
         Text(
             text = value,
@@ -112,18 +100,13 @@ fun StatRow(label: String, value: String, valueColor: Color = Color.Unspecified)
             fontWeight = FontWeight.Medium,
             color = resolvedValueColor,
             textAlign = TextAlign.End,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
 }
 
 @Composable
-fun UsageBar(
-    label: String,
-    percent: Float,
-    detail: String = "",
-    modifier: Modifier = Modifier
-) {
+fun UsageBar(label: String, percent: Float, detail: String = "", modifier: Modifier = Modifier) {
     val color = when {
         percent > 90f -> MaterialTheme.colorScheme.error
         percent > 70f -> MaterialTheme.colorScheme.tertiary
@@ -135,17 +118,17 @@ fun UsageBar(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
                 text = if (detail.isNotEmpty()) detail else "%.1f%%".format(percent),
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-                color = color
+                color = color,
             )
         }
         LinearProgressIndicator(
@@ -167,13 +150,13 @@ fun DeviceMetricRow(
     detail: String,
     percent: Float,
     modifier: Modifier = Modifier,
-    color: Color = metricColor(percent)
+    color: Color = metricColor(percent),
 ) {
     Column(modifier = modifier.fillMaxWidth().padding(vertical = 10.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -181,19 +164,19 @@ fun DeviceMetricRow(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = value,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
             Text(
                 text = detail,
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         LinearProgressIndicator(
@@ -204,7 +187,7 @@ fun DeviceMetricRow(
                 .height(9.dp)
                 .clip(MaterialTheme.shapes.extraSmall),
             color = color,
-            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         )
     }
 }
@@ -216,24 +199,24 @@ fun MetricProgressCard(
     secondary: String,
     percent: Float,
     modifier: Modifier = Modifier,
-    color: Color = metricColor(percent)
+    color: Color = metricColor(percent),
 ) {
     StatCard(title, modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
         ) {
             Text(
                 text = primary,
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = color
+                color = color,
             )
             Text(
                 text = secondary,
                 style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         LinearProgressIndicator(
@@ -244,7 +227,7 @@ fun MetricProgressCard(
                 .height(12.dp)
                 .clip(MaterialTheme.shapes.extraSmall),
             color = color,
-            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         )
     }
 }
@@ -256,7 +239,7 @@ fun ScoreRing(
     modifier: Modifier = Modifier,
     color: Color = metricColor(100f - score),
     trackColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     val scorePercent = score.coerceIn(0, 100)
     Box(
@@ -265,7 +248,7 @@ fun ScoreRing(
             .semantics {
                 progressBarRangeInfo = ProgressBarRangeInfo(scorePercent.toFloat(), 0f..100f)
             },
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.size(112.dp)) {
             val strokeWidth = 10.dp.toPx()
@@ -278,7 +261,7 @@ fun ScoreRing(
                 useCenter = false,
                 topLeft = Offset(inset, inset),
                 size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
             )
             drawArc(
                 color = color,
@@ -287,7 +270,7 @@ fun ScoreRing(
                 useCenter = false,
                 topLeft = Offset(inset, inset),
                 size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
             )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -295,12 +278,12 @@ fun ScoreRing(
                 text = "$scorePercent",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = contentColor
+                color = contentColor,
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = contentColor.copy(alpha = 0.72f)
+                color = contentColor.copy(alpha = 0.72f),
             )
         }
     }
@@ -310,7 +293,7 @@ fun ScoreRing(
 fun SegmentedProgressBar(
     segments: List<ProgressSegment>,
     modifier: Modifier = Modifier,
-    totalPercent: Float = segments.sumOf { it.percent.toDouble() }.toFloat()
+    totalPercent: Float = segments.sumOf { it.percent.toDouble() }.toFloat(),
 ) {
     val trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
     Canvas(
@@ -320,13 +303,13 @@ fun SegmentedProgressBar(
             .clip(MaterialTheme.shapes.extraSmall)
             .semantics {
                 progressBarRangeInfo = ProgressBarRangeInfo(totalPercent.safePercent(), 0f..100f)
-            }
+            },
     ) {
         val radius = CornerRadius(size.height / 2f, size.height / 2f)
         drawRoundRect(
             color = trackColor,
             size = size,
-            cornerRadius = radius
+            cornerRadius = radius,
         )
         var startX = 0f
         val scale = if (totalPercent > 100f) 100f / totalPercent else 1f
@@ -337,7 +320,7 @@ fun SegmentedProgressBar(
                     color = segment.color,
                     topLeft = Offset(startX, 0f),
                     size = Size(width, size.height),
-                    cornerRadius = radius
+                    cornerRadius = radius,
                 )
                 startX += width
             }
@@ -346,16 +329,13 @@ fun SegmentedProgressBar(
 }
 
 @Composable
-fun SegmentLegend(
-    segments: List<ProgressSegment>,
-    modifier: Modifier = Modifier
-) {
+fun SegmentLegend(segments: List<ProgressSegment>, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth().padding(top = 10.dp)) {
         segments.forEach { segment ->
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Canvas(modifier = Modifier.size(10.dp)) {
@@ -365,15 +345,15 @@ fun SegmentLegend(
                         text = segment.label,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp),
                     )
                 }
                 Text(
                     text = "%.1f%%".format(segment.percent.safePercent()),
                     style = MaterialTheme.typography.bodySmall.copy(
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = FontFamily.Monospace,
                     ),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
@@ -381,11 +361,7 @@ fun SegmentLegend(
 }
 
 @Composable
-fun SparklineChart(
-    values: List<Float>,
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.primary
-) {
+fun SparklineChart(values: List<Float>, modifier: Modifier = Modifier, color: Color = MaterialTheme.colorScheme.primary) {
     val trackColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
     Canvas(modifier = modifier.fillMaxWidth().height(72.dp)) {
         if (values.isEmpty()) return@Canvas
@@ -398,7 +374,7 @@ fun SparklineChart(
             color = trackColor,
             start = Offset(0f, centerY),
             end = Offset(size.width, centerY),
-            strokeWidth = 1.dp.toPx()
+            strokeWidth = 1.dp.toPx(),
         )
         if (safeValues.size == 1) {
             val y = size.height - ((safeValues.first() - minValue) / range * size.height)
@@ -419,16 +395,13 @@ fun SparklineChart(
         drawPath(
             path = path,
             color = color,
-            style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
+            style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round),
         )
     }
 }
 
 @Composable
-fun VerticalBarChart(
-    entries: List<BarChartEntry>,
-    modifier: Modifier = Modifier
-) {
+fun VerticalBarChart(entries: List<BarChartEntry>, modifier: Modifier = Modifier) {
     val trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
     Column(modifier = modifier.fillMaxWidth()) {
         Canvas(modifier = Modifier.fillMaxWidth().height(140.dp)) {
@@ -446,19 +419,19 @@ fun VerticalBarChart(
                     color = trackColor,
                     topLeft = Offset(left, 0f),
                     size = Size(barWidth, size.height),
-                    cornerRadius = radius
+                    cornerRadius = radius,
                 )
                 drawRoundRect(
                     color = entry.color,
                     topLeft = Offset(left, top),
                     size = Size(barWidth, height),
-                    cornerRadius = radius
+                    cornerRadius = radius,
                 )
             }
         }
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             entries.forEach { entry ->
                 Text(
@@ -468,7 +441,7 @@ fun VerticalBarChart(
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -481,7 +454,7 @@ fun SectionHeader(text: String) {
         text = text,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
+        modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
     )
 }
 
@@ -492,9 +465,9 @@ fun MonoText(text: String, color: Color = Color.Unspecified, modifier: Modifier 
         modifier = modifier,
         style = MaterialTheme.typography.bodySmall.copy(
             fontFamily = FontFamily.Monospace,
-            fontSize = 12.sp
+            fontSize = 12.sp,
         ),
-        color = if (color != Color.Unspecified) color else MaterialTheme.colorScheme.onSurface
+        color = if (color != Color.Unspecified) color else MaterialTheme.colorScheme.onSurface,
     )
 }
 
@@ -542,5 +515,4 @@ fun metricColor(percent: Float): Color = when {
 
 private fun Float.safePercent(): Float = safeNumber().coerceIn(0f, 100f)
 
-private fun Float.safeNumber(): Float =
-    if (isNaN() || isInfinite()) 0f else this
+private fun Float.safeNumber(): Float = if (isNaN() || isInfinite()) 0f else this

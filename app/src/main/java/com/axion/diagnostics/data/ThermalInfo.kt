@@ -18,30 +18,17 @@ package com.axion.diagnostics.data
 
 import java.io.File
 
-data class ThermalZone(
-    val name: String,
-    val type: String,
-    val temperatureC: Float,
-    val tripPoints: List<TripPoint>
-)
+data class ThermalZone(val name: String, val type: String, val temperatureC: Float, val tripPoints: List<TripPoint>)
 
-data class TripPoint(
-    val type: String,
-    val temperatureC: Float
-)
+data class TripPoint(val type: String, val temperatureC: Float)
 
-data class CoolingDevice(
-    val name: String,
-    val type: String,
-    val currentState: Int,
-    val maxState: Int
-)
+data class CoolingDevice(val name: String, val type: String, val currentState: Int, val maxState: Int)
 
 data class ThermalSnapshot(
     val zones: List<ThermalZone>,
     val coolingDevices: List<CoolingDevice>,
     val maxTemperature: Float,
-    val hottest: String
+    val hottest: String,
 )
 
 object ThermalCollector {
@@ -95,10 +82,9 @@ object ThermalCollector {
             zones = zones,
             coolingDevices = coolingDevices,
             maxTemperature = maxTemp?.temperatureC ?: 0f,
-            hottest = maxTemp?.type ?: "none"
+            hottest = maxTemp?.type ?: "none",
         )
     }
 
-    private fun readFileText(file: File): String =
-        runCatching { file.readText().trim() }.getOrDefault("")
+    private fun readFileText(file: File): String = runCatching { file.readText().trim() }.getOrDefault("")
 }

@@ -60,9 +60,9 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.formatMs
 import com.axion.diagnostics.ui.components.severityColor
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -87,13 +87,13 @@ fun DrainScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         StatCard(stringResource(R.string.drain_monitor_title)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
                     val statusColor = if (isTracking) {
@@ -109,7 +109,7 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                     Text(
                         statusText,
                         style = MaterialTheme.typography.titleMedium,
-                        color = statusColor
+                        color = statusColor,
                     )
                     summary?.let { s ->
                         val screenState = if (s.isScreenOn) {
@@ -120,21 +120,27 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                         Text(
                             "${s.currentLevel}% | ${s.currentMa} mA | $screenState",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (isTracking) {
                         Button(
-                            onClick = { DrainTracker.stopTracking(); isTracking = false },
+                            onClick = {
+                                DrainTracker.stopTracking()
+                                isTracking = false
+                            },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.error
-                            )
+                                containerColor = MaterialTheme.colorScheme.error,
+                            ),
                         ) { Text(stringResource(R.string.action_stop)) }
                     } else {
                         Button(
-                            onClick = { DrainTracker.startTracking(); isTracking = true }
+                            onClick = {
+                                DrainTracker.startTracking()
+                                isTracking = true
+                            },
                         ) { Text(stringResource(R.string.action_start)) }
                     }
                 }
@@ -149,7 +155,7 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                         Toast.makeText(
                             context,
                             context.getString(R.string.toast_saved, path),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
                 }) { Text(stringResource(R.string.action_export_log)) }
@@ -164,27 +170,27 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                     stringResource(R.string.label_charging),
                     if (s.isCharging) {
                         stringResource(
-                            R.string.common_yes
+                            R.string.common_yes,
                         )
                     } else {
                         stringResource(R.string.common_no)
-                    }
+                    },
                 )
                 StatRow(
                     stringResource(R.string.label_screen),
                     if (s.isScreenOn) {
                         stringResource(
-                            R.string.common_on
+                            R.string.common_on,
                         )
                     } else {
                         stringResource(R.string.common_off)
-                    }
+                    },
                 )
                 if (s.instantDrainPerHour > 0 && !s.isCharging) {
                     StatRow(
                         stringResource(R.string.label_est_drain_rate),
                         "%.1f%%/hr".format(s.instantDrainPerHour),
-                        severityColor(s.instantDrainPerHour, 5f, 15f)
+                        severityColor(s.instantDrainPerHour, 5f, 15f),
                     )
                 }
             }
@@ -204,12 +210,12 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                     StatRow(
                         stringResource(R.string.label_screen_on_drain),
                         "%.1f%%/hr".format(s.screenOnDrainPerHour),
-                        severityColor(s.screenOnDrainPerHour, 8f, 20f)
+                        severityColor(s.screenOnDrainPerHour, 8f, 20f),
                     )
                     StatRow(
                         stringResource(R.string.label_screen_off_drain),
                         "%.1f%%/hr".format(s.screenOffDrainPerHour),
-                        severityColor(s.screenOffDrainPerHour, 2f, 5f)
+                        severityColor(s.screenOffDrainPerHour, 2f, 5f),
                     )
                 }
             }
@@ -218,35 +224,35 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                 StatCard(stringResource(R.string.drain_hourly)) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
                             stringResource(R.string.col_hour),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                         Text(
                             stringResource(R.string.col_drain),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                         Text(
                             stringResource(R.string.col_avg_ma),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                         Text(
                             stringResource(R.string.col_scr_on),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                     }
                     HorizontalDivider()
                     s.hourlyBreakdown.forEach { h ->
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             MonoText(h.hour)
                             MonoText(
                                 "%.1f%%".format(h.drainPercent),
-                                color = severityColor(h.drainPercent, 5f, 15f)
+                                color = severityColor(h.drainPercent, 5f, 15f),
                             )
                             MonoText("%.0f".format(h.avgCurrentMa))
                             MonoText("%.0f%%".format(h.screenOnPercent))
@@ -259,11 +265,11 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                 StatCard(stringResource(R.string.drain_current_graph)) {
                     CurrentGraph(
                         samples = s.samples.map { it.currentMa.toFloat() },
-                        modifier = Modifier.fillMaxWidth().height(120.dp)
+                        modifier = Modifier.fillMaxWidth().height(120.dp),
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText("${s.samples.size} samples")
                         val elapsed = s.samples.last().timestamp - s.samples.first().timestamp
@@ -278,7 +284,7 @@ fun DrainScreen(modifier: Modifier = Modifier) {
                 Text(
                     stringResource(R.string.drain_how_to_use_body),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -294,21 +300,21 @@ private fun DrainWindowRow(window: DrainWindow) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 window.label,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
             )
             MonoText(
                 "%.1f%%/hr".format(window.drainPerHour),
-                color = severityColor(window.drainPerHour, 5f, 15f)
+                color = severityColor(window.drainPerHour, 5f, 15f),
             )
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             MonoText("Drain: %.1f%%".format(window.drainPercent))
             MonoText("Avg: %.0f mA".format(window.avgCurrentMa))

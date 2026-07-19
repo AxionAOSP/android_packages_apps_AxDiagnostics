@@ -46,8 +46,8 @@ import com.android.axion.compose.scaffold.AxionPinnedTopAppBar
 import com.android.axion.compose.theme.AxionTheme
 import com.axion.diagnostics.DiagnosticsActivity
 import com.axion.diagnostics.R
-import com.axion.diagnostics.service.MonitorService
 import com.axion.diagnostics.service.CpuOverlayService
+import com.axion.diagnostics.service.MonitorService
 import com.axion.diagnostics.ui.screens.AppPowerScreen
 import com.axion.diagnostics.ui.screens.BatteryScreen
 import com.axion.diagnostics.ui.screens.CpuScreen
@@ -67,7 +67,7 @@ private val tabTitles = listOf(
     R.string.tab_battery,
     R.string.tab_thermal,
     R.string.more_storage,
-    R.string.tab_more
+    R.string.tab_more,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +78,7 @@ fun DiagnosticsApp() {
         val cr = context.contentResolver
         var enabled by remember {
             mutableStateOf(
-                Settings.Secure.getInt(cr, DiagnosticsActivity.SETTING_KEY, 0) == 1
+                Settings.Secure.getInt(cr, DiagnosticsActivity.SETTING_KEY, 0) == 1,
             )
         }
 
@@ -89,7 +89,7 @@ fun DiagnosticsApp() {
                     MonitorService.setComponentEnabled(context, true)
                     MonitorService.start(context)
                     enabled = true
-                }
+                },
             )
             return@AxionTheme
         }
@@ -113,27 +113,27 @@ fun DiagnosticsApp() {
                                     MonitorService.setComponentEnabled(context, false)
                                     enabled = false
                                 },
-                                modifier = Modifier.padding(end = 12.dp)
+                                modifier = Modifier.padding(end = 12.dp),
                             ) {
                                 Text(stringResource(R.string.action_disable))
                             }
-                        }
+                        },
                     )
                     ScrollableTabRow(
                         selectedTabIndex = tabIndex,
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        edgePadding = 16.dp
+                        edgePadding = 16.dp,
                     ) {
                         tabTitles.forEachIndexed { index, titleRes ->
                             Tab(
                                 selected = tabIndex == index,
                                 onClick = { selectedTab = index },
-                                text = { Text(stringResource(titleRes)) }
+                                text = { Text(stringResource(titleRes)) },
                             )
                         }
                     }
                 }
-            }
+            },
         ) { padding ->
             when (tabIndex) {
                 0 -> OverviewScreen(Modifier.padding(padding))
@@ -159,18 +159,18 @@ private fun DisabledScreen(onEnable: () -> Unit) {
                 .padding(padding)
                 .padding(32.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(Modifier.height(12.dp))
             Text(
                 stringResource(R.string.disabled_message),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(24.dp))
             FilledTonalButton(onClick = onEnable) {

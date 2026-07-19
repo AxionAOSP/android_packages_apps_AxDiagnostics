@@ -68,9 +68,9 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.formatKb
 import com.axion.diagnostics.ui.components.formatMs
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -110,31 +110,31 @@ fun RegressionScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         StatCard(stringResource(R.string.regress_title)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
                     if (isTracking) {
                         Text(
                             stringResource(R.string.status_recording),
                             style = MaterialTheme.typography.titleMedium,
-                            color = DiagnosticsColors.positive
+                            color = DiagnosticsColors.positive,
                         )
                         Text(
                             "Samples: $sampleCount | Elapsed: ${formatMs(elapsedMs)}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     } else {
                         Text(
                             stringResource(R.string.status_stopped),
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -147,8 +147,8 @@ fun RegressionScreen(modifier: Modifier = Modifier) {
                                 isTracking = false
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.error
-                            )
+                                containerColor = MaterialTheme.colorScheme.error,
+                            ),
                         ) { Text(stringResource(R.string.action_stop)) }
                     } else {
                         Button(onClick = {
@@ -170,7 +170,7 @@ fun RegressionScreen(modifier: Modifier = Modifier) {
                             Toast.makeText(
                                 context,
                                 context.getString(R.string.toast_saved, path),
-                                Toast.LENGTH_LONG
+                                Toast.LENGTH_LONG,
                             ).show()
                         }
                     }) { Text(stringResource(R.string.action_export)) }
@@ -199,32 +199,32 @@ fun RegressionScreen(modifier: Modifier = Modifier) {
             StatCard(stringResource(R.string.regress_tracked)) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         stringResource(R.string.col_process),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                     Text(
                         stringResource(R.string.col_avg),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.width(48.dp)
+                        modifier = Modifier.width(48.dp),
                     )
                     Text(
                         stringResource(R.string.col_peak),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.width(48.dp)
+                        modifier = Modifier.width(48.dp),
                     )
                     Text(
                         stringResource(R.string.col_trend),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.width(48.dp)
+                        modifier = Modifier.width(48.dp),
                     )
                     Text(
                         stringResource(R.string.col_rss),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.width(56.dp)
+                        modifier = Modifier.width(56.dp),
                     )
                 }
                 HorizontalDivider()
@@ -254,14 +254,14 @@ fun RegressionScreen(modifier: Modifier = Modifier) {
                             }
                             .padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         MonoText(proc.name.take(18))
                         MonoText("%.1f".format(proc.avgCpu))
                         MonoText("%.1f".format(proc.peakCpu))
                         MonoText(
                             "%+.0f%%".format(proc.cpuTrend),
-                            color = cpuTrendColor
+                            color = cpuTrendColor,
                         )
                         MonoText(formatKb(proc.currentRss), color = rssTrendColor)
                     }
@@ -277,21 +277,21 @@ fun RegressionScreen(modifier: Modifier = Modifier) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                tonalElevation = 2.dp
+                tonalElevation = 2.dp,
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
                         stringResource(R.string.regress_title),
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
                         stringResource(R.string.regress_intro_body),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -317,20 +317,20 @@ private fun AlertRow(alert: RegressionAlert) {
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Surface(
             color = severityColor.copy(alpha = 0.15f),
-            shape = RoundedCornerShape(4.dp)
+            shape = RoundedCornerShape(4.dp),
         ) {
             Text(
                 typeIcon,
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 ),
                 color = severityColor,
-                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
             )
         }
         Spacer(Modifier.width(8.dp))
@@ -338,18 +338,18 @@ private fun AlertRow(alert: RegressionAlert) {
             Text(
                 alert.processName,
                 style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
             Text(
                 alert.message,
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         Text(
             alert.severity.name,
             style = MaterialTheme.typography.labelSmall,
-            color = severityColor
+            color = severityColor,
         )
     }
 }
@@ -359,13 +359,13 @@ private fun ProcessDetailCard(history: ProcessHistory) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 4.dp, bottom = 4.dp),
         shape = RoundedCornerShape(12.dp),
-        tonalElevation = 4.dp
+        tonalElevation = 4.dp,
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 "${history.name} (PID: ${history.pid})",
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
             Spacer(Modifier.height(4.dp))
 
@@ -381,7 +381,7 @@ private fun ProcessDetailCard(history: ProcessHistory) {
                     history.cpuTrend > 20f -> MaterialTheme.colorScheme.tertiary
                     history.cpuTrend < -20f -> DiagnosticsColors.positive
                     else -> Color.Unspecified
-                }
+                },
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
@@ -396,18 +396,18 @@ private fun ProcessDetailCard(history: ProcessHistory) {
                     history.rssTrend > 30f -> MaterialTheme.colorScheme.error
                     history.rssTrend > 10f -> MaterialTheme.colorScheme.tertiary
                     else -> Color.Unspecified
-                }
+                },
             )
 
             if (history.samples.isNotEmpty()) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                 StatRow(
                     stringResource(R.string.label_threads_current),
-                    "${history.samples.last().threads}"
+                    "${history.samples.last().threads}",
                 )
                 StatRow(
                     stringResource(R.string.label_threads_first),
-                    "${history.samples.first().threads}"
+                    "${history.samples.first().threads}",
                 )
             }
 

@@ -16,15 +16,21 @@
 
 package com.axion.diagnostics.ui.screens
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,22 +45,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.axion.diagnostics.R
 import com.axion.diagnostics.export.ReportExporter
+import com.axion.diagnostics.service.CpuOverlayService
+import com.axion.diagnostics.service.MonitorService
 import com.axion.diagnostics.ui.components.StatCard
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Switch
-import com.axion.diagnostics.service.CpuOverlayService
-import com.axion.diagnostics.service.MonitorService
-import com.axion.diagnostics.util.LaunchedActiveEffect
-import kotlinx.coroutines.delay
 
 @Composable
 fun MoreScreen(modifier: Modifier = Modifier) {
@@ -64,7 +62,7 @@ fun MoreScreen(modifier: Modifier = Modifier) {
     var overlayActive by remember { mutableStateOf(CpuOverlayService.isRunning) }
     var notificationStatsActive by remember {
         mutableStateOf(
-            Settings.Secure.getInt(context.contentResolver, "ax_diagnostics_notification_enabled", 1) == 1
+            Settings.Secure.getInt(context.contentResolver, "ax_diagnostics_notification_enabled", 1) == 1,
         )
     }
 
@@ -81,12 +79,12 @@ fun MoreScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         StatCard(stringResource(R.string.more_export)) {
             Text(
                 stringResource(R.string.more_export_hint),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
             )
             Button(
                 onClick = {
@@ -97,11 +95,11 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                         Toast.makeText(
                             context,
                             context.getString(R.string.toast_report_saved, path),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
                 },
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp),
             ) {
                 Text(stringResource(R.string.action_export_report))
             }
@@ -112,26 +110,26 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.cpu_overlay_desc),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                
+
                 if (!hasOverlayPermission) {
                     Text(
                         text = stringResource(R.string.cpu_overlay_permission_desc),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
                     )
                     Button(
                         onClick = {
                             val intent = Intent(
                                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                Uri.parse("package:${context.packageName}")
+                                Uri.parse("package:${context.packageName}"),
                             ).apply {
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             }
                             context.startActivity(intent)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(stringResource(R.string.cpu_overlay_grant))
                     }
@@ -139,7 +137,7 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                     ) {
                         Text(
                             text = if (overlayActive) {
@@ -153,7 +151,7 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                                 MaterialTheme.colorScheme.primary
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
-                            }
+                            },
                         )
                         Switch(
                             checked = overlayActive,
@@ -165,7 +163,7 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                                     CpuOverlayService.stop(context)
                                     overlayActive = false
                                 }
-                            }
+                            },
                         )
                     }
                 }
@@ -177,12 +175,12 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.more_notification_stats_desc),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                 ) {
                     Text(
                         text = if (notificationStatsActive) {
@@ -196,7 +194,7 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                             MaterialTheme.colorScheme.primary
                         } else {
                             MaterialTheme.colorScheme.onSurfaceVariant
-                        }
+                        },
                     )
                     Switch(
                         checked = notificationStatsActive,
@@ -204,14 +202,14 @@ fun MoreScreen(modifier: Modifier = Modifier) {
                             Settings.Secure.putInt(
                                 context.contentResolver,
                                 "ax_diagnostics_notification_enabled",
-                                if (checked) 1 else 0
+                                if (checked) 1 else 0,
                             )
                             notificationStatsActive = checked
                             if (MonitorService.isRunning) {
                                 val intent = Intent(context, MonitorService::class.java)
                                 runCatching { context.startService(intent) }
                             }
-                        }
+                        },
                     )
                 }
             }

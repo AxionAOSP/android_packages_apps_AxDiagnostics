@@ -64,7 +64,7 @@ fun CpuScreen(modifier: Modifier = Modifier) {
             val snapshot = withContext(Dispatchers.IO) {
                 CpuUiSnapshot(
                     cpu = CpuCollector.collect(),
-                    processes = ProcessCollector.collect(15)
+                    processes = ProcessCollector.collect(15),
                 )
             }
             cpu = snapshot.cpu
@@ -79,20 +79,20 @@ fun CpuScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         cpu?.let { c ->
             MetricProgressCard(
                 title = stringResource(R.string.cpu_usage),
                 primary = "%.0f%%".format(c.totalUsage),
                 secondary = stringResource(R.string.cpu_load_1min_detail, c.loadAvg1),
-                percent = c.totalUsage
+                percent = c.totalUsage,
             )
 
             StatCard(stringResource(R.string.cpu_usage_history)) {
                 SparklineChart(
                     values = usageHistory,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
 
@@ -102,7 +102,7 @@ fun CpuScreen(modifier: Modifier = Modifier) {
                 StatRow(
                     stringResource(R.string.label_io_wait),
                     "%.1f%%".format(c.iowaitPercent),
-                    severityColor(c.iowaitPercent, 10f, 30f)
+                    severityColor(c.iowaitPercent, 10f, 30f),
                 )
                 StatRow(stringResource(R.string.label_irq), "%.1f%%".format(c.irqPercent))
             }
@@ -113,12 +113,12 @@ fun CpuScreen(modifier: Modifier = Modifier) {
                 StatRow(stringResource(R.string.label_15min), "%.2f".format(c.loadAvg15))
                 StatRow(
                     stringResource(R.string.label_context_switches),
-                    "%,d".format(c.contextSwitches)
+                    "%,d".format(c.contextSwitches),
                 )
                 StatRow(stringResource(R.string.label_processes), "%,d".format(c.processes))
                 StatRow(
                     stringResource(R.string.label_running_blocked),
-                    "${c.procsRunning} / ${c.procsBlocked}"
+                    "${c.procsRunning} / ${c.procsBlocked}",
                 )
             }
 
@@ -132,7 +132,7 @@ fun CpuScreen(modifier: Modifier = Modifier) {
                             "%.0f%% @ %d MHz".format(core.usagePercent, core.frequencyMhz)
                         } else {
                             offlineTag
-                        }
+                        },
                     )
                 }
             }
@@ -142,7 +142,7 @@ fun CpuScreen(modifier: Modifier = Modifier) {
                     if (core.online) {
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             MonoText("CPU${core.index}")
                             MonoText("${core.minFrequencyMhz}-${core.maxFrequencyMhz} MHz")
@@ -168,30 +168,30 @@ fun CpuScreen(modifier: Modifier = Modifier) {
             StatCard(stringResource(R.string.cpu_top_processes)) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         stringResource(R.string.col_process),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                     Text(
                         stringResource(R.string.col_cpu_percent),
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelSmall,
                     )
                 }
                 HorizontalDivider()
                 processes.forEach { proc ->
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText(
                             "${proc.name} (${proc.pid})",
                         )
                         MonoText(
                             "%.1f%%".format(proc.cpuPercent),
-                            color = severityColor(proc.cpuPercent, 20f, 50f)
+                            color = severityColor(proc.cpuPercent, 20f, 50f),
                         )
                     }
                 }
@@ -200,7 +200,4 @@ fun CpuScreen(modifier: Modifier = Modifier) {
     }
 }
 
-private data class CpuUiSnapshot(
-    val cpu: CpuSnapshot,
-    val processes: List<ProcessSnapshot>
-)
+private data class CpuUiSnapshot(val cpu: CpuSnapshot, val processes: List<ProcessSnapshot>)

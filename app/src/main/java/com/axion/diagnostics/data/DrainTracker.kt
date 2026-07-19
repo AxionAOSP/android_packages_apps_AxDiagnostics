@@ -36,7 +36,7 @@ data class DrainSample(
     val voltageV: Float,
     val temperatureC: Float,
     val screenOn: Boolean,
-    val charging: Boolean
+    val charging: Boolean,
 )
 
 data class DrainWindow(
@@ -47,7 +47,7 @@ data class DrainWindow(
     val avgCurrentMa: Float,
     val avgTempC: Float,
     val screenOnPercent: Float,
-    val sampleCount: Int
+    val sampleCount: Int,
 )
 
 data class DrainSummary(
@@ -63,15 +63,10 @@ data class DrainSummary(
     val screenOnDrainPerHour: Float,
     val screenOffDrainPerHour: Float,
     val samples: List<DrainSample>,
-    val hourlyBreakdown: List<HourlyDrain>
+    val hourlyBreakdown: List<HourlyDrain>,
 )
 
-data class HourlyDrain(
-    val hour: String,
-    val drainPercent: Float,
-    val avgCurrentMa: Float,
-    val screenOnPercent: Float
-)
+data class HourlyDrain(val hour: String, val drainPercent: Float, val avgCurrentMa: Float, val screenOnPercent: Float)
 
 data class ScreenStateStats(
     val screenOn: Boolean,
@@ -79,7 +74,7 @@ data class ScreenStateStats(
     val drainPercent: Float,
     val mahConsumed: Float,
     val avgCurrentMa: Float,
-    val drainPerHour: Float
+    val drainPerHour: Float,
 )
 
 data class MonitorBreakdown(
@@ -91,7 +86,7 @@ data class MonitorBreakdown(
     val deviceScreenOffDurationMs: Long,
     val hasDeviceScreenDurations: Boolean,
     val deepSleepDurationMs: Long,
-    val awakeDurationMs: Long
+    val awakeDurationMs: Long,
 )
 
 object DrainTracker {
@@ -119,7 +114,7 @@ object DrainTracker {
         if (!isTracking) return
         recordSample(
             context,
-            context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)),
         )
     }
 
@@ -142,10 +137,10 @@ object DrainTracker {
         val tempRaw = batteryIntent?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
         val voltageRaw = batteryIntent?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) ?: 0
         val currentNow = normalizeBatteryCurrentMa(
-            bm?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) ?: 0
+            bm?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) ?: 0,
         )
         val currentAvg = normalizeBatteryCurrentMa(
-            bm?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE) ?: 0
+            bm?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE) ?: 0,
         )
         val screenOn = pm?.isInteractive ?: true
         val charging = statusInt == BatteryManager.BATTERY_STATUS_CHARGING ||
@@ -161,7 +156,7 @@ object DrainTracker {
             voltageV = if (voltageRaw > 1000) voltageRaw / 1000f else voltageRaw.toFloat(),
             temperatureC = tempRaw / 10f,
             screenOn = screenOn,
-            charging = charging
+            charging = charging,
         )
 
         samples.add(sample)
@@ -207,7 +202,7 @@ object DrainTracker {
             screenOnDrainPerHour = screenOnDrain,
             screenOffDrainPerHour = screenOffDrain,
             samples = samples.toList(),
-            hourlyBreakdown = computeHourlyBreakdown()
+            hourlyBreakdown = computeHourlyBreakdown(),
         )
     }
 
@@ -279,16 +274,11 @@ object DrainTracker {
             deviceScreenOffDurationMs = deviceUsage.screenOffDurationMs,
             hasDeviceScreenDurations = deviceUsage.hasScreenDurations,
             deepSleepDurationMs = deviceUsage.deepSleepDurationMs,
-            awakeDurationMs = deviceUsage.awakeDurationMs
+            awakeDurationMs = deviceUsage.awakeDurationMs,
         )
     }
 
-    private fun buildStateStats(
-        screenOn: Boolean,
-        durationMs: Long,
-        drainPercent: Float,
-        mahConsumed: Float
-    ): ScreenStateStats {
+    private fun buildStateStats(screenOn: Boolean, durationMs: Long, drainPercent: Float, mahConsumed: Float): ScreenStateStats {
         val hours = durationMs / 3_600_000f
         val avgCurrent = if (hours > 0f) mahConsumed / hours else 0f
         val drainPerHour = if (hours > 0f) drainPercent / hours else 0f
@@ -298,7 +288,7 @@ object DrainTracker {
             drainPercent,
             mahConsumed,
             avgCurrent,
-            drainPerHour
+            drainPerHour,
         )
     }
 
@@ -318,7 +308,7 @@ object DrainTracker {
                 0f,
                 0f,
                 0f,
-                windowSamples.size
+                windowSamples.size,
             )
         }
 
@@ -337,7 +327,7 @@ object DrainTracker {
             avgCurrentMa = avgCurrent,
             avgTempC = avgTemp,
             screenOnPercent = screenOnPct,
-            sampleCount = windowSamples.size
+            sampleCount = windowSamples.size,
         )
     }
 
@@ -367,7 +357,7 @@ object DrainTracker {
             if (bucketSamples.size >= 2) {
                 val drain = (
                     bucketSamples.first().levelPercent - bucketSamples.last().levelPercent
-                ).toFloat()
+                    ).toFloat()
                 val avgCurrent = bucketSamples.map { it.currentMa }.average().toFloat()
                 val screenOnPct = bucketSamples.count { it.screenOn }
                     .toFloat() / bucketSamples.size * 100f
@@ -376,8 +366,8 @@ object DrainTracker {
                         hour = sdf.format(Date(bucketStart)),
                         drainPercent = drain.coerceAtLeast(0f),
                         avgCurrentMa = avgCurrent,
-                        screenOnPercent = screenOnPct
-                    )
+                        screenOnPercent = screenOnPct,
+                    ),
                 )
             }
             bucketStart = bucketEnd
@@ -395,7 +385,7 @@ object DrainTracker {
     private fun readBatteryCapacity(): Int {
         val paths = listOf(
             "/sys/class/power_supply/battery/charge_full",
-            "/sys/class/power_supply/Battery/charge_full"
+            "/sys/class/power_supply/Battery/charge_full",
         )
         for (path in paths) {
             val file = File(path)
@@ -418,19 +408,21 @@ object DrainTracker {
                 "AvgmA",
                 "Temp",
                 "Scr",
-                "Chg"
-            )
+                "Chg",
+            ),
         )
         samples.forEach { s ->
-            sb.appendLine("%-10s %4d%% %5dmA %5dmA %4.1f°C %4s %4s".format(
-                sdf.format(Date(s.timestamp)),
-                s.levelPercent,
-                s.currentMa,
-                s.currentAvgMa,
-                s.temperatureC,
-                if (s.screenOn) "ON" else "OFF",
-                if (s.charging) "YES" else "NO"
-            ))
+            sb.appendLine(
+                "%-10s %4d%% %5dmA %5dmA %4.1f°C %4s %4s".format(
+                    sdf.format(Date(s.timestamp)),
+                    s.levelPercent,
+                    s.currentMa,
+                    s.currentAvgMa,
+                    s.temperatureC,
+                    if (s.screenOn) "ON" else "OFF",
+                    if (s.charging) "YES" else "NO",
+                ),
+            )
         }
         return sb.toString()
     }

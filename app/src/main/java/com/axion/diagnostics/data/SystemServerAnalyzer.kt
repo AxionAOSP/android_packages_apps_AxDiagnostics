@@ -28,7 +28,7 @@ data class ThreadInfo(
     val cpuPercent: Float,
     val userTicks: Long,
     val systemTicks: Long,
-    val service: String
+    val service: String,
 )
 
 data class BinderStats(
@@ -36,7 +36,7 @@ data class BinderStats(
     val transactionsSent: Long,
     val pendingTransactions: Int,
     val readyThreads: Int,
-    val freeAsyncSpace: Long
+    val freeAsyncSpace: Long,
 )
 
 data class SystemServerSnapshot(
@@ -49,15 +49,10 @@ data class SystemServerSnapshot(
     val binderStats: BinderStats?,
     val topServices: List<ServiceCpuUsage>,
     val cpuPressure: PsiStats,
-    val memPressure: PsiStats
+    val memPressure: PsiStats,
 )
 
-data class ServiceCpuUsage(
-    val serviceName: String,
-    val cpuPercent: Float,
-    val threadCount: Int,
-    val threads: List<ThreadInfo>
-)
+data class ServiceCpuUsage(val serviceName: String, val cpuPercent: Float, val threadCount: Int, val threads: List<ThreadInfo>)
 
 data class PsiStats(
     val someAvg10: Float,
@@ -65,7 +60,7 @@ data class PsiStats(
     val someAvg300: Float,
     val fullAvg10: Float,
     val fullAvg60: Float,
-    val fullAvg300: Float
+    val fullAvg300: Float,
 )
 
 object SystemServerAnalyzer {
@@ -78,8 +73,10 @@ object SystemServerAnalyzer {
     fun collect(): SystemServerSnapshot = synchronized(lock) {
         val ssPid = findSystemServerPid()
         if (ssPid <= 0) {
-            return SystemServerSnapshot(0, 0f, 0, 0, 0, emptyList(), null, emptyList(),
-                PsiStats(0f, 0f, 0f, 0f, 0f, 0f), PsiStats(0f, 0f, 0f, 0f, 0f, 0f))
+            return SystemServerSnapshot(
+                0, 0f, 0, 0, 0, emptyList(), null, emptyList(),
+                PsiStats(0f, 0f, 0f, 0f, 0f, 0f), PsiStats(0f, 0f, 0f, 0f, 0f, 0f),
+            )
         }
 
         val systemTotal = readSystemTotalTicks()
@@ -117,8 +114,8 @@ object SystemServerAnalyzer {
                     cpuPercent = cpuPercent,
                     userTicks = threadStat.utime,
                     systemTicks = threadStat.stime,
-                    service = service
-                )
+                    service = service,
+                ),
             )
         }
 
@@ -136,7 +133,7 @@ object SystemServerAnalyzer {
                     serviceName = service,
                     cpuPercent = threads.sumOf { it.cpuPercent.toDouble() }.toFloat(),
                     threadCount = threads.size,
-                    threads = threads.sortedByDescending { it.cpuPercent }
+                    threads = threads.sortedByDescending { it.cpuPercent },
                 )
             }
             .sortedByDescending { it.cpuPercent }
@@ -159,7 +156,7 @@ object SystemServerAnalyzer {
             binderStats = binderStats,
             topServices = serviceGroups,
             cpuPressure = cpuPressure,
-            memPressure = memPressure
+            memPressure = memPressure,
         )
     }
 
@@ -183,12 +180,7 @@ object SystemServerAnalyzer {
         return 0
     }
 
-    private data class ThreadStat(
-        val name: String,
-        val state: String,
-        val utime: Long,
-        val stime: Long
-    )
+    private data class ThreadStat(val name: String, val state: String, val utime: Long, val stime: Long)
 
     private fun readThreadStat(tidDir: File): ThreadStat? {
         val statLine = runCatching { File(tidDir, "stat").readText() }.getOrNull() ?: return null
@@ -204,7 +196,7 @@ object SystemServerAnalyzer {
             name = name,
             state = rest[0],
             utime = rest[11].toLongOrNull() ?: 0L,
-            stime = rest[12].toLongOrNull() ?: 0L
+            stime = rest[12].toLongOrNull() ?: 0L,
         )
     }
 
@@ -275,6 +267,7 @@ object SystemServerAnalyzer {
                     line.contains("BC_TRANSACTION:") -> {
                         txnSent = line.lastLong()
                     }
+
                     line.contains("BR_TRANSACTION:") -> {
                         txnRecv = line.lastLong()
                     }
@@ -293,9 +286,11 @@ object SystemServerAnalyzer {
                         line.contains("pending transactions:") -> {
                             pendingTxn = line.lastInt()
                         }
+
                         line.contains("ready threads") -> {
                             readyThreads = line.lastInt()
                         }
+
                         line.contains("free async space") -> {
                             freeAsync = line.lastLong()
                         }
@@ -307,16 +302,19 @@ object SystemServerAnalyzer {
         return BinderStats(txnRecv, txnSent, pendingTxn, readyThreads, freeAsync)
     }
 
-    private fun String.lastLong(): Long =
-        trim().split("\\s+".toRegex()).lastOrNull()?.toLongOrNull() ?: 0L
+    private fun String.lastLong(): Long = trim().split("\\s+".toRegex()).lastOrNull()?.toLongOrNull() ?: 0L
 
     private fun String.lastInt(): Int = lastLong().toInt()
 
     private fun readPsi(path: String): PsiStats {
         val file = File(path)
         if (!file.exists()) return PsiStats(0f, 0f, 0f, 0f, 0f, 0f)
-        var someAvg10 = 0f; var someAvg60 = 0f; var someAvg300 = 0f
-        var fullAvg10 = 0f; var fullAvg60 = 0f; var fullAvg300 = 0f
+        var someAvg10 = 0f
+        var someAvg60 = 0f
+        var someAvg300 = 0f
+        var fullAvg10 = 0f
+        var fullAvg60 = 0f
+        var fullAvg300 = 0f
         runCatching {
             file.forEachLine { line ->
                 val avgs = Regex("avg10=(\\S+) avg60=(\\S+) avg300=(\\S+)").find(line)
@@ -325,11 +323,21 @@ object SystemServerAnalyzer {
                     val a60 = avgs.groupValues[2].toFloatOrNull() ?: 0f
                     val a300 = avgs.groupValues[3].toFloatOrNull() ?: 0f
                     if (line.startsWith(
-                            "some"
-                        )) { someAvg10 = a10; someAvg60 = a60; someAvg300 = a300 }
+                            "some",
+                        )
+                    ) {
+                        someAvg10 = a10
+                        someAvg60 = a60
+                        someAvg300 = a300
+                    }
                     if (line.startsWith(
-                            "full"
-                        )) { fullAvg10 = a10; fullAvg60 = a60; fullAvg300 = a300 }
+                            "full",
+                        )
+                    ) {
+                        fullAvg10 = a10
+                        fullAvg60 = a60
+                        fullAvg300 = a300
+                    }
                 }
             }
         }
@@ -353,27 +361,31 @@ object SystemServerAnalyzer {
         sb.appendLine("PID: ${snapshot.pid}")
         sb.appendLine("Total CPU: %.1f%%".format(snapshot.totalCpuPercent))
         sb.appendLine(
-            "RSS: ${snapshot.totalRssKb / 1024} MB | PSS: ${snapshot.totalPssKb / 1024} MB"
+            "RSS: ${snapshot.totalRssKb / 1024} MB | PSS: ${snapshot.totalPssKb / 1024} MB",
         )
         sb.appendLine("Threads: ${snapshot.totalThreads}")
         sb.appendLine()
 
-        sb.appendLine("CPU Pressure: some=%.1f/%.1f/%.1f%% full=%.1f/%.1f/%.1f%%".format(
-            snapshot.cpuPressure.someAvg10,
-            snapshot.cpuPressure.someAvg60,
-            snapshot.cpuPressure.someAvg300,
-            snapshot.cpuPressure.fullAvg10,
-            snapshot.cpuPressure.fullAvg60,
-            snapshot.cpuPressure.fullAvg300
-        ))
-        sb.appendLine("Mem Pressure: some=%.1f/%.1f/%.1f%% full=%.1f/%.1f/%.1f%%".format(
-            snapshot.memPressure.someAvg10,
-            snapshot.memPressure.someAvg60,
-            snapshot.memPressure.someAvg300,
-            snapshot.memPressure.fullAvg10,
-            snapshot.memPressure.fullAvg60,
-            snapshot.memPressure.fullAvg300
-        ))
+        sb.appendLine(
+            "CPU Pressure: some=%.1f/%.1f/%.1f%% full=%.1f/%.1f/%.1f%%".format(
+                snapshot.cpuPressure.someAvg10,
+                snapshot.cpuPressure.someAvg60,
+                snapshot.cpuPressure.someAvg300,
+                snapshot.cpuPressure.fullAvg10,
+                snapshot.cpuPressure.fullAvg60,
+                snapshot.cpuPressure.fullAvg300,
+            ),
+        )
+        sb.appendLine(
+            "Mem Pressure: some=%.1f/%.1f/%.1f%% full=%.1f/%.1f/%.1f%%".format(
+                snapshot.memPressure.someAvg10,
+                snapshot.memPressure.someAvg60,
+                snapshot.memPressure.someAvg300,
+                snapshot.memPressure.fullAvg10,
+                snapshot.memPressure.fullAvg60,
+                snapshot.memPressure.fullAvg300,
+            ),
+        )
         sb.appendLine()
 
         sb.appendLine("SERVICE CPU BREAKDOWN:")
@@ -382,8 +394,8 @@ object SystemServerAnalyzer {
                 "  %-25s %5.1f%% (%d threads)".format(
                     svc.serviceName,
                     svc.cpuPercent,
-                    svc.threadCount
-                )
+                    svc.threadCount,
+                ),
             )
         }
         sb.appendLine()
@@ -396,18 +408,20 @@ object SystemServerAnalyzer {
                 "State",
                 "CPU%",
                 "USR+SYS",
-                "Service"
-            )
+                "Service",
+            ),
         )
         snapshot.threads.filter { it.cpuPercent > 0.1f }.take(30).forEach { t ->
-            sb.appendLine("%-6d %-25s %5s %5.1f%% %6d %-20s".format(
-                t.tid,
-                t.name.take(25),
-                t.state,
-                t.cpuPercent,
-                t.userTicks + t.systemTicks,
-                t.service
-            ))
+            sb.appendLine(
+                "%-6d %-25s %5s %5.1f%% %6d %-20s".format(
+                    t.tid,
+                    t.name.take(25),
+                    t.state,
+                    t.cpuPercent,
+                    t.userTicks + t.systemTicks,
+                    t.service,
+                ),
+            )
         }
 
         return sb.toString()

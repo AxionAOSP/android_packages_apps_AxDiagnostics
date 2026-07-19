@@ -17,9 +17,9 @@
 package com.axion.diagnostics.data
 
 import android.util.Xml
-import org.xmlpull.v1.XmlPullParser
 import java.io.File
 import java.io.FileInputStream
+import org.xmlpull.v1.XmlPullParser
 
 data class CpuClusterConfig(
     val id: String,
@@ -28,7 +28,7 @@ data class CpuClusterConfig(
     val maxNode: String?,
     val availablePath: String?,
     val governorNode: String?,
-    val governorAvailablePath: String?
+    val governorAvailablePath: String?,
 )
 
 data class GpuConfig(
@@ -36,7 +36,7 @@ data class GpuConfig(
     val currentNode: String?,
     val usageNode: String?,
     val frequencyMultiplier: Long,
-    val values: List<Int>
+    val values: List<Int>,
 )
 
 object KernelConfig {
@@ -78,7 +78,7 @@ object KernelConfig {
                         val availablePath = parser.getAttributeValue(null, "availablePath")
                         val governorNode = parser.getAttributeValue(null, "governorNode")
                         val governorAvailablePath = parser.getAttributeValue(null, "governorAvailablePath")
-                        
+
                         if (id.isNotEmpty()) {
                             clusters.add(
                                 CpuClusterConfig(
@@ -88,8 +88,8 @@ object KernelConfig {
                                     maxNode = maxNode,
                                     availablePath = availablePath,
                                     governorNode = governorNode,
-                                    governorAvailablePath = governorAvailablePath
-                                )
+                                    governorAvailablePath = governorAvailablePath,
+                                ),
                             )
                         }
                     }
@@ -122,7 +122,7 @@ object KernelConfig {
                         usageNode = parser.getAttributeValue(null, "usageNode")
                         val multStr = parser.getAttributeValue(null, "frequencyMultiplier")
                         multiplier = multStr?.toLongOrNull() ?: 1L
-                        
+
                         val valStr = parser.getAttributeValue(null, "values")
                         values = valStr?.split(",")
                             ?.mapNotNull { it.trim().toLongOrNull() }

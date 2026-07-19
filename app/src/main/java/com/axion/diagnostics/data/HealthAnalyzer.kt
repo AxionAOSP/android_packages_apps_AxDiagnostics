@@ -22,13 +22,7 @@ import com.axion.diagnostics.util.formatBytes
 
 enum class InsightSeverity { OK, INFO, WARN, CRITICAL }
 
-data class HealthInsight(
-    val category: String,
-    val severity: InsightSeverity,
-    val title: String,
-    val detail: String,
-    val metric: String
-)
+data class HealthInsight(val category: String, val severity: InsightSeverity, val title: String, val detail: String, val metric: String)
 
 data class HealthReport(
     val overallScore: Int,
@@ -44,7 +38,7 @@ data class HealthReport(
     val storageStatus: String,
     val storageUsage: Float,
     val batteryLevel: Int,
-    val batteryStatus: String
+    val batteryStatus: String,
 )
 
 object HealthAnalyzer {
@@ -124,12 +118,12 @@ object HealthAnalyzer {
                 context.getString(
                     R.string.health_storage_status,
                     formatBytes(it.availableBytes),
-                    it.usedPercent
+                    it.usedPercent,
                 )
             } ?: context.getString(R.string.common_unavailable),
             storageUsage = dataVolume?.usedPercent ?: 0f,
             batteryLevel = battery.levelPercent,
-            batteryStatus = battery.status
+            batteryStatus = battery.status,
         )
     }
 
@@ -141,21 +135,22 @@ object HealthAnalyzer {
                     InsightSeverity.CRITICAL,
                     "CPU overloaded",
                     "Total CPU at %.0f%%. Check top processes for throttling and drain.".format(
-                        cpu.totalUsage
+                        cpu.totalUsage,
                     ),
-                    "%.0f%%".format(cpu.totalUsage)
-                )
+                    "%.0f%%".format(cpu.totalUsage),
+                ),
             )
+
             cpu.totalUsage > 50f -> insights.add(
                 HealthInsight(
                     "CPU",
                     InsightSeverity.WARN,
                     "High CPU usage",
                     "Total CPU at %.0f%% — something is working hard. Check if expected.".format(
-                        cpu.totalUsage
+                        cpu.totalUsage,
                     ),
-                    "%.0f%%".format(cpu.totalUsage)
-                )
+                    "%.0f%%".format(cpu.totalUsage),
+                ),
             )
         }
 
@@ -166,10 +161,10 @@ object HealthAnalyzer {
                     InsightSeverity.WARN,
                     "High IO wait",
                     "CPU spending %.0f%% waiting on I/O — storage may be slow or thrashing.".format(
-                        cpu.iowaitPercent
+                        cpu.iowaitPercent,
                     ),
-                    "%.0f%%".format(cpu.iowaitPercent)
-                )
+                    "%.0f%%".format(cpu.iowaitPercent),
+                ),
             )
         }
 
@@ -181,10 +176,10 @@ object HealthAnalyzer {
                     "System overloaded",
                     "Load average %.1f is %dx core count — processes are queuing.".format(
                         cpu.loadAvg1,
-                        (cpu.loadAvg1 / cpu.cores.size).toInt()
+                        (cpu.loadAvg1 / cpu.cores.size).toInt(),
                     ),
-                    "%.1f".format(cpu.loadAvg1)
-                )
+                    "%.1f".format(cpu.loadAvg1),
+                ),
             )
         }
 
@@ -195,10 +190,10 @@ object HealthAnalyzer {
                     InsightSeverity.WARN,
                     "Blocked processes",
                     "%d processes blocked in uninterruptible sleep. Check I/O and locks.".format(
-                        cpu.procsBlocked
+                        cpu.procsBlocked,
                     ),
-                    "${cpu.procsBlocked}"
-                )
+                    "${cpu.procsBlocked}",
+                ),
             )
         }
     }
@@ -211,17 +206,18 @@ object HealthAnalyzer {
                     InsightSeverity.CRITICAL,
                     "Memory critical",
                     "Only ${mem.availableKb / 1024}MB free. Expect app kills, jank, and restarts.",
-                    "%.0f%% used".format(mem.usedPercent)
-                )
+                    "%.0f%% used".format(mem.usedPercent),
+                ),
             )
+
             mem.usedPercent > 85f -> insights.add(
                 HealthInsight(
                     "Memory",
                     InsightSeverity.WARN,
                     "Memory pressure",
                     "${mem.availableKb / 1024}MB available. Background apps may be killed.",
-                    "%.0f%% used".format(mem.usedPercent)
-                )
+                    "%.0f%% used".format(mem.usedPercent),
+                ),
             )
         }
 
@@ -232,10 +228,10 @@ object HealthAnalyzer {
                     InsightSeverity.WARN,
                     "High swap usage",
                     "Swap %.0f%% full — causes slowdowns from swap I/O overhead.".format(
-                        mem.swapUsedPercent
+                        mem.swapUsedPercent,
                     ),
-                    "%.0f%%".format(mem.swapUsedPercent)
-                )
+                    "%.0f%%".format(mem.swapUsedPercent),
+                ),
             )
         }
 
@@ -246,8 +242,8 @@ object HealthAnalyzer {
                     InsightSeverity.INFO,
                     "Large dirty pages",
                     "${mem.dirtyKb / 1024}MB of dirty pages pending writeback.",
-                    "${mem.dirtyKb / 1024}MB"
-                )
+                    "${mem.dirtyKb / 1024}MB",
+                ),
             )
         }
     }
@@ -262,17 +258,18 @@ object HealthAnalyzer {
                         InsightSeverity.CRITICAL,
                         "Extreme power draw",
                         "Drawing ${absCurrent}mA. Check for runaway processes, GPS, or camera.",
-                        "${absCurrent}mA"
-                    )
+                        "${absCurrent}mA",
+                    ),
                 )
+
                 absCurrent > 400 -> insights.add(
                     HealthInsight(
                         "Battery",
                         InsightSeverity.WARN,
                         "High power draw",
                         "Drawing ${absCurrent}mA. Higher than typical idle/light use.",
-                        "${absCurrent}mA"
-                    )
+                        "${absCurrent}mA",
+                    ),
                 )
             }
         }
@@ -284,21 +281,22 @@ object HealthAnalyzer {
                     InsightSeverity.CRITICAL,
                     "Battery overheating",
                     "Battery at %.1f°C. Risk of thermal shutdown and battery wear.".format(
-                        battery.temperatureC
+                        battery.temperatureC,
                     ),
-                    "%.1f°C".format(battery.temperatureC)
-                )
+                    "%.1f°C".format(battery.temperatureC),
+                ),
             )
+
             battery.temperatureC > 38f -> insights.add(
                 HealthInsight(
                     "Battery",
                     InsightSeverity.WARN,
                     "Battery warm",
                     "Battery at %.1f°C — above normal operating range.".format(
-                        battery.temperatureC
+                        battery.temperatureC,
                     ),
-                    "%.1f°C".format(battery.temperatureC)
-                )
+                    "%.1f°C".format(battery.temperatureC),
+                ),
             )
         }
 
@@ -312,10 +310,10 @@ object HealthAnalyzer {
                         InsightSeverity.CRITICAL,
                         "Abnormal idle drain",
                         "Screen-off drain %.1f%%/hr. Check background app activity.".format(
-                            screenOffDrain
+                            screenOffDrain,
                         ),
-                        "%.1f%%/hr".format(screenOffDrain)
-                    )
+                        "%.1f%%/hr".format(screenOffDrain),
+                    ),
                 )
             }
 
@@ -327,10 +325,10 @@ object HealthAnalyzer {
                         InsightSeverity.WARN,
                         "Heavy screen-on drain",
                         "Screen-on drain %.1f%%/hr. Check workload and display brightness.".format(
-                            screenOnDrain
+                            screenOnDrain,
                         ),
-                        "%.1f%%/hr".format(screenOnDrain)
-                    )
+                        "%.1f%%/hr".format(screenOnDrain),
+                    ),
                 )
             }
         }
@@ -345,21 +343,22 @@ object HealthAnalyzer {
                     InsightSeverity.CRITICAL,
                     "Thermal emergency",
                     "${thermal.hottest} at %.0f°C. CPU/GPU throttling is likely.".format(
-                        thermal.maxTemperature
+                        thermal.maxTemperature,
                     ),
-                    "%.0f°C".format(thermal.maxTemperature)
-                )
+                    "%.0f°C".format(thermal.maxTemperature),
+                ),
             )
+
             thermal.maxTemperature > 45f -> insights.add(
                 HealthInsight(
                     "Thermal",
                     InsightSeverity.WARN,
                     "Running hot",
                     "${thermal.hottest} at %.0f°C — thermal throttling may be active.".format(
-                        thermal.maxTemperature
+                        thermal.maxTemperature,
                     ),
-                    "%.0f°C".format(thermal.maxTemperature)
-                )
+                    "%.0f°C".format(thermal.maxTemperature),
+                ),
             )
         }
 
@@ -370,8 +369,8 @@ object HealthAnalyzer {
                     InsightSeverity.WARN,
                     "Active cooling",
                     "$activeCooling cooling devices active.",
-                    "$activeCooling devices"
-                )
+                    "$activeCooling devices",
+                ),
             )
         }
     }
@@ -384,21 +383,22 @@ object HealthAnalyzer {
                     InsightSeverity.CRITICAL,
                     "I/O bottleneck",
                     "I/O pressure at %.0f%%. Storage is congested and apps may stutter.".format(
-                        io.ioPressure.someAvg10
+                        io.ioPressure.someAvg10,
                     ),
-                    "%.0f%%".format(io.ioPressure.someAvg10)
-                )
+                    "%.0f%%".format(io.ioPressure.someAvg10),
+                ),
             )
+
             io.ioPressure.someAvg10 > 20f -> insights.add(
                 HealthInsight(
                     "I/O",
                     InsightSeverity.WARN,
                     "I/O pressure",
                     "I/O pressure at %.0f%% — some processes waiting on storage.".format(
-                        io.ioPressure.someAvg10
+                        io.ioPressure.someAvg10,
                     ),
-                    "%.0f%%".format(io.ioPressure.someAvg10)
-                )
+                    "%.0f%%".format(io.ioPressure.someAvg10),
+                ),
             )
         }
 
@@ -410,19 +410,15 @@ object HealthAnalyzer {
                     "Full I/O stall",
                     "Full I/O stall at %.0f%%. All tasks blocked on storage %.0f%% of time.".format(
                         io.ioPressure.fullAvg10,
-                        io.ioPressure.fullAvg10
+                        io.ioPressure.fullAvg10,
                     ),
-                    "%.0f%%".format(io.ioPressure.fullAvg10)
-                )
+                    "%.0f%%".format(io.ioPressure.fullAvg10),
+                ),
             )
         }
     }
 
-    private fun analyzeStorage(
-        context: Context,
-        storage: StorageSnapshot,
-        insights: MutableList<HealthInsight>
-    ) {
+    private fun analyzeStorage(context: Context, storage: StorageSnapshot, insights: MutableList<HealthInsight>) {
         val data = storage.dataVolume ?: return
         when {
             data.availableBytes < 512L * 1024L * 1024L || data.availablePercent < 3f -> {
@@ -434,12 +430,13 @@ object HealthAnalyzer {
                         context.getString(
                             R.string.health_storage_critical_detail,
                             formatBytes(data.availableBytes),
-                            data.availablePercent
+                            data.availablePercent,
                         ),
-                        formatBytes(data.availableBytes)
-                    )
+                        formatBytes(data.availableBytes),
+                    ),
                 )
             }
+
             data.availableBytes < 2L * 1024L * 1024L * 1024L || data.availablePercent < 10f -> {
                 insights.add(
                     HealthInsight(
@@ -449,19 +446,16 @@ object HealthAnalyzer {
                         context.getString(
                             R.string.health_storage_warn_detail,
                             formatBytes(data.availableBytes),
-                            data.availablePercent
+                            data.availablePercent,
                         ),
-                        formatBytes(data.availableBytes)
-                    )
+                        formatBytes(data.availableBytes),
+                    ),
                 )
             }
         }
     }
 
-    private fun analyzeProcesses(
-        processes: List<ProcessSnapshot>,
-        insights: MutableList<HealthInsight>
-    ) {
+    private fun analyzeProcesses(processes: List<ProcessSnapshot>, insights: MutableList<HealthInsight>) {
         val cpuHogs = processes.filter { it.cpuPercent > 30f }
         cpuHogs.forEach { proc ->
             insights.add(
@@ -470,10 +464,10 @@ object HealthAnalyzer {
                     InsightSeverity.CRITICAL,
                     "CPU hog: ${proc.name}",
                     "PID ${proc.pid} consuming %.0f%% CPU. Check whether it is stuck.".format(
-                        proc.cpuPercent
+                        proc.cpuPercent,
                     ),
-                    "%.0f%%".format(proc.cpuPercent)
-                )
+                    "%.0f%%".format(proc.cpuPercent),
+                ),
             )
         }
 
@@ -485,8 +479,8 @@ object HealthAnalyzer {
                     InsightSeverity.WARN,
                     "Memory hog: ${proc.name}",
                     "PID ${proc.pid} using ${proc.rssKb / 1024}MB RSS — large memory footprint.",
-                    "${proc.rssKb / 1024}MB"
-                )
+                    "${proc.rssKb / 1024}MB",
+                ),
             )
         }
     }
@@ -500,8 +494,8 @@ object HealthAnalyzer {
                     InsightSeverity.WARN,
                     "GPU saturated",
                     "GPU at ${gpu.busyPercent}% load @ ${gpu.frequencyMhz}MHz. Expect frame drops.",
-                    "${gpu.busyPercent}%"
-                )
+                    "${gpu.busyPercent}%",
+                ),
             )
         }
     }

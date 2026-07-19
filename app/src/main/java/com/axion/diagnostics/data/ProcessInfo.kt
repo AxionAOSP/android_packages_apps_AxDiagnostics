@@ -26,7 +26,7 @@ data class ProcessSnapshot(
     val rssKb: Long,
     val threads: Int,
     val uid: Int,
-    val oomAdj: Int
+    val oomAdj: Int,
 )
 
 object ProcessCollector {
@@ -74,8 +74,8 @@ object ProcessCollector {
                         rssKb = status.rssKb,
                         threads = stat.numThreads,
                         uid = status.uid,
-                        oomAdj = oomAdj
-                    )
+                        oomAdj = oomAdj,
+                    ),
                 )
             }
 
@@ -86,18 +86,9 @@ object ProcessCollector {
         }
     }
 
-    private data class ProcStat(
-        val comm: String,
-        val state: String,
-        val utime: Long,
-        val stime: Long,
-        val numThreads: Int
-    )
+    private data class ProcStat(val comm: String, val state: String, val utime: Long, val stime: Long, val numThreads: Int)
 
-    private data class ProcStatus(
-        val uid: Int,
-        val rssKb: Long
-    )
+    private data class ProcStatus(val uid: Int, val rssKb: Long)
 
     private fun readProcStat(pidDir: File): ProcStat? {
         val line = runCatching { File(pidDir, "stat").readText() }.getOrNull() ?: return null
@@ -114,7 +105,7 @@ object ProcessCollector {
             state = rest[0],
             utime = rest[11].toLongOrNull() ?: 0L,
             stime = rest[12].toLongOrNull() ?: 0L,
-            numThreads = rest[17].toIntOrNull() ?: 1
+            numThreads = rest[17].toIntOrNull() ?: 1,
         )
     }
 
@@ -127,6 +118,7 @@ object ProcessCollector {
                     line.startsWith("Uid:") -> {
                         uid = line.split("\\s+".toRegex()).getOrNull(1)?.toIntOrNull() ?: 0
                     }
+
                     line.startsWith("VmRSS:") -> {
                         rssKb = line.split("\\s+".toRegex()).getOrNull(1)?.toLongOrNull() ?: 0L
                     }

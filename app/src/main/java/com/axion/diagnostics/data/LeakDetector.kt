@@ -23,13 +23,7 @@ import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-data class MemorySample(
-    val timestamp: Long,
-    val rssKb: Long,
-    val pssKb: Long,
-    val vssKb: Long,
-    val swapKb: Long
-)
+data class MemorySample(val timestamp: Long, val rssKb: Long, val pssKb: Long, val vssKb: Long, val swapKb: Long)
 
 data class LeakCandidate(
     val pid: Int,
@@ -44,11 +38,14 @@ data class LeakCandidate(
     val isLeaking: Boolean,
     val confidence: LeakConfidence,
     val samples: List<MemorySample>,
-    val monotonic: Boolean
+    val monotonic: Boolean,
 )
 
 enum class LeakConfidence {
-    LOW, MEDIUM, HIGH, CERTAIN
+    LOW,
+    MEDIUM,
+    HIGH,
+    CERTAIN,
 }
 
 object LeakDetector {
@@ -92,8 +89,8 @@ object LeakDetector {
                     rssKb = status.rssKb,
                     pssKb = readPss(pid),
                     vssKb = status.vssKb,
-                    swapKb = status.swapKb
-                )
+                    swapKb = status.swapKb,
+                ),
             )
             if (samples.size > MAX_SAMPLES) samples.removeAt(0)
 
@@ -153,15 +150,15 @@ object LeakDetector {
                     isLeaking = isLeaking,
                     confidence = confidence,
                     samples = samples.toList(),
-                    monotonic = monotonic
-                )
+                    monotonic = monotonic,
+                ),
             )
         }
 
         return candidates.sortedWith(
             compareByDescending<LeakCandidate> { it.isLeaking }
                 .thenByDescending { it.confidence }
-                .thenByDescending { it.growthKb }
+                .thenByDescending { it.growthKb },
         )
     }
 
@@ -179,12 +176,7 @@ object LeakDetector {
         return increasing.toFloat() / (avgPerWindow.size - 1) >= 0.75f
     }
 
-    private fun assessConfidence(
-        samples: List<MemorySample>,
-        growthPercent: Float,
-        monotonic: Boolean,
-        growthKb: Long
-    ): LeakConfidence {
+    private fun assessConfidence(samples: List<MemorySample>, growthPercent: Float, monotonic: Boolean, growthKb: Long): LeakConfidence {
         var score = 0
         if (monotonic) score += 3
         if (growthPercent > 50f) score += 3
@@ -228,13 +220,7 @@ object LeakDetector {
         return if (denom > 0) (sumXY / denom).coerceIn(0.0, 1.0) else 0.0
     }
 
-    private data class ProcStatus(
-        val name: String,
-        val uid: Int,
-        val rssKb: Long,
-        val vssKb: Long,
-        val swapKb: Long
-    )
+    private data class ProcStatus(val name: String, val uid: Int, val rssKb: Long, val vssKb: Long, val swapKb: Long)
 
     private fun readStatus(pidDir: File): ProcStatus? {
         var name = ""
@@ -289,14 +275,18 @@ object LeakDetector {
         }
 
         sb.appendLine("ALL TRACKED PROCESSES (by growth):")
-        sb.appendLine("%-20s %6s %10s %10s %10s %8s %8s %8s".format(
-            "Process", "PID", "Start", "Current", "Growth", "%", "Rate/m", "Conf"
-        ))
+        sb.appendLine(
+            "%-20s %6s %10s %10s %10s %8s %8s %8s".format(
+                "Process", "PID", "Start", "Current", "Growth", "%", "Rate/m", "Conf",
+            ),
+        )
         candidates.filter { it.growthKb > 0 }.forEach { c ->
-            sb.appendLine("%-20s %6d %8dKB %8dKB %+8dKB %+6.1f%% %6.0fKB %8s".format(
-                c.name.take(20), c.pid, c.startRssKb, c.currentRssKb,
-                c.growthKb, c.growthPercent, c.growthRateKbPerMin, c.confidence
-            ))
+            sb.appendLine(
+                "%-20s %6d %8dKB %8dKB %+8dKB %+6.1f%% %6.0fKB %8s".format(
+                    c.name.take(20), c.pid, c.startRssKb, c.currentRssKb,
+                    c.growthKb, c.growthPercent, c.growthRateKbPerMin, c.confidence,
+                ),
+            )
         }
 
         return sb.toString()

@@ -75,7 +75,7 @@ fun GpuScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         gpu?.let { g ->
             if (g.available) {
@@ -83,13 +83,13 @@ fun GpuScreen(modifier: Modifier = Modifier) {
                     title = stringResource(R.string.gpu_usage),
                     primary = "${g.busyPercent}%",
                     secondary = "${g.frequencyMhz} MHz",
-                    percent = g.busyPercent.toFloat()
+                    percent = g.busyPercent.toFloat(),
                 )
 
                 StatCard(stringResource(R.string.gpu_usage_history)) {
                     SparklineChart(
                         values = usageHistory,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
 
@@ -106,7 +106,7 @@ fun GpuScreen(modifier: Modifier = Modifier) {
                             g.availableFrequencies.chunked(3).forEach { chunk ->
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     chunk.forEach { freq ->
                                         MonoText("$freq MHz", modifier = Modifier.weight(1f))
@@ -121,7 +121,7 @@ fun GpuScreen(modifier: Modifier = Modifier) {
                     Text(
                         text = stringResource(R.string.gpu_unsupported_desc),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

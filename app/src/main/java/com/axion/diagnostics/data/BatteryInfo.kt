@@ -39,7 +39,7 @@ data class BatterySnapshot(
     val energyCounterNwh: Long,
     val capacityUah: Int,
     val cycleCount: Int,
-    val drainRatePerHour: Float
+    val drainRatePerHour: Float,
 ) {
     val levelPercent get() = if (scale > 0) level * 100 / scale else 0
 }
@@ -53,7 +53,7 @@ object BatteryCollector {
     fun collect(context: Context): BatterySnapshot {
         val batteryIntent = context.registerReceiver(
             null,
-            IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            IntentFilter(Intent.ACTION_BATTERY_CHANGED),
         )
         val bm = context.getSystemService(BatteryManager::class.java)
 
@@ -105,14 +105,14 @@ object BatteryCollector {
             energyCounterNwh = energyCounter,
             capacityUah = capacity,
             cycleCount = cycleCount,
-            drainRatePerHour = drainRate
+            drainRatePerHour = drainRate,
         )
     }
 
     private fun readIntFromPower(name: String): Int? {
         val paths = listOf(
             "/sys/class/power_supply/battery/$name",
-            "/sys/class/power_supply/Battery/$name"
+            "/sys/class/power_supply/Battery/$name",
         )
         for (path in paths) {
             val file = File(path)

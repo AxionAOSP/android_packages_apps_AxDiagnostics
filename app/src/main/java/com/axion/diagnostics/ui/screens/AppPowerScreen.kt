@@ -76,7 +76,7 @@ fun AppPowerScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         val activeApps = apps.filter { it.cpuPercent > 0.1f || it.rssKb > 10_000 }
 
@@ -103,28 +103,28 @@ fun AppPowerScreen(modifier: Modifier = Modifier) {
         StatCard(stringResource(R.string.apps_all)) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     stringResource(R.string.col_app),
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 Text(stringResource(R.string.col_type), style = MaterialTheme.typography.labelSmall)
                 Text(
                     stringResource(R.string.col_cpu_percent),
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
                 )
                 Text(
                     stringResource(R.string.col_mem),
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
                 )
                 Text(
                     stringResource(R.string.col_thr),
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
             HorizontalDivider()
@@ -143,13 +143,13 @@ fun AppPowerScreen(modifier: Modifier = Modifier) {
                 risingCpu.forEach { app ->
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText(app.label.take(20))
                         MonoText("%.1f%%".format(app.cpuPercent))
                         MonoText(
                             "trend: %+.0f%%".format(app.cpuTrend),
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
@@ -163,13 +163,13 @@ fun AppPowerScreen(modifier: Modifier = Modifier) {
                 risingMem.forEach { app ->
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText(app.label.take(20))
                         MonoText(formatKb(app.rssKb))
                         MonoText(
                             "trend: %+.0f%%".format(app.rssTrend),
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
@@ -186,13 +186,13 @@ private fun AppSummaryRow(app: AppUsage, expandedUid: Int, onToggle: (Int) -> Un
             .clickable { onToggle(if (expandedUid == app.uid) -1 else app.uid) }
             .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 app.label.take(22),
                 style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
             MonoText(app.packageName.take(28))
         }
@@ -214,14 +214,14 @@ private fun TypeBadge(type: ProcessType) {
     Surface(
         color = color.copy(alpha = 0.15f),
         shape = RoundedCornerShape(4.dp),
-        modifier = Modifier.padding(horizontal = 4.dp)
+        modifier = Modifier.padding(horizontal = 4.dp),
     ) {
         Text(
             text,
             style = MaterialTheme.typography.labelSmall,
             color = color,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp),
         )
     }
 }
@@ -231,7 +231,7 @@ private fun AppFullDetail(app: AppUsage) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceBright
+        color = MaterialTheme.colorScheme.surfaceBright,
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             val cpuTrendColor = if (app.cpuTrend > 20f) {
@@ -254,12 +254,12 @@ private fun AppFullDetail(app: AppUsage) {
             StatRow(
                 stringResource(R.string.label_cpu_trend),
                 "%+.1f%%".format(app.cpuTrend),
-                cpuTrendColor
+                cpuTrendColor,
             )
             StatRow(
                 stringResource(R.string.label_rss_trend),
                 "%+.1f%%".format(app.rssTrend),
-                rssTrendColor
+                rssTrendColor,
             )
 
             if (app.processes.isNotEmpty()) {
@@ -270,11 +270,11 @@ private fun AppFullDetail(app: AppUsage) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
                             ) {
                                 TypeBadge(proc.type)
                                 MonoText("${proc.name.take(18)} (${proc.pid})")
@@ -282,7 +282,7 @@ private fun AppFullDetail(app: AppUsage) {
                             MonoText("%.1f%%".format(proc.cpuPercent))
                             MonoText(
                                 formatKb(proc.rssKb),
-                                modifier = Modifier.padding(start = 4.dp)
+                                modifier = Modifier.padding(start = 4.dp),
                             )
                             MonoText("${proc.threads}T", modifier = Modifier.padding(start = 4.dp))
                         }

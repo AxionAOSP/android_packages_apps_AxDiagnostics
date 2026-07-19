@@ -64,10 +64,10 @@ import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.formatKb
 import com.axion.diagnostics.ui.components.formatMs
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -94,13 +94,13 @@ fun LeakScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         StatCard(stringResource(R.string.leak_title)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
                     val statusColor = if (isTracking) {
@@ -116,29 +116,35 @@ fun LeakScreen(modifier: Modifier = Modifier) {
                     Text(
                         statusText,
                         style = MaterialTheme.typography.titleMedium,
-                        color = statusColor
+                        color = statusColor,
                     )
                     if (isTracking) {
                         val leaking = candidates.count { it.isLeaking }
                         Text(
                             "${candidates.size} tracked | $leaking suspected leaks | ${formatMs(
-                                elapsed
+                                elapsed,
                             )}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
                 if (isTracking) {
                     Button(
-                        onClick = { LeakDetector.stopTracking(); isTracking = false },
+                        onClick = {
+                            LeakDetector.stopTracking()
+                            isTracking = false
+                        },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
                     ) { Text(stringResource(R.string.action_stop)) }
                 } else {
                     Button(
-                        onClick = { LeakDetector.startTracking(); isTracking = true }
+                        onClick = {
+                            LeakDetector.startTracking()
+                            isTracking = true
+                        },
                     ) { Text(stringResource(R.string.action_start)) }
                 }
             }
@@ -152,7 +158,7 @@ fun LeakScreen(modifier: Modifier = Modifier) {
                         Toast.makeText(
                             context,
                             context.getString(R.string.toast_saved, path),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
                 }) { Text(stringResource(R.string.action_export_report)) }
@@ -174,36 +180,36 @@ fun LeakScreen(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { expandedPid = if (expandedPid == c.pid) -1 else c.pid }
-                            .padding(vertical = 4.dp)
+                            .padding(vertical = 4.dp),
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     "${c.name} (${c.pid})",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Medium
+                                    fontWeight = FontWeight.Medium,
                                 )
                                 MonoText(
                                     "+${formatKb(c.growthKb)} (%.1f%%) @ %.0f KB/min".format(
                                         c.growthPercent,
-                                        c.growthRateKbPerMin
-                                    )
+                                        c.growthRateKbPerMin,
+                                    ),
                                 )
                             }
                             Surface(
                                 color = confColor.copy(alpha = 0.15f),
-                                shape = RoundedCornerShape(4.dp)
+                                shape = RoundedCornerShape(4.dp),
                             ) {
                                 Text(
                                     c.confidence.name,
                                     color = confColor,
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                 )
                             }
                         }
@@ -229,7 +235,7 @@ fun LeakScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth()
                             .clickable { expandedPid = if (expandedPid == c.pid) -1 else c.pid }
                             .padding(vertical = 3.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText("${c.name.take(18)} (${c.pid})")
                         MonoText("+${formatKb(c.growthKb)}")
@@ -249,13 +255,13 @@ fun LeakScreen(modifier: Modifier = Modifier) {
                 stable.sortedBy { it.growthKb }.take(10).forEach { c ->
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText(c.name.take(20))
                         MonoText(formatKb(c.currentRssKb))
                         MonoText(
                             "${formatKb(c.growthKb)}",
-                            color = DiagnosticsColors.positive
+                            color = DiagnosticsColors.positive,
                         )
                     }
                 }
@@ -267,7 +273,7 @@ fun LeakScreen(modifier: Modifier = Modifier) {
                 Text(
                     stringResource(R.string.leak_how_to_use_body),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -279,7 +285,7 @@ private fun LeakDetailCard(candidate: LeakCandidate) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         shape = RoundedCornerShape(12.dp),
-        tonalElevation = 4.dp
+        tonalElevation = 4.dp,
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             StatRow(stringResource(R.string.col_pid), "${candidate.pid}")
@@ -289,11 +295,11 @@ private fun LeakDetailCard(candidate: LeakCandidate) {
             StatRow(stringResource(R.string.label_peak_rss), formatKb(candidate.peakRssKb))
             StatRow(
                 stringResource(R.string.label_growth),
-                "+${formatKb(candidate.growthKb)} (%.1f%%)".format(candidate.growthPercent)
+                "+${formatKb(candidate.growthKb)} (%.1f%%)".format(candidate.growthPercent),
             )
             StatRow(
                 stringResource(R.string.label_growth_rate),
-                "%.1f KB/min".format(candidate.growthRateKbPerMin)
+                "%.1f KB/min".format(candidate.growthRateKbPerMin),
             )
             val monotonic = if (candidate.monotonic) {
                 stringResource(R.string.common_yes)
@@ -302,7 +308,7 @@ private fun LeakDetailCard(candidate: LeakCandidate) {
             }
             StatRow(
                 stringResource(R.string.label_monotonic),
-                monotonic
+                monotonic,
             )
             StatRow(stringResource(R.string.label_confidence), candidate.confidence.name)
             StatRow(stringResource(R.string.label_samples), "${candidate.samples.size}")
@@ -312,11 +318,11 @@ private fun LeakDetailCard(candidate: LeakCandidate) {
                 Text(
                     stringResource(R.string.leak_rss_over_time),
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 RssGraph(
                     samples = candidate.samples.map { it.rssKb.toFloat() },
-                    modifier = Modifier.fillMaxWidth().height(80.dp).padding(top = 4.dp)
+                    modifier = Modifier.fillMaxWidth().height(80.dp).padding(top = 4.dp),
                 )
             }
         }

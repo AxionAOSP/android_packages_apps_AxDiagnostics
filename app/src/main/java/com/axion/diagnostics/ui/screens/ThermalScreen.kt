@@ -72,24 +72,24 @@ fun ThermalScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         thermal?.let { t ->
             StatCard(stringResource(R.string.thermal_summary)) {
                 StatRow(
                     stringResource(R.string.label_hottest),
                     t.hottest,
-                    severityColor(t.maxTemperature, 45f, 60f)
+                    severityColor(t.maxTemperature, 45f, 60f),
                 )
                 StatRow(
                     stringResource(R.string.label_max_temp),
                     "%.1f°C".format(t.maxTemperature),
-                    severityColor(t.maxTemperature, 45f, 60f)
+                    severityColor(t.maxTemperature, 45f, 60f),
                 )
                 val activeCount = t.coolingDevices.count { it.currentState > 0 }
                 StatRow(
                     stringResource(R.string.label_active_cooling),
-                    "$activeCount / ${t.coolingDevices.size}"
+                    "$activeCount / ${t.coolingDevices.size}",
                 )
             }
 
@@ -104,9 +104,9 @@ fun ThermalScreen(modifier: Modifier = Modifier) {
                             BarChartEntry(
                                 label = zone.type,
                                 value = zone.temperatureC,
-                                color = severityColor(zone.temperatureC, 45f, 60f)
+                                color = severityColor(zone.temperatureC, 45f, 60f),
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -116,7 +116,7 @@ fun ThermalScreen(modifier: Modifier = Modifier) {
                     val tempColor = severityColor(zone.temperatureC, 45f, 60f)
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText(zone.type.take(25))
                         MonoText("%.1f°C".format(zone.temperatureC), color = tempColor)
@@ -137,7 +137,7 @@ fun ThermalScreen(modifier: Modifier = Modifier) {
                         UsageBar(
                             label = cd.type,
                             percent = coolingPercent,
-                            detail = "${cd.currentState} / ${cd.maxState}"
+                            detail = "${cd.currentState} / ${cd.maxState}",
                         )
                     }
                 }
@@ -147,23 +147,23 @@ fun ThermalScreen(modifier: Modifier = Modifier) {
                 StatCard(stringResource(R.string.thermal_all_cooling)) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
                             stringResource(R.string.col_device),
                             style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                         Text(
                             stringResource(R.string.col_state),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                     }
                     HorizontalDivider()
                     t.coolingDevices.forEach { cd ->
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             MonoText(cd.type.take(30))
                             MonoText("${cd.currentState}/${cd.maxState}")

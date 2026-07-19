@@ -18,10 +18,10 @@ package com.axion.diagnostics.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -45,9 +45,9 @@ import com.axion.diagnostics.ui.components.SegmentLegend
 import com.axion.diagnostics.ui.components.SegmentedProgressBar
 import com.axion.diagnostics.ui.components.StatCard
 import com.axion.diagnostics.ui.components.StatRow
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import com.axion.diagnostics.util.formatBytes
 import kotlinx.coroutines.Dispatchers
-import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
@@ -71,7 +71,7 @@ fun StorageScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         storage?.let { s ->
             if (s.volumes.isNotEmpty()) {
@@ -82,17 +82,17 @@ fun StorageScreen(modifier: Modifier = Modifier) {
                             ProgressSegment(
                                 label = stringResource(R.string.label_used),
                                 percent = volume.usedPercent,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
                             ),
                             ProgressSegment(
                                 label = stringResource(R.string.label_available),
                                 percent = volume.availablePercent,
-                                color = MaterialTheme.colorScheme.surfaceVariant
-                            )
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                            ),
                         )
                         SegmentedProgressBar(
                             segments = segments,
-                            totalPercent = volume.usedPercent
+                            totalPercent = volume.usedPercent,
                         )
                         SegmentLegend(segments)
                         StatRow(
@@ -100,16 +100,16 @@ fun StorageScreen(modifier: Modifier = Modifier) {
                             stringResource(
                                 R.string.storage_usage_detail,
                                 volume.usedPercent,
-                                formatBytes(volume.availableBytes)
-                            )
+                                formatBytes(volume.availableBytes),
+                            ),
                         )
                         StatRow(
                             stringResource(R.string.label_total),
-                            formatBytes(volume.totalBytes)
+                            formatBytes(volume.totalBytes),
                         )
                         StatRow(
                             stringResource(R.string.label_available),
-                            formatBytes(volume.availableBytes)
+                            formatBytes(volume.availableBytes),
                         )
                         StatRow(stringResource(R.string.label_path), volume.path)
                     }
@@ -129,7 +129,7 @@ fun StorageScreen(modifier: Modifier = Modifier) {
                     Text(
                         text = stringResource(R.string.more_storage_health_warning),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

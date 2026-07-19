@@ -25,7 +25,7 @@ data class GpuSnapshot(
     val busyPercent: Int,
     val governor: String,
     val availableFrequencies: List<Int>,
-    val available: Boolean
+    val available: Boolean,
 )
 
 object GpuCollector {
@@ -77,7 +77,7 @@ object GpuCollector {
                         busyPercent = busy,
                         governor = governor,
                         availableFrequencies = config.values,
-                        available = true
+                        available = true,
                     )
                 }
             }

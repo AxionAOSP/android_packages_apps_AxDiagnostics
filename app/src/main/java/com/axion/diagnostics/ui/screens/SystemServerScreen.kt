@@ -55,9 +55,9 @@ import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.UsageBar
 import com.axion.diagnostics.ui.components.formatKb
 import com.axion.diagnostics.ui.components.severityColor
+import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import com.axion.diagnostics.util.LaunchedActiveEffect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -80,7 +80,7 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         snapshot?.let { ss ->
             if (ss.pid <= 0) {
@@ -88,7 +88,7 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                     Text(
                         stringResource(R.string.ss_not_found),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
                     )
                 }
                 return@let
@@ -107,13 +107,13 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                             ReportFiles.write(
                                 context,
                                 "system_server",
-                                SystemServerAnalyzer.exportReport()
+                                SystemServerAnalyzer.exportReport(),
                             )
                         }
                         Toast.makeText(
                             context,
                             context.getString(R.string.toast_saved, path),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
                 }) { Text(stringResource(R.string.action_export_report)) }
@@ -124,31 +124,31 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                 StatRow(
                     stringResource(R.string.label_some_10),
                     "%.1f%%".format(ss.cpuPressure.someAvg10),
-                    severityColor(ss.cpuPressure.someAvg10, 20f, 50f)
+                    severityColor(ss.cpuPressure.someAvg10, 20f, 50f),
                 )
                 StatRow(
                     stringResource(R.string.label_some_60),
-                    "%.1f%%".format(ss.cpuPressure.someAvg60)
+                    "%.1f%%".format(ss.cpuPressure.someAvg60),
                 )
                 StatRow(
                     stringResource(R.string.label_some_300),
-                    "%.1f%%".format(ss.cpuPressure.someAvg300)
+                    "%.1f%%".format(ss.cpuPressure.someAvg300),
                 )
 
                 SectionHeader(stringResource(R.string.section_mem_pressure))
                 StatRow(
                     stringResource(R.string.label_some_10),
                     "%.1f%%".format(ss.memPressure.someAvg10),
-                    severityColor(ss.memPressure.someAvg10, 10f, 30f)
+                    severityColor(ss.memPressure.someAvg10, 10f, 30f),
                 )
                 StatRow(
                     stringResource(R.string.label_some_60),
-                    "%.1f%%".format(ss.memPressure.someAvg60)
+                    "%.1f%%".format(ss.memPressure.someAvg60),
                 )
                 StatRow(
                     stringResource(R.string.label_full_10),
                     "%.1f%%".format(ss.memPressure.fullAvg10),
-                    severityColor(ss.memPressure.fullAvg10, 5f, 20f)
+                    severityColor(ss.memPressure.fullAvg10, 5f, 20f),
                 )
             }
 
@@ -156,18 +156,18 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                 StatCard(stringResource(R.string.ss_binder)) {
                     StatRow(
                         stringResource(R.string.label_transactions_sent),
-                        "%,d".format(binder.transactionsSent)
+                        "%,d".format(binder.transactionsSent),
                     )
                     StatRow(
                         stringResource(R.string.label_transactions_received),
-                        "%,d".format(binder.transactionsReceived)
+                        "%,d".format(binder.transactionsReceived),
                     )
                     StatRow(stringResource(R.string.label_pending), "${binder.pendingTransactions}")
                     StatRow(stringResource(R.string.label_ready_threads), "${binder.readyThreads}")
                     if (binder.freeAsyncSpace > 0) {
                         StatRow(
                             stringResource(R.string.label_free_async),
-                            "${binder.freeAsyncSpace / 1024} KB"
+                            "${binder.freeAsyncSpace / 1024} KB",
                         )
                     }
                 }
@@ -180,7 +180,7 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                         stringResource(R.string.ss_service_breakdown_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp),
                     )
 
                     activeServices.forEach { svc ->
@@ -193,21 +193,21 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                                     } else {
                                         svc.serviceName
                                     }
-                                }
+                                },
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(
                                     svc.serviceName,
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
                                 )
                                 MonoText(
                                     "%.1f%%".format(svc.cpuPercent),
-                                    color = severityColor(svc.cpuPercent, 5f, 15f)
+                                    color = severityColor(svc.cpuPercent, 5f, 15f),
                                 )
                                 MonoText("  ${svc.threadCount}T")
                             }
@@ -217,15 +217,15 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                                     svc.threads.filter { it.cpuPercent > 0.05f }.forEach { thread ->
                                         Row(
                                             modifier = Modifier.fillMaxWidth().padding(
-                                                vertical = 1.dp
+                                                vertical = 1.dp,
                                             ),
-                                            horizontalArrangement = Arrangement.SpaceBetween
+                                            horizontalArrangement = Arrangement.SpaceBetween,
                                         ) {
                                             MonoText("${thread.name.take(22)} (${thread.tid})")
                                             MonoText("[${thread.state}]")
                                             MonoText(
                                                 "%.1f%%".format(thread.cpuPercent),
-                                                color = severityColor(thread.cpuPercent, 3f, 10f)
+                                                color = severityColor(thread.cpuPercent, 3f, 10f),
                                             )
                                         }
                                     }
@@ -242,26 +242,26 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                 StatCard(stringResource(R.string.ss_hot_threads)) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
                             stringResource(R.string.col_thread),
                             style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                         Text(
                             stringResource(R.string.col_tid),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                         Text(
                             stringResource(R.string.col_cpu_percent),
                             style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = 8.dp),
                         )
                         Text(
                             stringResource(R.string.col_service),
                             style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = 8.dp),
                         )
                     }
                     HorizontalDivider()
@@ -269,13 +269,13 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                     hotThreads.forEach { t ->
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             MonoText(t.name.take(18))
                             MonoText("${t.tid}")
                             MonoText(
                                 "%.1f%%".format(t.cpuPercent),
-                                color = severityColor(t.cpuPercent, 3f, 10f)
+                                color = severityColor(t.cpuPercent, 3f, 10f),
                             )
                             MonoText(t.service.take(12))
                         }
@@ -287,7 +287,9 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                 when (it.service) {
                     "GC/Finalizer",
                     "GC/HeapTask",
-                    "GC/RefQueue" -> true
+                    "GC/RefQueue",
+                    -> true
+
                     else -> false
                 }
             }
@@ -297,12 +299,12 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                     StatRow(
                         stringResource(R.string.label_total_gc_cpu),
                         "%.1f%%".format(gcCpu),
-                        severityColor(gcCpu, 2f, 5f)
+                        severityColor(gcCpu, 2f, 5f),
                     )
                     gcThreads.filter { it.cpuPercent > 0.01f }.forEach { t ->
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             MonoText(t.name)
                             MonoText("[${t.state}]")
@@ -319,7 +321,7 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                 StatCard("${stringResource(R.string.ss_binder_threads)} (${binderThreads.size})") {
                     StatRow(
                         stringResource(R.string.label_total_binder_cpu),
-                        "%.1f%%".format(binderCpu)
+                        "%.1f%%".format(binderCpu),
                     )
                     StatRow(stringResource(R.string.label_busy_binders), "$busyBinders")
                     binderThreads.filter { it.cpuPercent > 0.3f }
@@ -328,12 +330,12 @@ fun SystemServerScreen(modifier: Modifier = Modifier) {
                         .forEach { t ->
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 1.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 MonoText("${t.name} (${t.tid})")
                                 MonoText(
                                     "%.1f%%".format(t.cpuPercent),
-                                    color = severityColor(t.cpuPercent, 2f, 5f)
+                                    color = severityColor(t.cpuPercent, 2f, 5f),
                                 )
                             }
                         }

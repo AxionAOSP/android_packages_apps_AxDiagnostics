@@ -28,14 +28,10 @@ data class WakelockEntry(
     val totalTimeMs: Long,
     val maxTimeMs: Long,
     val lastChangeMs: Long,
-    val preventSuspendTimeMs: Long
+    val preventSuspendTimeMs: Long,
 )
 
-data class WakelockSnapshot(
-    val kernelWakelocks: List<WakelockEntry>,
-    val totalActiveCount: Long,
-    val totalPreventSuspendMs: Long
-)
+data class WakelockSnapshot(val kernelWakelocks: List<WakelockEntry>, val totalActiveCount: Long, val totalPreventSuspendMs: Long)
 
 object WakelockCollector {
 
@@ -45,7 +41,7 @@ object WakelockCollector {
         val sources = listOf(
             "/sys/kernel/debug/wakeup_sources",
             "/d/wakeup_sources",
-            "/sys/power/wakeup_sources"
+            "/sys/power/wakeup_sources",
         )
 
         val sourceFile = sources.map { File(it) }.firstOrNull { it.exists() && it.canRead() }
@@ -71,7 +67,7 @@ object WakelockCollector {
         return WakelockSnapshot(
             kernelWakelocks = sorted,
             totalActiveCount = sorted.sumOf { it.activeCount },
-            totalPreventSuspendMs = sorted.sumOf { it.preventSuspendTimeMs }
+            totalPreventSuspendMs = sorted.sumOf { it.preventSuspendTimeMs },
         )
     }
 
@@ -94,7 +90,7 @@ object WakelockCollector {
                 totalTimeMs = nums[5].toLong(),
                 maxTimeMs = nums[6].toLong(),
                 lastChangeMs = nums[7].toLong(),
-                preventSuspendTimeMs = nums[8].toLong()
+                preventSuspendTimeMs = nums[8].toLong(),
             )
         }.getOrNull()
     }
@@ -114,7 +110,7 @@ object WakelockCollector {
                 totalTimeMs = (parts[4].toLong()) / 1_000_000,
                 maxTimeMs = (parts[3].toLong()) / 1_000_000,
                 lastChangeMs = 0,
-                preventSuspendTimeMs = if (parts.size > 6) parts[6].toLong() / 1_000_000 else 0
+                preventSuspendTimeMs = if (parts.size > 6) parts[6].toLong() / 1_000_000 else 0,
             )
         }.getOrNull()
     }

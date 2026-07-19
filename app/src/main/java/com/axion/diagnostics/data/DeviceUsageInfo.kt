@@ -31,7 +31,7 @@ data class DeviceUsageSnapshot(
     val screenOffDurationMs: Long,
     val hasScreenDurations: Boolean,
     val deepSleepDurationMs: Long,
-    val awakeDurationMs: Long
+    val awakeDurationMs: Long,
 )
 
 object DeviceUsageCollector {
@@ -49,7 +49,7 @@ object DeviceUsageCollector {
             screenOffDurationMs = screenDurations?.screenOffDurationMs ?: 0L,
             hasScreenDurations = screenDurations != null,
             deepSleepDurationMs = elapsedMs - awakeMs,
-            awakeDurationMs = awakeMs
+            awakeDurationMs = awakeMs,
         )
     }
 
@@ -70,16 +70,13 @@ object DeviceUsageCollector {
         }
     }
 
-    private fun readScreenDurations(
-        context: Context,
-        elapsedMs: Long
-    ): DeviceScreenDurations? {
+    private fun readScreenDurations(context: Context, elapsedMs: Long): DeviceScreenDurations? {
         val totalDurationMs = readBatteryDuration(context) ?: return null
         val screenOffDurationMs = readScreenOffDuration() ?: return null
         return DeviceScreenDurations(
             screenOnDurationMs = (totalDurationMs - screenOffDurationMs).coerceAtLeast(0L),
             screenOffDurationMs = screenOffDurationMs,
-            elapsedRealtimeMs = elapsedMs
+            elapsedRealtimeMs = elapsedMs,
         )
     }
 
@@ -107,7 +104,7 @@ object DeviceUsageCollector {
 
     private fun readScreenOffDuration(): Long? {
         val batteryStats = IBatteryStats.Stub.asInterface(
-            ServiceManager.getService(BatteryStats.SERVICE_NAME)
+            ServiceManager.getService(BatteryStats.SERVICE_NAME),
         ) ?: return null
         return try {
             batteryStats.computeBatteryScreenOffRealtimeMs().coerceAtLeast(0L)
@@ -118,9 +115,5 @@ object DeviceUsageCollector {
         }
     }
 
-    private data class DeviceScreenDurations(
-        val screenOnDurationMs: Long,
-        val screenOffDurationMs: Long,
-        val elapsedRealtimeMs: Long
-    )
+    private data class DeviceScreenDurations(val screenOnDurationMs: Long, val screenOffDurationMs: Long, val elapsedRealtimeMs: Long)
 }

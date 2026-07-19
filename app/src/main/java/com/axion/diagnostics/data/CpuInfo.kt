@@ -25,7 +25,7 @@ data class CpuCoreInfo(
     val maxFrequencyMhz: Int,
     val minFrequencyMhz: Int,
     val governor: String,
-    val online: Boolean
+    val online: Boolean,
 )
 
 data class CpuSnapshot(
@@ -43,7 +43,7 @@ data class CpuSnapshot(
     val procsRunning: Long,
     val procsBlocked: Long,
     val ddrFreqMhz: Int = 0,
-    val l3FreqMhz: Int = 0
+    val l3FreqMhz: Int = 0,
 )
 
 data class CpuRawTicks(
@@ -54,7 +54,7 @@ data class CpuRawTicks(
     val iowait: Long,
     val irq: Long,
     val softirq: Long,
-    val steal: Long
+    val steal: Long,
 ) {
     val total get() = user + nice + system + idle + iowait + irq + softirq + steal
     val active get() = total - idle - iowait
@@ -73,7 +73,7 @@ object CpuCollector {
         val totalLine = statLines.firstOrNull { it.startsWith("cpu ") } ?: return CpuSnapshot(
             totalUsage = 0f, userPercent = 0f, systemPercent = 0f, iowaitPercent = 0f, irqPercent = 0f,
             cores = emptyList(), loadAvg1 = 0f, loadAvg5 = 0f, loadAvg15 = 0f,
-            contextSwitches = 0L, processes = 0L, procsRunning = 0L, procsBlocked = 0L
+            contextSwitches = 0L, processes = 0L, procsRunning = 0L, procsBlocked = 0L,
         )
         val currentTotal = parseCpuLine(totalLine)
         val totalUsage = calculateUsage(previousTotalTicks, currentTotal)
@@ -163,7 +163,7 @@ object CpuCollector {
             procsRunning = procsRunning,
             procsBlocked = procsBlocked,
             ddrFreqMhz = ddrFreq,
-            l3FreqMhz = l3Freq
+            l3FreqMhz = l3Freq,
         )
     }
 
@@ -252,7 +252,7 @@ object CpuCollector {
             iowait = parts.getOrNull(5)?.toLongOrNull() ?: 0,
             irq = parts.getOrNull(6)?.toLongOrNull() ?: 0,
             softirq = parts.getOrNull(7)?.toLongOrNull() ?: 0,
-            steal = parts.getOrNull(8)?.toLongOrNull() ?: 0
+            steal = parts.getOrNull(8)?.toLongOrNull() ?: 0,
         )
     }
 
@@ -264,11 +264,7 @@ object CpuCollector {
         return (activeDelta.toFloat() / totalDelta * 100f).coerceIn(0f, 100f)
     }
 
-    private fun calculateComponent(
-        prev: CpuRawTicks?,
-        curr: CpuRawTicks,
-        selector: (CpuRawTicks) -> Long
-    ): Float {
+    private fun calculateComponent(prev: CpuRawTicks?, curr: CpuRawTicks, selector: (CpuRawTicks) -> Long): Float {
         if (prev == null) return 0f
         val totalDelta = curr.total - prev.total
         if (totalDelta == 0L) return 0f
@@ -276,6 +272,5 @@ object CpuCollector {
         return (delta.toFloat() / totalDelta * 100f).coerceIn(0f, 100f)
     }
 
-    private fun readIntFile(file: File): Int =
-        runCatching { file.readText().trim().toInt() }.getOrDefault(0)
+    private fun readIntFile(file: File): Int = runCatching { file.readText().trim().toInt() }.getOrDefault(0)
 }

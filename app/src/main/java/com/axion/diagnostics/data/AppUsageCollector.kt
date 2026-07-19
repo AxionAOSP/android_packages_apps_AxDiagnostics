@@ -32,7 +32,7 @@ data class AppProcess(
     val threads: Int,
     val state: String,
     val oomAdj: Int,
-    val type: ProcessType
+    val type: ProcessType,
 )
 
 data class AppUsage(
@@ -48,14 +48,10 @@ data class AppUsage(
     val processes: List<AppProcess>,
     val cpuTrend: Float,
     val rssTrend: Float,
-    val primaryType: ProcessType
+    val primaryType: ProcessType,
 )
 
-data class UidCpuTicks(
-    val uid: Int,
-    val userTimeJiffies: Long,
-    val systemTimeJiffies: Long
-) {
+data class UidCpuTicks(val uid: Int, val userTimeJiffies: Long, val systemTimeJiffies: Long) {
     val totalJiffies get() = userTimeJiffies + systemTimeJiffies
 }
 
@@ -123,7 +119,7 @@ object AppUsageCollector {
                     threads = proc.threads,
                     state = proc.state,
                     oomAdj = proc.oomAdj,
-                    type = procType
+                    type = procType,
                 )
             }.sortedByDescending { it.cpuPercent }
 
@@ -148,8 +144,8 @@ object AppUsageCollector {
                     processes = appProcesses,
                     cpuTrend = cpuTrend,
                     rssTrend = rssTrend,
-                    primaryType = primaryType
-                )
+                    primaryType = primaryType,
+                ),
             )
         }
 
@@ -195,7 +191,7 @@ object AppUsageCollector {
             "installd", "vold", "netd", "lmkd", "logd", "servicemanager",
             "hwservicemanager", "init", "zygote", "zygote64",
             "gpuservice", "storaged", "tombstoned", "traced",
-            "adbd", "debuggerd", "healthd", "ueventd"
+            "adbd", "debuggerd", "healthd", "ueventd",
         )
         if (name in systemNativeProcs) return ProcessType.SYSTEM
 
@@ -218,7 +214,7 @@ object AppUsageCollector {
                         result[uid] = UidCpuTicks(
                             uid = uid,
                             userTimeJiffies = (times[0].toLongOrNull() ?: 0L) / 10_000_000,
-                            systemTimeJiffies = (times[1].toLongOrNull() ?: 0L) / 10_000_000
+                            systemTimeJiffies = (times[1].toLongOrNull() ?: 0L) / 10_000_000,
                         )
                     }
                 }
@@ -259,18 +255,31 @@ object AppUsageCollector {
 
         val result = when {
             uid == 0 -> Pair("root", "System (root)")
+
             uid == 1000 -> Pair("android.system", "Android System")
+
             uid == 1001 -> Pair("android.phone", "Phone/Radio")
+
             uid == 1002 -> Pair("android.bluetooth", "Bluetooth")
+
             uid == 1010 -> Pair("android.wifi", "Wi-Fi")
+
             uid == 1013 -> Pair("android.media", "Media")
+
             uid == 1017 -> Pair("android.nfc", "NFC")
+
             uid == 1021 -> Pair("android.gps", "GPS")
+
             uid == 1036 -> Pair("android.logd", "Log Daemon")
+
             uid == 1041 -> Pair("android.audioserver", "Audio Server")
+
             uid == 1046 -> Pair("android.cameraserver", "Camera Server")
+
             uid == 1047 -> Pair("android.incidentd", "Incident Daemon")
+
             uid == 2000 -> Pair("adb.shell", "ADB Shell")
+
             uid in 10000..19999 -> {
                 val pm = context.packageManager
                 val pkgs = pm.getPackagesForUid(uid)
@@ -285,6 +294,7 @@ object AppUsageCollector {
                     Pair("uid:$uid", "UID $uid")
                 }
             }
+
             else -> Pair("uid:$uid", "UID $uid")
         }
 

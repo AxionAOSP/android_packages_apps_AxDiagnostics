@@ -24,12 +24,7 @@ import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-data class ProcessSample(
-    val timestamp: Long,
-    val cpuPercent: Float,
-    val rssKb: Long,
-    val threads: Int
-)
+data class ProcessSample(val timestamp: Long, val cpuPercent: Float, val rssKb: Long, val threads: Int)
 
 data class RegressionAlert(
     val processName: String,
@@ -40,7 +35,7 @@ data class RegressionAlert(
     val currentValue: Float,
     val baselineValue: Float,
     val changePercent: Float,
-    val timestamp: Long
+    val timestamp: Long,
 )
 
 enum class RegressionType {
@@ -48,18 +43,21 @@ enum class RegressionType {
     CPU_SUSTAINED,
     MEMORY_LEAK,
     MEMORY_SPIKE,
-    THREAD_GROWTH
+    THREAD_GROWTH,
 }
 
 enum class Severity {
-    LOW, MEDIUM, HIGH, CRITICAL
+    LOW,
+    MEDIUM,
+    HIGH,
+    CRITICAL,
 }
 
 data class ProcessHistory(
     val name: String,
     val pid: Int,
     val samples: MutableList<ProcessSample> = CopyOnWriteArrayList(),
-    val alerts: MutableList<RegressionAlert> = CopyOnWriteArrayList()
+    val alerts: MutableList<RegressionAlert> = CopyOnWriteArrayList(),
 ) {
     val avgCpu: Float get() = if (samples.isEmpty()) {
         0f
@@ -80,7 +78,7 @@ data class ProcessHistory(
         if (samples.size < 5) return 0f
         val recent = samples.takeLast(5).map { it.cpuPercent }.average().toFloat()
         val older = samples.take(
-            5.coerceAtMost(samples.size / 2)
+            5.coerceAtMost(samples.size / 2),
         ).map { it.cpuPercent }.average().toFloat()
         return if (older > 0.1f) ((recent - older) / older) * 100f else 0f
     }
@@ -89,7 +87,7 @@ data class ProcessHistory(
         if (samples.size < 5) return 0f
         val recent = samples.takeLast(5).map { it.rssKb }.average().toFloat()
         val older = samples.take(
-            5.coerceAtMost(samples.size / 2)
+            5.coerceAtMost(samples.size / 2),
         ).map { it.rssKb }.average().toFloat()
         return if (older > 100f) ((recent - older) / older) * 100f else 0f
     }
@@ -143,7 +141,7 @@ object RegressionTracker {
             }
 
             history.samples.add(
-                ProcessSample(now, proc.cpuPercent, proc.rssKb, proc.threads)
+                ProcessSample(now, proc.cpuPercent, proc.rssKb, proc.threads),
             )
 
             if (history.samples.size > MAX_SAMPLES_PER_PROCESS) {
@@ -188,7 +186,7 @@ object RegressionTracker {
             currentValue = current,
             baselineValue = baseline,
             changePercent = if (baseline > 0) ((current - baseline) / baseline) * 100f else 0f,
-            timestamp = now
+            timestamp = now,
         )
         addAlert(history, alert)
     }
@@ -214,7 +212,7 @@ object RegressionTracker {
             currentValue = avgRecent,
             baselineValue = history.avgCpu,
             changePercent = history.cpuTrend,
-            timestamp = now
+            timestamp = now,
         )
         addAlert(history, alert)
     }
@@ -250,7 +248,7 @@ object RegressionTracker {
             currentValue = secondAvg.toFloat(),
             baselineValue = firstAvg.toFloat(),
             changePercent = trend,
-            timestamp = now
+            timestamp = now,
         )
         addAlert(history, alert)
     }
@@ -274,7 +272,7 @@ object RegressionTracker {
             currentValue = current.toFloat(),
             baselineValue = avg.toFloat(),
             changePercent = if (avg > 0) ((current - avg).toFloat() / avg * 100f) else 0f,
-            timestamp = now
+            timestamp = now,
         )
         addAlert(history, alert)
     }
@@ -301,7 +299,7 @@ object RegressionTracker {
             currentValue = current.toFloat(),
             baselineValue = first.toFloat(),
             changePercent = if (first > 0) (growth.toFloat() / first * 100f) else 0f,
-            timestamp = now
+            timestamp = now,
         )
         addAlert(history, alert)
     }
@@ -348,10 +346,12 @@ object RegressionTracker {
         }
 
         sb.appendLine("== PROCESS SUMMARIES ==")
-        sb.appendLine("%-25s %7s %7s %7s %7s %10s %10s %8s %8s".format(
-            "Process", "AvgCPU", "PkCPU", "CurCPU", "CPUTnd",
-            "AvgRSS", "PkRSS", "RSSTnd", "Samples"
-        ))
+        sb.appendLine(
+            "%-25s %7s %7s %7s %7s %10s %10s %8s %8s".format(
+                "Process", "AvgCPU", "PkCPU", "CurCPU", "CPUTnd",
+                "AvgRSS", "PkRSS", "RSSTnd", "Samples",
+            ),
+        )
         processHistories.values
             .filter { it.samples.size >= MIN_SAMPLES_FOR_ANALYSIS }
             .sortedByDescending { it.peakCpu }
@@ -367,22 +367,17 @@ object RegressionTracker {
                             h.avgRss,
                             h.peakRss,
                             h.rssTrend,
-                            h.samples.size
-                        )
+                            h.samples.size,
+                        ),
                 )
             }
 
         return sb.toString()
     }
 
-    private fun ProcessHistory.hasRecentAlert(
-        type: RegressionType,
-        now: Long,
-        intervalMs: Long
-    ): Boolean {
+    private fun ProcessHistory.hasRecentAlert(type: RegressionType, now: Long, intervalMs: Long): Boolean {
         return alerts.any { it.type == type && now - it.timestamp < intervalMs }
     }
 
-    fun saveReport(context: Context): String =
-        ReportFiles.write(context, "regression", exportHistory())
+    fun saveReport(context: Context): String = ReportFiles.write(context, "regression", exportHistory())
 }

@@ -27,7 +27,7 @@ enum class StorageVolumeRole {
     SYSTEM_EXT,
     PRODUCT,
     VENDOR,
-    EXTERNAL
+    EXTERNAL,
 }
 
 data class StorageVolumeSnapshot(
@@ -35,7 +35,7 @@ data class StorageVolumeSnapshot(
     val path: String,
     val totalBytes: Long,
     val freeBytes: Long,
-    val availableBytes: Long
+    val availableBytes: Long,
 ) {
     val usedBytes get() = (totalBytes - availableBytes).coerceAtLeast(0L)
     val usedPercent get() = if (totalBytes > 0) usedBytes.toFloat() / totalBytes * 100f else 0f
@@ -49,7 +49,7 @@ data class StorageVolumeSnapshot(
 data class StorageSnapshot(
     val volumes: List<StorageVolumeSnapshot>,
     val lifetimeEstimation: String? = null,
-    val preEolInfo: String? = null
+    val preEolInfo: String? = null,
 ) {
     val dataVolume get() = volumes.firstOrNull { it.role == StorageVolumeRole.DATA }
 }
@@ -64,7 +64,7 @@ object StorageCollector {
             StorageVolumeRole.SYSTEM_EXT to File("/system_ext"),
             StorageVolumeRole.PRODUCT to File("/product"),
             StorageVolumeRole.VENDOR to File("/vendor"),
-            StorageVolumeRole.EXTERNAL to Environment.getExternalStorageDirectory()
+            StorageVolumeRole.EXTERNAL to Environment.getExternalStorageDirectory(),
         ).mapNotNull { (role, file) ->
             readVolume(role, file)
         }
@@ -77,7 +77,7 @@ object StorageCollector {
         return StorageSnapshot(
             volumes = volumes,
             lifetimeEstimation = lifetime,
-            preEolInfo = eol
+            preEolInfo = eol,
         )
     }
 
@@ -92,7 +92,7 @@ object StorageCollector {
                 path = file.absolutePath,
                 totalBytes = totalBytes,
                 freeBytes = stat.freeBytes,
-                availableBytes = stat.availableBytes
+                availableBytes = stat.availableBytes,
             )
         }.getOrNull()
     }
@@ -102,7 +102,7 @@ object StorageCollector {
             "/sys/devices/platform/bootdevice/health_descriptor/life_time_estimation_a",
             "/sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_a",
             "/sys/devices/virtual/mi_memory/mi_memory_device/ufshcd0/dump_health_desc",
-            "/sys/class/block/sdc/device/health_descriptor/life_time_estimation_a"
+            "/sys/class/block/sdc/device/health_descriptor/life_time_estimation_a",
         )
         for (path in paths) {
             val file = File(path)
@@ -157,7 +157,7 @@ object StorageCollector {
         val paths = listOf(
             "/sys/block/mmcblk0/device/life_time",
             "/sys/class/block/mmcblk0/device/life_time",
-            "/sys/devices/platform/bootdevice/life_time"
+            "/sys/devices/platform/bootdevice/life_time",
         )
         for (path in paths) {
             val file = File(path)
@@ -191,7 +191,7 @@ object StorageCollector {
         val paths = listOf(
             "/sys/devices/platform/bootdevice/health_descriptor/eol_info",
             "/sys/devices/platform/soc/1d84000.ufshc/health_descriptor/eol_info",
-            "/sys/class/block/sdc/device/health_descriptor/eol_info"
+            "/sys/class/block/sdc/device/health_descriptor/eol_info",
         )
         for (path in paths) {
             val file = File(path)

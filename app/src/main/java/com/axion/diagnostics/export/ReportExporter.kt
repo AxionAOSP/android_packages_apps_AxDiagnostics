@@ -48,7 +48,7 @@ object ReportExporter {
         sb.appendLine("========================================")
         sb.appendLine("  AxDiagnostics Report")
         sb.appendLine(
-            "  Generated: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())}"
+            "  Generated: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())}",
         )
         sb.appendLine("========================================")
         sb.appendLine()
@@ -89,28 +89,32 @@ object ReportExporter {
         sb.appendLine("== CPU ==")
         val cpu = CpuCollector.collect()
         sb.appendLine("Total Usage: %.1f%%".format(cpu.totalUsage))
-        sb.appendLine("User: %.1f%% | System: %.1f%% | IOWait: %.1f%% | IRQ: %.1f%%".format(
-            cpu.userPercent,
-            cpu.systemPercent,
-            cpu.iowaitPercent,
-            cpu.irqPercent
-        ))
+        sb.appendLine(
+            "User: %.1f%% | System: %.1f%% | IOWait: %.1f%% | IRQ: %.1f%%".format(
+                cpu.userPercent,
+                cpu.systemPercent,
+                cpu.iowaitPercent,
+                cpu.irqPercent,
+            ),
+        )
         sb.appendLine("Load Avg: %.2f %.2f %.2f".format(cpu.loadAvg1, cpu.loadAvg5, cpu.loadAvg15))
         sb.appendLine(
-            "Context Switches: %,d | Processes: %,d".format(cpu.contextSwitches, cpu.processes)
+            "Context Switches: %,d | Processes: %,d".format(cpu.contextSwitches, cpu.processes),
         )
         sb.appendLine("Running: ${cpu.procsRunning} | Blocked: ${cpu.procsBlocked}")
         sb.appendLine()
         sb.appendLine("Per-Core:")
         cpu.cores.forEach { core ->
-            sb.appendLine("  CPU${core.index}: %.1f%% @ %d MHz (%d-%d MHz) [%s] %s".format(
-                core.usagePercent,
-                core.frequencyMhz,
-                core.minFrequencyMhz,
-                core.maxFrequencyMhz,
-                core.governor,
-                if (core.online) "" else "OFFLINE"
-            ))
+            sb.appendLine(
+                "  CPU${core.index}: %.1f%% @ %d MHz (%d-%d MHz) [%s] %s".format(
+                    core.usagePercent,
+                    core.frequencyMhz,
+                    core.minFrequencyMhz,
+                    core.maxFrequencyMhz,
+                    core.governor,
+                    if (core.online) "" else "OFFLINE",
+                ),
+            )
         }
         sb.appendLine()
     }
@@ -130,8 +134,8 @@ object ReportExporter {
         if (mem.swapTotalKb > 0) {
             sb.appendLine(
                 "Swap: ${mem.swapUsedKb / 1024} / ${mem.swapTotalKb / 1024} MB (%.1f%%)".format(
-                    mem.swapUsedPercent
-                )
+                    mem.swapUsedPercent,
+                ),
             )
         }
         if (mem.zramTotalKb > 0) {
@@ -139,8 +143,8 @@ object ReportExporter {
             val totalMb = mem.zramTotalKb / 1024
             sb.appendLine(
                 "zRAM: $usedMb / $totalMb MB (ratio: %.2fx)".format(
-                    mem.zramCompressionRatio
-                )
+                    mem.zramCompressionRatio,
+                ),
             )
         }
         sb.appendLine()
@@ -157,7 +161,7 @@ object ReportExporter {
         if (bat.cycleCount > 0) sb.appendLine("Cycle Count: ${bat.cycleCount}")
         if (bat.drainRatePerHour > 0) {
             sb.appendLine(
-                "Drain Rate: %.1f%%/hr".format(bat.drainRatePerHour)
+                "Drain Rate: %.1f%%/hr".format(bat.drainRatePerHour),
             )
         }
         sb.appendLine()
@@ -187,7 +191,7 @@ object ReportExporter {
         if (!gpu.available) return
         sb.appendLine("== GPU ==")
         sb.appendLine(
-            "Frequency: ${gpu.frequencyMhz} MHz (${gpu.minFrequencyMhz}-${gpu.maxFrequencyMhz})"
+            "Frequency: ${gpu.frequencyMhz} MHz (${gpu.minFrequencyMhz}-${gpu.maxFrequencyMhz})",
         )
         sb.appendLine("Load: ${gpu.busyPercent}% | Governor: ${gpu.governor}")
         if (gpu.availableFrequencies.isNotEmpty()) {
@@ -200,22 +204,26 @@ object ReportExporter {
         sb.appendLine("== I/O ==")
         val io = IoCollector.collect()
         sb.appendLine(
-            "Read: %.1f KB/s | Write: %.1f KB/s".format(io.readRateKbps, io.writeRateKbps)
+            "Read: %.1f KB/s | Write: %.1f KB/s".format(io.readRateKbps, io.writeRateKbps),
         )
-        sb.appendLine("IO Pressure (some): %.1f%% / %.1f%% / %.1f%% (10/60/300s)".format(
-            io.ioPressure.someAvg10,
-            io.ioPressure.someAvg60,
-            io.ioPressure.someAvg300
-        ))
-        sb.appendLine("IO Pressure (full): %.1f%% / %.1f%% / %.1f%% (10/60/300s)".format(
-            io.ioPressure.fullAvg10,
-            io.ioPressure.fullAvg60,
-            io.ioPressure.fullAvg300
-        ))
+        sb.appendLine(
+            "IO Pressure (some): %.1f%% / %.1f%% / %.1f%% (10/60/300s)".format(
+                io.ioPressure.someAvg10,
+                io.ioPressure.someAvg60,
+                io.ioPressure.someAvg300,
+            ),
+        )
+        sb.appendLine(
+            "IO Pressure (full): %.1f%% / %.1f%% / %.1f%% (10/60/300s)".format(
+                io.ioPressure.fullAvg10,
+                io.ioPressure.fullAvg60,
+                io.ioPressure.fullAvg300,
+            ),
+        )
         io.disks.forEach { disk ->
             sb.appendLine(
                 "  ${disk.device}: R=${disk.readsCompleted} " +
-                    "W=${disk.writesCompleted} InFlight=${disk.ioInProgress}"
+                    "W=${disk.writesCompleted} InFlight=${disk.ioInProgress}",
             )
         }
         sb.appendLine()
@@ -224,18 +232,20 @@ object ReportExporter {
     private fun appendProcessInfo(sb: StringBuilder) {
         sb.appendLine("== TOP PROCESSES ==")
         sb.appendLine(
-            "%-8s %-25s %6s %10s %4s %4s".format("PID", "Name", "CPU%", "RSS", "Thr", "OOM")
+            "%-8s %-25s %6s %10s %4s %4s".format("PID", "Name", "CPU%", "RSS", "Thr", "OOM"),
         )
         val procs = ProcessCollector.collect(30)
         procs.forEach { p ->
-            sb.appendLine("%-8d %-25s %5.1f%% %8dKB %4d %4d".format(
-                p.pid,
-                p.name.take(25),
-                p.cpuPercent,
-                p.rssKb,
-                p.threads,
-                p.oomAdj
-            ))
+            sb.appendLine(
+                "%-8d %-25s %5.1f%% %8dKB %4d %4d".format(
+                    p.pid,
+                    p.name.take(25),
+                    p.cpuPercent,
+                    p.rssKb,
+                    p.threads,
+                    p.oomAdj,
+                ),
+            )
         }
         sb.appendLine()
     }
@@ -248,12 +258,14 @@ object ReportExporter {
         sb.appendLine()
         sb.appendLine("%-35s %8s %10s %10s".format("Name", "Count", "Total", "Max"))
         wl.kernelWakelocks.take(50).forEach { w ->
-            sb.appendLine("%-35s %8d %10s %10s".format(
-                w.name.take(35),
-                w.activeCount,
-                "${w.totalTimeMs}ms",
-                "${w.maxTimeMs}ms"
-            ))
+            sb.appendLine(
+                "%-35s %8d %10s %10s".format(
+                    w.name.take(35),
+                    w.activeCount,
+                    "${w.totalTimeMs}ms",
+                    "${w.maxTimeMs}ms",
+                ),
+            )
         }
         sb.appendLine()
     }
@@ -302,7 +314,7 @@ object ReportExporter {
             sb.appendLine()
         }
         sb.appendLine(
-            "NOTE: Background monitoring is event-driven. Visual polling is app-visible only."
+            "NOTE: Background monitoring is event-driven. Visual polling is app-visible only.",
         )
         sb.appendLine()
     }
@@ -311,14 +323,16 @@ object ReportExporter {
         sb.appendLine("== STORAGE ==")
         val storage = StorageCollector.collect()
         storage.volumes.forEach { volume ->
-            sb.appendLine("%-10s %8s used / %8s total (%5.1f%% used) %8s available [%s]".format(
-                storageRoleName(volume.role),
-                formatBytes(volume.usedBytes),
-                formatBytes(volume.totalBytes),
-                volume.usedPercent,
-                formatBytes(volume.availableBytes),
-                volume.path
-            ))
+            sb.appendLine(
+                "%-10s %8s used / %8s total (%5.1f%% used) %8s available [%s]".format(
+                    storageRoleName(volume.role),
+                    formatBytes(volume.usedBytes),
+                    formatBytes(volume.totalBytes),
+                    volume.usedPercent,
+                    formatBytes(volume.availableBytes),
+                    volume.path,
+                ),
+            )
         }
         sb.appendLine()
     }

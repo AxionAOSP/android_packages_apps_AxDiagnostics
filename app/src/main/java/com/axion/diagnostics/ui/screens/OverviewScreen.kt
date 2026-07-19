@@ -91,7 +91,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         report?.let { r ->
             val criticalInsights = r.insights.filter { it.severity == InsightSeverity.CRITICAL }
@@ -104,7 +104,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                 Text(
                     stringResource(R.string.overview_overhead_body),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
@@ -116,7 +116,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                             insight.title,
                             insight.detail,
                             insight.metric,
-                            InsightSeverity.CRITICAL
+                            InsightSeverity.CRITICAL,
                         )
                         HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
                     }
@@ -131,7 +131,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                             insight.title,
                             insight.detail,
                             insight.metric,
-                            InsightSeverity.WARN
+                            InsightSeverity.WARN,
                         )
                         HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
                     }
@@ -143,21 +143,21 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                     label = stringResource(R.string.label_cpu),
                     value = "%.0f%%".format(r.cpuUsage),
                     detail = r.topCpuProcess,
-                    percent = r.cpuUsage
+                    percent = r.cpuUsage,
                 )
                 HorizontalDivider()
                 DeviceMetricRow(
                     label = stringResource(R.string.label_memory),
                     value = "%.0f%%".format(r.memUsage),
                     detail = r.topMemProcess,
-                    percent = r.memUsage
+                    percent = r.memUsage,
                 )
                 HorizontalDivider()
                 DeviceMetricRow(
                     label = stringResource(R.string.label_storage),
                     value = "%.0f%%".format(r.storageUsage),
                     detail = r.storageStatus,
-                    percent = r.storageUsage
+                    percent = r.storageUsage,
                 )
                 HorizontalDivider()
                 DeviceMetricRow(
@@ -165,7 +165,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                     value = "${r.batteryLevel}%",
                     detail = r.batteryStatus,
                     percent = r.batteryLevel.toFloat(),
-                    color = batteryColor(r.batteryLevel)
+                    color = batteryColor(r.batteryLevel),
                 )
                 Spacer(Modifier.height(8.dp))
                 StatRow(stringResource(R.string.label_top_cpu), r.topCpuProcess)
@@ -176,7 +176,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                     StatRow(
                         stringResource(R.string.label_drain_rate),
                         "%.1f%%/hr".format(r.drainRate),
-                        severityColor(r.drainRate, 5f, 10f)
+                        severityColor(r.drainRate, 5f, 10f),
                     )
                 }
             }
@@ -185,22 +185,22 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                 TrendChart(
                     stringResource(R.string.label_cpu),
                     cpuHistory,
-                    MaterialTheme.colorScheme.primary
+                    MaterialTheme.colorScheme.primary,
                 )
                 TrendChart(
                     stringResource(R.string.label_memory),
                     memHistory,
-                    MaterialTheme.colorScheme.secondary
+                    MaterialTheme.colorScheme.secondary,
                 )
                 TrendChart(
                     stringResource(R.string.label_storage),
                     storageHistory,
-                    MaterialTheme.colorScheme.tertiary
+                    MaterialTheme.colorScheme.tertiary,
                 )
                 TrendChart(
                     stringResource(R.string.label_battery),
                     batteryHistory,
-                    batteryColor(r.batteryLevel)
+                    batteryColor(r.batteryLevel),
                 )
             }
 
@@ -208,17 +208,17 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                 StatRow(stringResource(R.string.label_device), Build.MODEL)
                 StatRow(
                     stringResource(R.string.label_android),
-                    "${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})"
+                    "${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})",
                 )
                 StatRow(stringResource(R.string.label_build), Build.DISPLAY)
                 StatRow(
                     stringResource(R.string.label_kernel),
-                    System.getProperty("os.version") ?: "unknown"
+                    System.getProperty("os.version") ?: "unknown",
                 )
                 val uptime = SystemClock.elapsedRealtime()
                 StatRow(
                     stringResource(R.string.label_uptime),
-                    "${uptime / 3_600_000}h ${(uptime % 3_600_000) / 60_000}m"
+                    "${uptime / 3_600_000}h ${(uptime % 3_600_000) / 60_000}m",
                 )
             }
 
@@ -230,7 +230,7 @@ fun OverviewScreen(modifier: Modifier = Modifier) {
                             insight.title,
                             insight.detail,
                             insight.metric,
-                            InsightSeverity.INFO
+                            InsightSeverity.INFO,
                         )
                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     }
@@ -259,38 +259,41 @@ private fun HealthScoreCard(report: HealthReport) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.extraLarge,
-        color = bgColor
+        color = bgColor,
     ) {
         Row(
             modifier = Modifier.padding(24.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
                 Text(
                     report.overallLabel,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = onBgColor
+                    color = onBgColor,
                 )
                 val critCount = report.insights.count { it.severity == InsightSeverity.CRITICAL }
                 val warnCount = report.insights.count { it.severity == InsightSeverity.WARN }
                 Text(
                     when {
-                        critCount > 0 -> "$critCount critical issue${
-                            if (critCount > 1) "s" else ""
-                        }"
+                        critCount > 0 ->
+                            "$critCount critical issue${
+                                if (critCount > 1) "s" else ""
+                            }"
+
                         warnCount > 0 -> "$warnCount warning${if (warnCount > 1) "s" else ""}"
+
                         else -> stringResource(R.string.overview_no_issues)
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = onBgColor.copy(alpha = 0.8f)
+                    color = onBgColor.copy(alpha = 0.8f),
                 )
                 Text(
                     stringResource(R.string.overview_status_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = onBgColor.copy(alpha = 0.72f),
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(top = 8.dp),
                 )
             }
             ScoreRing(
@@ -298,20 +301,14 @@ private fun HealthScoreCard(report: HealthReport) {
                 label = stringResource(R.string.overview_score),
                 color = scoreColor(report.overallScore),
                 trackColor = onBgColor.copy(alpha = 0.22f),
-                contentColor = onBgColor
+                contentColor = onBgColor,
             )
         }
     }
 }
 
 @Composable
-private fun InsightRow(
-    category: String,
-    title: String,
-    detail: String,
-    metric: String,
-    severity: InsightSeverity
-) {
+private fun InsightRow(category: String, title: String, detail: String, metric: String, severity: InsightSeverity) {
     val tagColor = when (severity) {
         InsightSeverity.CRITICAL -> MaterialTheme.colorScheme.error
         InsightSeverity.WARN -> MaterialTheme.colorScheme.tertiary
@@ -330,12 +327,12 @@ private fun InsightRow(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 Surface(color = tagBg, shape = RoundedCornerShape(4.dp)) {
                     Text(
@@ -343,14 +340,14 @@ private fun InsightRow(
                         style = MaterialTheme.typography.labelSmall,
                         color = tagColor,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     )
                 }
                 Text(
                     title,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
             MonoText(metric, color = tagColor)
@@ -359,32 +356,27 @@ private fun InsightRow(
             detail,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 2.dp)
+            modifier = Modifier.padding(top = 2.dp),
         )
     }
 }
 
 @Composable
-private fun TrendChart(
-    label: String,
-    values: List<Float>,
-    color: Color
-) {
+private fun TrendChart(label: String, values: List<Float>, color: Color) {
     Text(
         text = label,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(top = 8.dp)
+        modifier = Modifier.padding(top = 8.dp),
     )
     SparklineChart(
         values = values,
         color = color,
-        modifier = Modifier.padding(top = 4.dp)
+        modifier = Modifier.padding(top = 4.dp),
     )
 }
 
-private fun appendHistory(history: List<Float>, value: Float): List<Float> =
-    (history + value).takeLast(32)
+private fun appendHistory(history: List<Float>, value: Float): List<Float> = (history + value).takeLast(32)
 
 @Composable
 private fun scoreColor(score: Int): Color = when {

@@ -32,8 +32,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.axion.diagnostics.R
@@ -52,11 +54,9 @@ import com.axion.diagnostics.ui.components.StatRow
 import com.axion.diagnostics.ui.components.UsageBar
 import com.axion.diagnostics.ui.components.formatKb
 import com.axion.diagnostics.util.LaunchedActiveEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -74,7 +74,7 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
             val snapshot = withContext(Dispatchers.IO) {
                 MemoryUiSnapshot(
                     mem = MemCollector.collect(),
-                    processes = ProcessCollector.collect(50)
+                    processes = ProcessCollector.collect(50),
                 )
             }
             mem = snapshot.mem
@@ -89,20 +89,20 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         mem?.let { m ->
             MetricProgressCard(
                 title = stringResource(R.string.mem_ram_usage),
                 primary = "%.0f%%".format(m.usedPercent),
                 secondary = "${formatKb(m.usedKb)} / ${formatKb(m.totalKb)}",
-                percent = m.usedPercent
+                percent = m.usedPercent,
             )
 
             StatCard(stringResource(R.string.mem_usage_history)) {
                 SparklineChart(
                     values = usageHistory,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
 
@@ -111,7 +111,7 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
                     Text(
                         stringResource(R.string.mem_optimize_hint),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     androidx.compose.material3.Button(
                         onClick = {
@@ -124,19 +124,19 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
                                 android.widget.Toast.makeText(
                                     context,
                                     context.getString(R.string.mem_optimized),
-                                    android.widget.Toast.LENGTH_SHORT
+                                    android.widget.Toast.LENGTH_SHORT,
                                 ).show()
                             }
                         },
                         enabled = !optimizing,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
                             if (optimizing) {
                                 stringResource(R.string.mem_optimizing)
                             } else {
                                 stringResource(R.string.mem_optimize)
-                            }
+                            },
                         )
                     }
                 }
@@ -146,12 +146,12 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
                 val usedSegment = ProgressSegment(
                     label = stringResource(R.string.label_used),
                     percent = m.usedPercent,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 val freeSegment = ProgressSegment(
                     label = stringResource(R.string.label_available),
                     percent = 100f - m.usedPercent,
-                    color = MaterialTheme.colorScheme.surfaceVariant
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                 )
                 val segments = listOf(usedSegment, freeSegment)
                 SegmentedProgressBar(segments, totalPercent = m.usedPercent)
@@ -182,7 +182,7 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
                     UsageBar(
                         stringResource(R.string.label_used),
                         m.swapUsedPercent,
-                        "${formatKb(m.swapUsedKb)} / ${formatKb(m.swapTotalKb)}"
+                        "${formatKb(m.swapUsedKb)} / ${formatKb(m.swapTotalKb)}",
                     )
                     StatRow(stringResource(R.string.label_swap_cached), formatKb(m.swapCachedKb))
                 }
@@ -195,7 +195,7 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
                     StatRow(stringResource(R.string.label_orig_data), formatKb(m.zramOrigKb))
                     StatRow(
                         stringResource(R.string.label_compression_ratio),
-                        "%.2fx".format(m.zramCompressionRatio)
+                        "%.2fx".format(m.zramCompressionRatio),
                     )
                 }
             }
@@ -206,23 +206,23 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
             StatCard(stringResource(R.string.mem_top_processes)) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         stringResource(R.string.col_process),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                     Text(
                         stringResource(R.string.col_rss),
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelSmall,
                     )
                 }
                 HorizontalDivider()
                 memProcesses.forEach { proc ->
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         MonoText("${proc.name} (${proc.pid})")
                         MonoText(formatKb(proc.rssKb))
@@ -233,7 +233,4 @@ fun MemoryScreen(modifier: Modifier = Modifier) {
     }
 }
 
-private data class MemoryUiSnapshot(
-    val mem: MemSnapshot,
-    val processes: List<ProcessSnapshot>
-)
+private data class MemoryUiSnapshot(val mem: MemSnapshot, val processes: List<ProcessSnapshot>)

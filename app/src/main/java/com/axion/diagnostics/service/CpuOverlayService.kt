@@ -36,6 +36,7 @@ import com.axion.diagnostics.data.CpuCollector
 import com.axion.diagnostics.data.GpuCollector
 import com.axion.diagnostics.data.MemCollector
 import com.axion.diagnostics.data.ThermalCollector
+import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -43,7 +44,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.abs
 
 class CpuOverlayService : Service() {
 
@@ -77,6 +77,7 @@ class CpuOverlayService : Service() {
                 Intent.ACTION_SCREEN_OFF -> {
                     stopPolling()
                 }
+
                 Intent.ACTION_SCREEN_ON -> {
                     startPolling()
                 }
@@ -94,7 +95,7 @@ class CpuOverlayService : Service() {
 
         // Create Container Layout
         val frameLayout = FrameLayout(this)
-        
+
         // Background shape with rounded corners (Glassmorphism-like premium design)
         val bgDrawable = GradientDrawable().apply {
             setColor(0xCC0D0D11.toInt()) // 80% transparent dark premium gray
@@ -112,7 +113,7 @@ class CpuOverlayService : Service() {
             gravity = Gravity.CENTER
         }
         textView.text = "CPU: --% | RAM: --%"
-        
+
         frameLayout.addView(textView)
         containerLayout = frameLayout
         statsTextView = textView
@@ -123,7 +124,7 @@ class CpuOverlayService : Service() {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT
+            PixelFormat.TRANSLUCENT,
         ).apply {
             gravity = Gravity.TOP or Gravity.START
             x = 50
@@ -150,6 +151,7 @@ class CpuOverlayService : Service() {
                         isMoving = false
                         return true
                     }
+
                     MotionEvent.ACTION_MOVE -> {
                         val deltaX = event.rawX - initialTouchX
                         val deltaY = event.rawY - initialTouchY
@@ -163,11 +165,12 @@ class CpuOverlayService : Service() {
                         }
                         return true
                     }
+
                     MotionEvent.ACTION_UP -> {
                         val duration = System.currentTimeMillis() - startTime
                         val totalDeltaX = abs(event.rawX - initialTouchX)
                         val totalDeltaY = abs(event.rawY - initialTouchY)
-                        
+
                         // If touch was quick and did not move much, trigger a Tap!
                         if (duration < 250 && totalDeltaX < 15 && totalDeltaY < 15 && !isMoving) {
                             isExpanded = !isExpanded
@@ -184,7 +187,7 @@ class CpuOverlayService : Service() {
         // Add the floating view directly to System WindowManager
         runCatching {
             windowManager.addView(frameLayout, params)
-            
+
             // Register Screen state receiver for absolute battery optimization
             val filter = IntentFilter().apply {
                 addAction(Intent.ACTION_SCREEN_ON)
@@ -232,7 +235,7 @@ class CpuOverlayService : Service() {
 
             if (cpuSnapshot != null && statsTextView != null) {
                 val sb = StringBuilder()
-                
+
                 // 1. Build the Compact Row Header (Sleek, short, and focused)
                 val cpuUsage = "CPU: %2.0f%%".format(cpuSnapshot.totalUsage)
                 val gpuUsage = if (gpuSnapshot != null && gpuSnapshot.available) {
@@ -246,7 +249,7 @@ class CpuOverlayService : Service() {
                 } else {
                     ""
                 }
-                
+
                 sb.append("$cpuUsage$gpuUsage | $ramUsage$tempPart")
 
                 // 2. Append per-core detail block if expanded
@@ -264,7 +267,7 @@ class CpuOverlayService : Service() {
                     }
                     sb.append("\n").append(coresFormatted)
                 }
-                
+
                 statsTextView?.text = sb.toString()
             }
         }
@@ -275,7 +278,7 @@ class CpuOverlayService : Service() {
         isRunning = false
         stopPolling()
         serviceJob.cancel()
-        
+
         if (receiverRegistered) {
             runCatching { unregisterReceiver(screenReceiver) }
             receiverRegistered = false

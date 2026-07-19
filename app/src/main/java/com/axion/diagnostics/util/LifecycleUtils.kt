@@ -24,10 +24,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun LaunchedActiveEffect(
-    vararg keys: Any?,
-    block: suspend CoroutineScope.() -> Unit
-) {
+fun LaunchedActiveEffect(vararg keys: Any?, block: suspend CoroutineScope.() -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner, *keys) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

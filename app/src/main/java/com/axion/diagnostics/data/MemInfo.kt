@@ -40,7 +40,7 @@ data class MemSnapshot(
     val vmallocUsedKb: Long,
     val zramTotalKb: Long,
     val zramUsedKb: Long,
-    val zramOrigKb: Long
+    val zramOrigKb: Long,
 ) {
     val usedKb get() = totalKb - availableKb
     val usedPercent get() = if (totalKb > 0) usedKb.toFloat() / totalKb * 100f else 0f
@@ -86,7 +86,7 @@ object MemCollector {
             vmallocUsedKb = memMap["VmallocUsed"] ?: 0,
             zramTotalKb = zramStats.first,
             zramUsedKb = zramStats.second,
-            zramOrigKb = zramStats.third
+            zramOrigKb = zramStats.third,
         )
     }
 
@@ -103,8 +103,7 @@ object MemCollector {
         return Triple(disksize, 0L, 0L)
     }
 
-    private fun readLongFile(file: File): Long =
-        runCatching { file.readText().trim().toLong() }.getOrDefault(0L)
+    private fun readLongFile(file: File): Long = runCatching { file.readText().trim().toLong() }.getOrDefault(0L)
 
     fun optimizeMemory(): Boolean {
         var success = false

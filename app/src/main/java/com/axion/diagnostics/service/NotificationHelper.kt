@@ -33,20 +33,16 @@ object NotificationHelper {
             NotificationChannel(
                 CHANNEL_SERVICE,
                 "Diagnostics Service",
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_LOW,
             ).apply {
                 description = "Background monitoring service"
                 setShowBadge(false)
-            }
+            },
         )
         nm.deleteNotificationChannel(REMOVED_CHANNEL_ALERTS)
     }
 
-    fun buildServiceNotification(
-        context: Context,
-        title: String,
-        details: String
-    ): Notification {
+    fun buildServiceNotification(context: Context, title: String, details: String): Notification {
         return Notification.Builder(context, CHANNEL_SERVICE)
             .setSmallIcon(android.R.drawable.ic_menu_info_details)
             .setContentTitle(title)
