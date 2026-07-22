@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
@@ -32,10 +34,9 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +58,7 @@ import com.axion.diagnostics.ui.screens.MoreScreen
 import com.axion.diagnostics.ui.screens.OverviewScreen
 import com.axion.diagnostics.ui.screens.StorageScreen
 import com.axion.diagnostics.ui.screens.ThermalScreen
+import kotlinx.coroutines.launch
 
 private val tabTitles = listOf(
     R.string.tab_overview,
@@ -94,8 +96,8 @@ fun DiagnosticsApp() {
             return@AxionTheme
         }
 
-        var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-        val tabIndex = selectedTab.coerceIn(0, tabTitles.lastIndex)
+        val pagerState = rememberPagerState(pageCount = { tabTitles.size })
+        val coroutineScope = rememberCoroutineScope()
 
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -120,14 +122,18 @@ fun DiagnosticsApp() {
                         },
                     )
                     ScrollableTabRow(
-                        selectedTabIndex = tabIndex,
+                        selectedTabIndex = pagerState.currentPage,
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
                         edgePadding = 16.dp,
                     ) {
                         tabTitles.forEachIndexed { index, titleRes ->
                             Tab(
-                                selected = tabIndex == index,
-                                onClick = { selectedTab = index },
+                                selected = pagerState.currentPage == index,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                },
                                 text = { Text(stringResource(titleRes)) },
                             )
                         }
@@ -135,16 +141,23 @@ fun DiagnosticsApp() {
                 }
             },
         ) { padding ->
-            when (tabIndex) {
-                0 -> OverviewScreen(Modifier.padding(padding))
-                1 -> AppPowerScreen(Modifier.padding(padding))
-                2 -> CpuScreen(Modifier.padding(padding))
-                3 -> GpuScreen(Modifier.padding(padding))
-                4 -> MemoryScreen(Modifier.padding(padding))
-                5 -> BatteryScreen(Modifier.padding(padding))
-                6 -> ThermalScreen(Modifier.padding(padding))
-                7 -> StorageScreen(Modifier.padding(padding))
-                8 -> MoreScreen(Modifier.padding(padding))
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+            ) { page ->
+                when (page) {
+                    0 -> OverviewScreen()
+                    1 -> AppPowerScreen()
+                    2 -> CpuScreen()
+                    3 -> GpuScreen()
+                    4 -> MemoryScreen()
+                    5 -> BatteryScreen()
+                    6 -> ThermalScreen()
+                    7 -> StorageScreen()
+                    8 -> MoreScreen()
+                }
             }
         }
     }
