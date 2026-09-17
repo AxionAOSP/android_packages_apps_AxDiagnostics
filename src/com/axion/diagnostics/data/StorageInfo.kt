@@ -99,36 +99,24 @@ object StorageCollector {
 
     private fun getUfsLifeTimeEstimation(): String? {
         val paths = listOf(
-            "/sys/devices/platform/bootdevice/health_descriptor/life_time_estimation_a",
+            "/sys/devices/platform/soc/4804000.ufshc/health_descriptor/life_time_estimation_a",
             "/sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_a",
+            "/sys/devices/platform/soc/1da4000.ufshc/health_descriptor/life_time_estimation_a",
+            "/sys/devices/platform/soc/1d87000.ufshc/health_descriptor/life_time_estimation_a",
+            "/sys/devices/platform/bootdevice/health_descriptor/life_time_estimation_a",
             "/sys/devices/virtual/mi_memory/mi_memory_device/ufshcd0/dump_health_desc",
-            "/sys/class/block/sdc/device/health_descriptor/life_time_estimation_a"
+            "/sys/class/block/sdc/device/health_descriptor/life_time_estimation_a",
+            "/sys/class/block/sda/device/health_descriptor/life_time_estimation_a",
+            "/sys/class/block/sdb/device/health_descriptor/life_time_estimation_a"
         )
         for (path in paths) {
             val file = File(path)
-            if (file.exists()) {
-                val content = runCatching { file.readText().trim() }.getOrNull() ?: continue
-                if (content.isNotEmpty()) {
-                    if (path.contains("dump_health_desc")) {
-                        val match = Regex("bDeviceLifeTimeEstA\\s*=\\s*(0x[0-9a-fA-F]+|[0-9]+)").find(content)
-                        if (match != null) return decodeLifeTime(match.groupValues[1])
-                    } else {
-                        return decodeLifeTime(content)
-                    }
-                }
-            }
-        }
-        val socDir = File("/sys/devices/platform/soc")
-        if (socDir.exists()) {
-            val matchedFiles = runCatching {
-                socDir.walkTopDown().maxDepth(5).filter { it.name == "life_time_estimation_a" && it.isFile }.toList()
-            }.getOrNull() ?: emptyList()
-            for (file in matchedFiles) {
-                val content = runCatching { file.readText().trim() }.getOrNull()
-                if (!content.isNullOrEmpty()) {
-                    return decodeLifeTime(content)
-                }
-            }
+            if (!file.exists()) continue
+            val content = runCatching { file.readText().trim() }.getOrNull() ?: continue
+            if (content.isEmpty()) continue
+            if (!path.contains("dump_health_desc")) return decodeLifeTime(content)
+            val match = Regex("bDeviceLifeTimeEstA\\s*=\\s*(0x[0-9a-fA-F]+|[0-9]+)").find(content)
+            if (match != null) return decodeLifeTime(match.groupValues[1])
         }
         return null
     }
@@ -189,30 +177,20 @@ object StorageCollector {
 
     private fun getUfsEolInfo(): String? {
         val paths = listOf(
-            "/sys/devices/platform/bootdevice/health_descriptor/eol_info",
+            "/sys/devices/platform/soc/4804000.ufshc/health_descriptor/eol_info",
             "/sys/devices/platform/soc/1d84000.ufshc/health_descriptor/eol_info",
-            "/sys/class/block/sdc/device/health_descriptor/eol_info"
+            "/sys/devices/platform/soc/1da4000.ufshc/health_descriptor/eol_info",
+            "/sys/devices/platform/soc/1d87000.ufshc/health_descriptor/eol_info",
+            "/sys/devices/platform/bootdevice/health_descriptor/eol_info",
+            "/sys/class/block/sdc/device/health_descriptor/eol_info",
+            "/sys/class/block/sda/device/health_descriptor/eol_info",
+            "/sys/class/block/sdb/device/health_descriptor/eol_info"
         )
         for (path in paths) {
             val file = File(path)
-            if (file.exists()) {
-                val content = runCatching { file.readText().trim() }.getOrNull() ?: continue
-                if (content.isNotEmpty()) {
-                    return decodeEol(content)
-                }
-            }
-        }
-        val socDir = File("/sys/devices/platform/soc")
-        if (socDir.exists()) {
-            val matchedFiles = runCatching {
-                socDir.walkTopDown().maxDepth(5).filter { it.name == "eol_info" && it.isFile }.toList()
-            }.getOrNull() ?: emptyList()
-            for (file in matchedFiles) {
-                val content = runCatching { file.readText().trim() }.getOrNull()
-                if (!content.isNullOrEmpty()) {
-                    return decodeEol(content)
-                }
-            }
+            if (!file.exists()) continue
+            val content = runCatching { file.readText().trim() }.getOrNull() ?: continue
+            if (content.isNotEmpty()) return decodeEol(content)
         }
         return null
     }

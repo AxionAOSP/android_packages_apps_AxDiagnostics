@@ -16,6 +16,9 @@
 
 package com.axion.diagnostics.data
 
+import com.android.internal.kernel.AxKernelControl
+import com.android.internal.kernel.AxKernelManager
+import com.android.internal.kernel.AxKernelMetrics
 import java.io.File
 
 data class CpuCoreInfo(
@@ -66,6 +69,13 @@ object CpuCollector {
     @Volatile private var previousTotalTicks: CpuRawTicks? = null
     private var previousCoreTicks = mutableMapOf<Int, CpuRawTicks>()
 
+    private data class CoreFreqData(
+        val curFreqMhz: Int,
+        val maxFreqMhz: Int,
+        val minFreqMhz: Int,
+        val governor: String
+    )
+
     fun collect(): CpuSnapshot = synchronized(lock) {
         val statLines = File("/proc/stat").readLines()
         val loadAvgParts = File("/proc/loadavg").readText().trim().split("\\s+".toRegex())
@@ -83,6 +93,13 @@ object CpuCollector {
         val irqPct = calculateComponent(previousTotalTicks, currentTotal) { it.irq + it.softirq }
         previousTotalTicks = currentTotal
 
+        val clusterCoreMap = mutableMapOf<Int, CoreFreqData>()
+        val metrics = runCatching { AxKernelManager.getMetrics() }.getOrNull()
+        val controls = runCatching { AxKernelManager.getControls() }.getOrNull() ?: emptyList()
+        if (metrics != null) {
+            populateClusterCores(metrics.cpuClusters, controls, clusterCoreMap)
+        }
+
         val coreLines = statLines.filter { it.matches(Regex("cpu\\d+ .*")) }
         val cores = coreLines.mapIndexed { idx, line ->
             val coreIdx = Regex("cpu(\\d+)").find(line)?.groupValues?.get(1)?.toIntOrNull() ?: idx
@@ -95,37 +112,40 @@ object CpuCollector {
                 runCatching { File(cpuDir, "online").readText().trim() == "1" }.getOrDefault(true)
             }
 
-            var curFreq = 0
-            var maxFreq = 0
-            var minFreq = 0
-            var governor = "unknown"
+            val freqData = clusterCoreMap[coreIdx]
+            var curFreq = freqData?.curFreqMhz ?: 0
+            var maxFreq = freqData?.maxFreqMhz ?: 0
+            var minFreq = freqData?.minFreqMhz ?: 0
+            var governor = freqData?.governor ?: "unknown"
 
-            val cluster = findClusterForCore(coreIdx)
-            if (cluster != null) {
-                governor = cluster.governorNode?.let {
-                    val file = File(it)
-                    if (file.exists()) runCatching { file.readText().trim() }.getOrDefault("unknown") else "unknown"
-                } ?: "unknown"
+            if (freqData == null) {
+                val cluster = findClusterForCore(coreIdx)
+                if (cluster != null) {
+                    governor = cluster.governorNode?.let {
+                        val file = File(it)
+                        if (file.exists()) runCatching { file.readText().trim() }.getOrDefault("unknown") else "unknown"
+                    } ?: "unknown"
 
-                minFreq = cluster.minNode?.let {
-                    val file = File(it)
-                    if (file.exists()) readIntFile(file) / 1000 else 0
-                } ?: 0
-                maxFreq = cluster.maxNode?.let {
-                    val file = File(it)
-                    if (file.exists()) readIntFile(file) / 1000 else 0
-                } ?: 0
+                    minFreq = cluster.minNode?.let {
+                        val file = File(it)
+                        if (file.exists()) readIntFile(file) / 1000 else 0
+                    } ?: 0
+                    maxFreq = cluster.maxNode?.let {
+                        val file = File(it)
+                        if (file.exists()) readIntFile(file) / 1000 else 0
+                    } ?: 0
 
-                if (online) {
-                    val directCurFreqFile = File(cpuDir, "cpufreq/scaling_cur_freq")
-                    val policyDir = cluster.minNode?.let { File(it).parentFile }
-                    val policyCurFreqFile = policyDir?.let { File(it, "scaling_cur_freq") }
-                    val freqFile = when {
-                        directCurFreqFile.exists() -> directCurFreqFile
-                        policyCurFreqFile != null && policyCurFreqFile.exists() -> policyCurFreqFile
-                        else -> null
+                    if (online) {
+                        val directCurFreqFile = File(cpuDir, "cpufreq/scaling_cur_freq")
+                        val policyDir = cluster.minNode?.let { File(it).parentFile }
+                        val policyCurFreqFile = policyDir?.let { File(it, "scaling_cur_freq") }
+                        val freqFile = when {
+                            directCurFreqFile.exists() -> directCurFreqFile
+                            policyCurFreqFile != null && policyCurFreqFile.exists() -> policyCurFreqFile
+                            else -> null
+                        }
+                        curFreq = freqFile?.let { readIntFile(it) / 1000 } ?: 0
                     }
-                    curFreq = freqFile?.let { readIntFile(it) / 1000 } ?: 0
                 }
             }
 
@@ -278,4 +298,40 @@ object CpuCollector {
 
     private fun readIntFile(file: File): Int =
         runCatching { file.readText().trim().toInt() }.getOrDefault(0)
+
+    private fun populateClusterCores(
+        clusters: List<AxKernelMetrics.CpuCluster>,
+        controls: List<AxKernelControl>,
+        outMap: MutableMap<Int, CoreFreqData>
+    ) {
+        for (cluster in clusters) {
+            assignClusterCores(controls, cluster, outMap)
+        }
+    }
+
+    private fun assignClusterCores(
+        controls: List<AxKernelControl>,
+        cluster: AxKernelMetrics.CpuCluster,
+        outMap: MutableMap<Int, CoreFreqData>
+    ) {
+        val data = buildClusterData(controls, cluster)
+        for (cpuId in cluster.cpuIds) {
+            outMap[cpuId] = data
+        }
+    }
+
+    private fun buildClusterData(controls: List<AxKernelControl>, cluster: AxKernelMetrics.CpuCluster): CoreFreqData {
+        val curMhz = (cluster.currentFrequencyHz / 1_000_000L).toInt()
+        val maxMhz = (cluster.maxFrequencyHz / 1_000_000L).toInt()
+        val minMhz = (cluster.minFrequencyHz / 1_000_000L).toInt()
+        val gov = findGovernor(controls, cluster.group)
+        return CoreFreqData(curMhz, maxMhz, minMhz, gov)
+    }
+
+    private fun findGovernor(controls: List<AxKernelControl>, group: String): String {
+        val govControl = controls.firstOrNull {
+            it.type == AxKernelControl.TYPE_CPU_GOVERNOR && it.group == group
+        } ?: return "unknown"
+        return govControl.valueLabels.getOrNull(govControl.currentValue) ?: "unknown"
+    }
 }
