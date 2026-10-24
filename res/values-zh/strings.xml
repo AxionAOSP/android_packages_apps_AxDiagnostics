@@ -61,10 +61,10 @@
     <string name="monitor_duration_minutes_seconds">%1$dm %2$ds</string>
     <string name="monitor_duration_seconds">%1$d 秒</string>
     <string name="tab_overview">Overview</string>
-    <string name="tab_apps">应用</string>
+    <string name="tab_apps">應用程式</string>
     <string name="tab_cpu">CPU</string>
     <string name="tab_memory">Memory</string>
-    <string name="tab_battery">省电</string>
+    <string name="tab_battery">省電</string>
     <string name="tab_thermal">Thermal</string>
     <string name="tab_more">更多</string>
     <string name="label_cpu">CPU</string>
@@ -80,14 +80,14 @@
     <string name="label_processes">Processes</string>
     <string name="label_charging">充电中</string>
     <string name="label_screen">屏幕</string>
-    <string name="label_status">状态</string>
+    <string name="label_status">狀態</string>
     <string name="label_health">Health</string>
     <string name="label_technology">Technology</string>
     <string name="label_voltage">Voltage</string>
     <string name="col_process">Process</string>
     <string name="col_cpu_percent" formatted="false">CPU%</string>
     <string name="col_rss">RSS</string>
-    <string name="col_type">类型</string>
+    <string name="col_type">類型</string>
     <string name="col_mem">Mem</string>
     <string name="col_thr">Thr</string>
     <string name="col_state">State</string>
@@ -95,7 +95,7 @@
     <string name="col_pid">PID</string>
     <string name="col_tid">TID</string>
     <string name="col_service">服务</string>
-    <string name="col_app">应用程序</string>
+    <string name="col_app">應用程式</string>
     <string name="col_hour">Hour</string>
     <string name="col_drain">Drain</string>
     <string name="col_avg_ma">Avg mA</string>
@@ -109,7 +109,7 @@
     <string name="overview_monitoring_overhead">Monitoring Overhead</string>
     <string name="overview_overhead_body" formatted="false">Enabling the monitoring service can increase battery drain while it collects data for accurate statistics.</string>
     <string name="overview_system">系统</string>
-    <string name="overview_info">信息</string>
+    <string name="overview_info">資訊</string>
     <string name="overview_no_issues">No issues detected</string>
     <string name="overview_score">Score</string>
     <string name="overview_recent_trends">Recent Trends</string>
@@ -124,7 +124,7 @@
     <string name="label_top_memory">Top Memory</string>
     <string name="label_thermal">Thermal</string>
     <string name="label_io">I/O</string>
-    <string name="label_battery">省电</string>
+    <string name="label_battery">省電</string>
     <string name="label_drain_rate">Drain Rate</string>
     <string name="label_device">Device</string>
     <string name="label_android">Android</string>
@@ -144,12 +144,12 @@
     <string name="label_screen_on_drain">Screen ON drain</string>
     <string name="label_screen_off_drain">Screen OFF drain</string>
     <string name="label_30min">30 min</string>
-    <string name="label_1hr">1 小时</string>
+    <string name="label_1hr">1 小時</string>
     <string name="battery_health_title">Battery Health</string>
     <string name="battery_charging">充电中</string>
     <string name="battery_discharging">Discharging</string>
     <string name="battery_screen_on">点亮屏幕</string>
-    <string name="battery_screen_off">关闭屏幕</string>
+    <string name="battery_screen_off">螢幕關閉</string>
     <string name="battery_monitor_hint">Start monitoring from the Drain tab to measure screen-on and screen-off drain.</string>
     <string name="battery_level_history">Battery Level History</string>
     <string name="battery_drain_windows">Drain Windows</string>
@@ -190,8 +190,8 @@
     <string name="mem_top_processes">Top Processes by Memory</string>
     <string name="label_buffers">Buffers</string>
     <string name="label_cached">Cached</string>
-    <string name="label_active">启用</string>
-    <string name="label_inactive">未启用</string>
+    <string name="label_active">運作中</string>
+    <string name="label_inactive">未啟用</string>
     <string name="label_anon">Anonymous Pages</string>
     <string name="label_mapped">Mapped</string>
     <string name="label_shmem">Shared Memory</string>
@@ -278,7 +278,7 @@
     <string name="more_export">导出</string>
     <string name="more_export_hint">Export a full diagnostic report to the app external files directory.</string>
     <string name="more_storage">Storage</string>
-    <string name="storage_data">数据</string>
+    <string name="storage_data">數據</string>
     <string name="storage_cache">Cache</string>
     <string name="storage_system">系统</string>
     <string name="storage_system_ext">System Ext</string>
@@ -306,13 +306,13 @@
     <string name="cpu_l3_cache">L3 Cache Interconnect</string>
     <string name="more_storage_health_warning">Note: Storage health values are coarse estimations provided directly by the hardware controller firmware and may not reflect real-time wear immediately.</string>
     <!-- GPU Diagnostics Section -->
-    <string name="tab_gpu">显卡</string>
+    <string name="tab_gpu">GPU</string>
     <string name="gpu_usage">GPU Usage</string>
     <string name="gpu_usage_history">GPU Usage History</string>
     <string name="gpu_freq_gov">Frequency &amp; Governor</string>
     <string name="gpu_clock_current">Current Frequency</string>
-    <string name="gpu_clock_min">最小频率</string>
-    <string name="gpu_clock_max">最大频率</string>
+    <string name="gpu_clock_min">最低頻率</string>
+    <string name="gpu_clock_max">最高頻率</string>
     <string name="gpu_active_governor">Active Governor</string>
     <string name="gpu_avail_freqs">Available Frequencies</string>
     <string name="gpu_unsupported_title">GPU Diagnostics Unsupported</string>
@@ -321,6 +321,6 @@
     <string name="monitor_service_active_minimal">Monitoring system health in the background</string>
     <string name="more_notification_stats">Notification Battery Stats</string>
     <string name="more_notification_stats_desc">Show detailed battery, current, and drainage stats inside the notification panel</string>
-    <string name="common_enabled">已启用</string>
-    <string name="common_disabled">已禁用</string>
+    <string name="common_enabled">已啟用</string>
+    <string name="common_disabled">已停用</string>
 </resources>
