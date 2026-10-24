@@ -14,24 +14,24 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">AxDiagnostics</string>
+    <string name="app_name">AxDiagnóstico</string>
     <string name="action_disable">Disable</string>
     <string name="action_enable">Enable Diagnostics</string>
     <string name="disabled_message">Monitoring is disabled to avoid battery drain.\nEnable only when actively debugging.</string>
     <string name="action_start">Start</string>
     <string name="action_stop">Stop</string>
-    <string name="action_export">Export</string>
+    <string name="action_export">Exportar</string>
     <string name="action_export_report">Export Report</string>
     <string name="action_export_log">Export Log</string>
-    <string name="action_clear">Clear</string>
+    <string name="action_clear">Limpar</string>
     <string name="status_recording">Recording</string>
     <string name="status_stopped">Stopped</string>
     <string name="status_monitoring">Monitoring</string>
     <string name="toast_saved">Saved: %1$s</string>
     <string name="toast_report_saved">Report saved: %1$s</string>
     <string name="how_to_use">How to Use</string>
-    <string name="common_yes">Yes</string>
-    <string name="common_no">No</string>
+    <string name="common_yes">Sim</string>
+    <string name="common_no">Não</string>
     <string name="common_on">ON</string>
     <string name="common_off">OFF</string>
     <string name="common_unavailable">unavailable</string>
@@ -61,12 +61,12 @@
     <string name="monitor_duration_minutes_seconds">%1$dm %2$ds</string>
     <string name="monitor_duration_seconds">%1$ds</string>
     <string name="tab_overview">Overview</string>
-    <string name="tab_apps">Apps</string>
+    <string name="tab_apps">Aplicativos</string>
     <string name="tab_cpu">CPU</string>
     <string name="tab_memory">Memory</string>
-    <string name="tab_battery">Battery</string>
+    <string name="tab_battery">Bateria</string>
     <string name="tab_thermal">Thermal</string>
-    <string name="tab_more">More</string>
+    <string name="tab_more">Mais</string>
     <string name="label_cpu">CPU</string>
     <string name="label_memory">Memory</string>
     <string name="label_storage">Storage</string>
@@ -78,8 +78,8 @@
     <string name="label_threads">Threads</string>
     <string name="label_samples">Samples</string>
     <string name="label_processes">Processes</string>
-    <string name="label_charging">Charging</string>
-    <string name="label_screen">Screen</string>
+    <string name="label_charging">Carregando</string>
+    <string name="label_screen">Tela</string>
     <string name="label_status">Status</string>
     <string name="label_health">Health</string>
     <string name="label_technology">Technology</string>
@@ -87,15 +87,15 @@
     <string name="col_process">Process</string>
     <string name="col_cpu_percent" formatted="false">CPU%</string>
     <string name="col_rss">RSS</string>
-    <string name="col_type">Type</string>
+    <string name="col_type">Tipo</string>
     <string name="col_mem">Mem</string>
     <string name="col_thr">Thr</string>
     <string name="col_state">State</string>
     <string name="col_device">Device</string>
     <string name="col_pid">PID</string>
     <string name="col_tid">TID</string>
-    <string name="col_service">Service</string>
-    <string name="col_app">App</string>
+    <string name="col_service">Serviço</string>
+    <string name="col_app">Aplicativo</string>
     <string name="col_hour">Hour</string>
     <string name="col_drain">Drain</string>
     <string name="col_avg_ma">Avg mA</string>
@@ -108,8 +108,8 @@
     <string name="overview_quick_stats">Quick Stats</string>
     <string name="overview_monitoring_overhead">Monitoring Overhead</string>
     <string name="overview_overhead_body" formatted="false">Enabling the monitoring service can increase battery drain while it collects data for accurate statistics.</string>
-    <string name="overview_system">System</string>
-    <string name="overview_info">Info</string>
+    <string name="overview_system">Sistema</string>
+    <string name="overview_info">Informações</string>
     <string name="overview_no_issues">No issues detected</string>
     <string name="overview_score">Score</string>
     <string name="overview_recent_trends">Recent Trends</string>
@@ -124,7 +124,7 @@
     <string name="label_top_memory">Top Memory</string>
     <string name="label_thermal">Thermal</string>
     <string name="label_io">I/O</string>
-    <string name="label_battery">Battery</string>
+    <string name="label_battery">Bateria</string>
     <string name="label_drain_rate">Drain Rate</string>
     <string name="label_device">Device</string>
     <string name="label_android">Android</string>
@@ -138,18 +138,18 @@
     <string name="drain_hourly">Hourly Breakdown</string>
     <string name="drain_current_graph">Current Draw Graph</string>
     <string name="drain_how_to_use_body" formatted="false">Tap Start to begin recording battery drain.\n\nThe monitor tracks:\n  - Current draw (mA) every 5 seconds\n  - Battery level changes over time\n  - Screen on/off state correlation\n  - Drain rate per hour (5m, 15m, 30m, 1hr windows)\n  - Screen-on vs screen-off drain rates\n  - Hourly breakdown when tracking &gt;1hr\n\nLeave it running while using the device normally\nto measure real-world drain behavior.</string>
-    <string name="label_battery_level">Battery Level</string>
+    <string name="label_battery_level">Nível da bateria</string>
     <string name="label_instant_current">Instant Current</string>
     <string name="label_est_drain_rate">Est. Drain Rate</string>
     <string name="label_screen_on_drain">Screen ON drain</string>
     <string name="label_screen_off_drain">Screen OFF drain</string>
     <string name="label_30min">30 min</string>
-    <string name="label_1hr">1 hour</string>
+    <string name="label_1hr">1 hora</string>
     <string name="battery_health_title">Battery Health</string>
-    <string name="battery_charging">Charging</string>
+    <string name="battery_charging">Carregando</string>
     <string name="battery_discharging">Discharging</string>
-    <string name="battery_screen_on">Screen On</string>
-    <string name="battery_screen_off">Screen Off</string>
+    <string name="battery_screen_on">Tela ligada</string>
+    <string name="battery_screen_off">Tela desligada</string>
     <string name="battery_monitor_hint">Start monitoring from the Drain tab to measure screen-on and screen-off drain.</string>
     <string name="battery_level_history">Battery Level History</string>
     <string name="battery_drain_windows">Drain Windows</string>
@@ -173,7 +173,7 @@
     <string name="cpu_top_processes">Top Processes by CPU</string>
     <string name="cpu_offline">offline</string>
     <string name="label_user">User</string>
-    <string name="label_system">System</string>
+    <string name="label_system">Sistema</string>
     <string name="label_io_wait">IO Wait</string>
     <string name="label_irq">IRQ + SoftIRQ</string>
     <string name="label_1min">1 min</string>
@@ -190,8 +190,8 @@
     <string name="mem_top_processes">Top Processes by Memory</string>
     <string name="label_buffers">Buffers</string>
     <string name="label_cached">Cached</string>
-    <string name="label_active">Active</string>
-    <string name="label_inactive">Inactive</string>
+    <string name="label_active">Ativo</string>
+    <string name="label_inactive">Inativo</string>
     <string name="label_anon">Anonymous Pages</string>
     <string name="label_mapped">Mapped</string>
     <string name="label_shmem">Shared Memory</string>
@@ -275,12 +275,12 @@
     <string name="label_some_60">Some (60s)</string>
     <string name="label_some_300">Some (300s)</string>
     <string name="label_full_10">Full (10s)</string>
-    <string name="more_export">Export</string>
+    <string name="more_export">Exportar</string>
     <string name="more_export_hint">Export a full diagnostic report to the app external files directory.</string>
     <string name="more_storage">Storage</string>
-    <string name="storage_data">Data</string>
+    <string name="storage_data">Dados</string>
     <string name="storage_cache">Cache</string>
-    <string name="storage_system">System</string>
+    <string name="storage_system">Sistema</string>
     <string name="storage_system_ext">System Ext</string>
     <string name="storage_product">Product</string>
     <string name="storage_vendor">Vendor</string>
@@ -311,8 +311,8 @@
     <string name="gpu_usage_history">GPU Usage History</string>
     <string name="gpu_freq_gov">Frequency &amp; Governor</string>
     <string name="gpu_clock_current">Current Frequency</string>
-    <string name="gpu_clock_min">Minimum Frequency</string>
-    <string name="gpu_clock_max">Maximum Frequency</string>
+    <string name="gpu_clock_min">Frequência mínima</string>
+    <string name="gpu_clock_max">Frequência máxima</string>
     <string name="gpu_active_governor">Active Governor</string>
     <string name="gpu_avail_freqs">Available Frequencies</string>
     <string name="gpu_unsupported_title">GPU Diagnostics Unsupported</string>
@@ -321,6 +321,6 @@
     <string name="monitor_service_active_minimal">Monitoring system health in the background</string>
     <string name="more_notification_stats">Notification Battery Stats</string>
     <string name="more_notification_stats_desc">Show detailed battery, current, and drainage stats inside the notification panel</string>
-    <string name="common_enabled">Enabled</string>
-    <string name="common_disabled">Disabled</string>
+    <string name="common_enabled">Habilitado</string>
+    <string name="common_disabled">Desativado</string>
 </resources>
