@@ -59,7 +59,7 @@
     <string name="monitor_value_percent">%1$.0f%%</string>
     <string name="monitor_duration_hours_minutes">%1$d時間 %2$d分</string>
     <string name="monitor_duration_minutes_seconds">%1$d分%2$d秒</string>
-    <string name="monitor_duration_seconds">%1$ds</string>
+    <string name="monitor_duration_seconds">%1$d 秒</string>
     <string name="tab_overview">概要</string>
     <string name="tab_apps">アプリ</string>
     <string name="tab_cpu">CPU</string>
