@@ -307,20 +307,20 @@
     <string name="more_storage_health_warning">Note: Storage health values are coarse estimations provided directly by the hardware controller firmware and may not reflect real-time wear immediately.</string>
     <!-- GPU Diagnostics Section -->
     <string name="tab_gpu">GPU</string>
-    <string name="gpu_usage">GPU Usage</string>
-    <string name="gpu_usage_history">GPU Usage History</string>
+    <string name="gpu_usage">Uso de GPU</string>
+    <string name="gpu_usage_history">Histórico de uso GPU</string>
     <string name="gpu_freq_gov">Frequency &amp; Governor</string>
-    <string name="gpu_clock_current">Current Frequency</string>
+    <string name="gpu_clock_current">Frequência atual</string>
     <string name="gpu_clock_min">Frequência mínima</string>
     <string name="gpu_clock_max">Frequência máxima</string>
-    <string name="gpu_active_governor">Active Governor</string>
-    <string name="gpu_avail_freqs">Available Frequencies</string>
-    <string name="gpu_unsupported_title">GPU Diagnostics Unsupported</string>
-    <string name="gpu_unsupported_desc">This device\'s graphics driver statistics are not exposed in standard sysfs/devfreq paths.</string>
+    <string name="gpu_active_governor">Governador ativo</string>
+    <string name="gpu_avail_freqs">Frequências disponíveis</string>
+    <string name="gpu_unsupported_title">Diagnóstico da GPU não suportado</string>
+    <string name="gpu_unsupported_desc">As estatísticas dos driver gráficos deste dispositivo não são expostas em caminhos padrão sysfs/devfreq.</string>
     <!-- Notification panel settings and minimal state -->
-    <string name="monitor_service_active_minimal">Monitoring system health in the background</string>
-    <string name="more_notification_stats">Notification Battery Stats</string>
-    <string name="more_notification_stats_desc">Show detailed battery, current, and drainage stats inside the notification panel</string>
+    <string name="monitor_service_active_minimal">Monitorando saúde do sistema em segundo plano</string>
+    <string name="more_notification_stats">Estatísticas da Bateria</string>
+    <string name="more_notification_stats_desc">Mostrar estatísticas detalhadas da bateria, atual e drenagem dentro do painel de notificação</string>
     <string name="common_enabled">Habilitado</string>
     <string name="common_disabled">Desativado</string>
 </resources>
