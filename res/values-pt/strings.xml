@@ -265,7 +265,7 @@
     <string name="col_thread">Thread</string>
     <string name="label_transactions_sent">Transactions Sent</string>
     <string name="label_transactions_received">Transactions Received</string>
-    <string name="label_pending">Pending</string>
+    <string name="label_pending">Pendente</string>
     <string name="label_ready_threads">Ready Threads</string>
     <string name="label_free_async">Free Async Space</string>
     <string name="label_total_gc_cpu">Total GC CPU</string>
@@ -290,9 +290,9 @@
     <string name="cpu_overlay_desc">Show real-time floating overlay with CPU, GPU, RAM, and temperature metrics over other apps</string>
     <string name="cpu_overlay_permission_title">Permissão de Sobreposição Requirida</string>
     <string name="cpu_overlay_permission_desc">AxDiagnostics needs permission to draw over other apps to display the performance overlay.</string>
-    <string name="cpu_overlay_grant">Grant Permission</string>
-    <string name="cpu_overlay_enabled">Overlay enabled</string>
-    <string name="cpu_overlay_disabled">Overlay disabled</string>
+    <string name="cpu_overlay_grant">Conceder Permissão</string>
+    <string name="cpu_overlay_enabled">Sobreposição habilitada</string>
+    <string name="cpu_overlay_disabled">Sobreposição desabilitada</string>
     <!-- Physical Storage Health and RAM Optimization -->
     <string name="more_storage_health">Storage Hardware Health</string>
     <string name="more_storage_lifetime">Estimated Lifetime Used</string>
