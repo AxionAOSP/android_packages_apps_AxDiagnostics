@@ -289,12 +289,12 @@
     <string name="cpu_overlay_title">Накладання продуктивності</string>
     <string name="cpu_overlay_desc">Показувати поверх інших застосунків плавуче вікно з показниками процесора, відеокарти, оперативної пам’яті та температури в реальному часі</string>
     <string name="cpu_overlay_permission_title">Потрібен дозвіл на накладання</string>
-    <string name="cpu_overlay_permission_desc">AxDiagnostics needs permission to draw over other apps to display the performance overlay.</string>
-    <string name="cpu_overlay_grant">Grant Permission</string>
-    <string name="cpu_overlay_enabled">Overlay enabled</string>
-    <string name="cpu_overlay_disabled">Overlay disabled</string>
+    <string name="cpu_overlay_permission_desc">AxDiagnostics потрібен дозвіл на показ поверх інших застосунків, щоб показувати накладання продуктивності.</string>
+    <string name="cpu_overlay_grant">Надати дозвіл</string>
+    <string name="cpu_overlay_enabled">Накладання ввімкнено</string>
+    <string name="cpu_overlay_disabled">Накладання вимкнено</string>
     <!-- Physical Storage Health and RAM Optimization -->
-    <string name="more_storage_health">Storage Hardware Health</string>
+    <string name="more_storage_health">Стан накопичувачів</string>
     <string name="more_storage_lifetime">Estimated Lifetime Used</string>
     <string name="more_storage_eol">Reserve Block Wear</string>
     <string name="mem_optimize">Optimize RAM</string>
