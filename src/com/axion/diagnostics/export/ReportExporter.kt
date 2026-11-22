@@ -162,7 +162,15 @@ object ReportExporter {
         val bat = BatteryCollector.collect(context)
         sb.appendLine("Level: ${bat.levelPercent}% | Status: ${bat.status} | Health: ${bat.health}")
         sb.appendLine("Plugged: ${bat.plugged} | Technology: ${bat.technology}")
-        sb.appendLine("Current: ${bat.currentNowMa} mA (avg: ${bat.currentAvgMa} mA)")
+        // Same convention as the Battery screen: + while charging, - otherwise. The driver's
+        // own sign is the opposite of Android's and can't be relied on.
+        val currentSign = if (bat.status == "Charging") "+" else "-"
+        val currentAvg = if (bat.currentAvgMa != 0) {
+            " (avg: $currentSign${kotlin.math.abs(bat.currentAvgMa)} mA)"
+        } else {
+            ""
+        }
+        sb.appendLine("Current: $currentSign${kotlin.math.abs(bat.currentNowMa)} mA$currentAvg")
         sb.appendLine("Voltage: %.3fV | Temperature: %.1f°C".format(bat.voltageV, bat.temperatureC))
         if (bat.capacityUah > 0) sb.appendLine("Capacity: ${bat.capacityUah / 1000} mAh")
         if (bat.cycleCount > 0) sb.appendLine("Cycle Count: ${bat.cycleCount}")

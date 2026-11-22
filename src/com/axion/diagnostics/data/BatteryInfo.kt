@@ -150,7 +150,9 @@ object BatteryCollector {
 }
 
 internal fun normalizeBatteryCurrentMa(rawCurrent: Int): Int {
-    if (rawCurrent == 0) return 0
+    // BatteryManager returns Integer.MIN_VALUE for a property the battery HAL doesn't provide
+    // (CURRENT_AVERAGE here); scaling that as a current gave a bogus -20000 mA.
+    if (rawCurrent == 0 || rawCurrent == Int.MIN_VALUE) return 0
     val raw = rawCurrent.toLong()
     val absRaw = abs(raw)
     val currentMa = if (absRaw >= CURRENT_UA_THRESHOLD) {
