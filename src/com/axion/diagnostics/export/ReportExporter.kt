@@ -41,6 +41,9 @@ import java.util.Locale
 
 object ReportExporter {
 
+    private const val SAMPLE_WINDOW_MS = 1000L
+    private const val SAMPLE_REUSE_MS = 60_000L
+
     fun export(context: Context): String {
         val file = ReportFiles.create(context, "diag")
 
@@ -52,6 +55,14 @@ object ReportExporter {
         )
         sb.appendLine("========================================")
         sb.appendLine()
+
+        // CPU, I/O and per-process figures are measured against the previous sample. Prime
+        // them and let a real window pass; the health summary then takes the one sample the
+        // sections below reuse, so every part of the report shows the same numbers.
+        CpuCollector.collect()
+        IoCollector.collect()
+        ProcessCollector.collect(1)
+        Thread.sleep(SAMPLE_WINDOW_MS)
 
         appendHealthSummary(sb, context)
         appendSystemInfo(sb)
@@ -87,7 +98,7 @@ object ReportExporter {
 
     private fun appendCpuInfo(sb: StringBuilder) {
         sb.appendLine("== CPU ==")
-        val cpu = CpuCollector.collect()
+        val cpu = CpuCollector.collect(SAMPLE_REUSE_MS)
         sb.appendLine("Total Usage: %.1f%%".format(cpu.totalUsage))
         sb.appendLine("User: %.1f%% | System: %.1f%% | IOWait: %.1f%% | IRQ: %.1f%%".format(
             cpu.userPercent,
@@ -198,7 +209,7 @@ object ReportExporter {
 
     private fun appendIoInfo(sb: StringBuilder) {
         sb.appendLine("== I/O ==")
-        val io = IoCollector.collect()
+        val io = IoCollector.collect(SAMPLE_REUSE_MS)
         sb.appendLine(
             "Read: %.1f KB/s | Write: %.1f KB/s".format(io.readRateKbps, io.writeRateKbps)
         )
@@ -226,7 +237,7 @@ object ReportExporter {
         sb.appendLine(
             "%-8s %-25s %6s %10s %4s %4s".format("PID", "Name", "CPU%", "RSS", "Thr", "OOM")
         )
-        val procs = ProcessCollector.collect(30)
+        val procs = ProcessCollector.collect(30, SAMPLE_REUSE_MS)
         procs.forEach { p ->
             sb.appendLine("%-8d %-25s %5.1f%% %8dKB %4d %4d".format(
                 p.pid,
