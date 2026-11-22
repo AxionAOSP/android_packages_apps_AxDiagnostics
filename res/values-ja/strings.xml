@@ -76,20 +76,20 @@
     <string name="label_free">空き</string>
     <string name="label_path">パス</string>
     <string name="label_threads">スレッド数</string>
-    <string name="label_samples">Samples</string>
-    <string name="label_processes">Processes</string>
+    <string name="label_samples">サンプル</string>
+    <string name="label_processes">プロセス</string>
     <string name="label_charging">充電中</string>
     <string name="label_screen">画面</string>
     <string name="label_status">ステータス</string>
-    <string name="label_health">Health</string>
-    <string name="label_technology">Technology</string>
-    <string name="label_voltage">Voltage</string>
-    <string name="col_process">Process</string>
+    <string name="label_health">健康</string>
+    <string name="label_technology">テクノロジー</string>
+    <string name="label_voltage">電圧</string>
+    <string name="col_process">プロセス</string>
     <string name="col_cpu_percent" formatted="false">CPU%</string>
     <string name="col_rss">RSS</string>
     <string name="col_type">タイプ</string>
-    <string name="col_mem">Mem</string>
-    <string name="col_thr">Thr</string>
+    <string name="col_mem">メモリ</string>
+    <string name="col_thr">スリ</string>
     <string name="col_state">State</string>
     <string name="col_device">Device</string>
     <string name="col_pid">PID</string>
@@ -101,11 +101,11 @@
     <string name="col_avg_ma">Avg mA</string>
     <string name="col_scr_on">Scr ON</string>
     <string name="col_avg">Avg</string>
-    <string name="col_peak">Peak</string>
-    <string name="col_trend">Trend</string>
-    <string name="overview_issues_found">Issues Found</string>
-    <string name="overview_warnings">Warnings</string>
-    <string name="overview_quick_stats">Quick Stats</string>
+    <string name="col_peak">ピーク</string>
+    <string name="col_trend">トレンド</string>
+    <string name="overview_issues_found">問題が見つかりました</string>
+    <string name="overview_warnings">警告</string>
+    <string name="overview_quick_stats">クイック統計</string>
     <string name="overview_monitoring_overhead">Monitoring Overhead</string>
     <string name="overview_overhead_body" formatted="false">Enabling the monitoring service can increase battery drain while it collects data for accurate statistics.</string>
     <string name="overview_system">システム</string>
@@ -221,7 +221,7 @@
     <string name="apps_rising_cpu">Rising CPU (Regressions)</string>
     <string name="apps_rising_mem">Rising Memory (Potential Leaks)</string>
     <string name="label_apps_tracked">Apps Tracked</string>
-    <string name="section_processes">Processes</string>
+    <string name="section_processes">プロセス</string>
     <string name="label_uid">UID</string>
     <string name="label_cpu_time">CPU Time</string>
     <string name="label_pss">PSS (proportional)</string>
