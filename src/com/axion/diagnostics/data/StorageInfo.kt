@@ -67,6 +67,15 @@ object StorageCollector {
             StorageVolumeRole.EXTERNAL to Environment.getExternalStorageDirectory()
         ).mapNotNull { (role, file) ->
             readVolume(role, file)
+        }.let { all ->
+            // /data/cache and the FUSE view of /data/media are the same filesystem as /data
+            // here; listing them again just repeats /data's numbers.
+            val data = all.firstOrNull { it.role == StorageVolumeRole.DATA }
+            all.filterNot { v ->
+                data != null && v !== data &&
+                    (v.role == StorageVolumeRole.CACHE || v.role == StorageVolumeRole.EXTERNAL) &&
+                    v.totalBytes == data.totalBytes && v.availableBytes == data.availableBytes
+            }
         }
 
         val ufsLife = getUfsLifeTimeEstimation()

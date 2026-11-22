@@ -70,7 +70,7 @@ object WakelockCollector {
         val sorted = wakelocks.sortedByDescending { it.totalTimeMs }
         return WakelockSnapshot(
             kernelWakelocks = sorted,
-            totalActiveCount = sorted.sumOf { it.activeCount },
+            totalActiveCount = sorted.count { it.activeSinceMs > 0 }.toLong(),
             totalPreventSuspendMs = sorted.sumOf { it.preventSuspendTimeMs }
         )
     }

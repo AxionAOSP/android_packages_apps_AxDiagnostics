@@ -76,7 +76,27 @@ object CpuCollector {
         val governor: String
     )
 
-    fun collect(): CpuSnapshot = synchronized(lock) {
+    private var last: CpuSnapshot? = null
+    private var lastAtMs = 0L
+
+    /**
+     * Usage is measured against the previous call, so a caller that samples again right after
+     * another one sees an almost empty window. Pass [maxAgeMs] to reuse a snapshot that is
+     * at most that old instead of taking a new one.
+     */
+    fun collect(maxAgeMs: Long = 0L): CpuSnapshot = synchronized(lock) {
+        val cached = last
+        if (cached != null && maxAgeMs > 0 &&
+            android.os.SystemClock.elapsedRealtime() - lastAtMs <= maxAgeMs) {
+            return cached
+        }
+        sample().also {
+            last = it
+            lastAtMs = android.os.SystemClock.elapsedRealtime()
+        }
+    }
+
+    private fun sample(): CpuSnapshot {
         val statLines = File("/proc/stat").readLines()
         val loadAvgParts = File("/proc/loadavg").readText().trim().split("\\s+".toRegex())
 
@@ -168,7 +188,7 @@ object CpuCollector {
         val ddrFreq = getBusFrequencyMhz("DDR")
         val l3Freq = getBusFrequencyMhz("L3")
 
-        CpuSnapshot(
+        return CpuSnapshot(
             totalUsage = totalUsage,
             userPercent = userPct,
             systemPercent = sysPct,

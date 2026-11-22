@@ -37,53 +37,66 @@ object ProcessCollector {
     @Volatile
     private var previousSystemTotal: Long = 0L
 
-    fun collect(topN: Int = 30): List<ProcessSnapshot> {
+    private var last: List<ProcessSnapshot> = emptyList()
+    private var lastAtMs = 0L
+
+    /** CPU% is measured against the previous call; see [CpuCollector.collect]. */
+    fun collect(topN: Int = 30, maxAgeMs: Long = 0L): List<ProcessSnapshot> =
+        synchronized(lock) {
+            val fresh = maxAgeMs > 0 && lastAtMs > 0 &&
+                android.os.SystemClock.elapsedRealtime() - lastAtMs <= maxAgeMs
+            if (!fresh) {
+                last = sample()
+                lastAtMs = android.os.SystemClock.elapsedRealtime()
+            }
+            last.take(topN)
+        }
+
+    private fun sample(): List<ProcessSnapshot> {
         val systemTotal = readSystemTotalTicks()
 
-        synchronized(lock) {
-            val systemDelta = systemTotal - previousSystemTotal
+        val systemDelta = systemTotal - previousSystemTotal
 
-            val procDir = File("/proc")
-            val processes = mutableListOf<ProcessSnapshot>()
+        val procDir = File("/proc")
+        val processes = mutableListOf<ProcessSnapshot>()
 
-            procDir.listFiles()?.filter { it.name.all { c -> c.isDigit() } }?.forEach { pidDir ->
-                val pid = pidDir.name.toIntOrNull() ?: return@forEach
-                val stat = readProcStat(pidDir) ?: return@forEach
-                val status = readProcStatus(pidDir)
+        procDir.listFiles()?.filter { it.name.all { c -> c.isDigit() } }?.forEach { pidDir ->
+            val pid = pidDir.name.toIntOrNull() ?: return@forEach
+            val stat = readProcStat(pidDir) ?: return@forEach
+            val status = readProcStatus(pidDir)
 
-                val totalTicks = stat.utime + stat.stime
-                val prev = previousTicks[pid]
-                val cpuPercent = if (prev != null && systemDelta > 0) {
-                    val tickDelta = totalTicks - prev.first
-                    (tickDelta.toFloat() / systemDelta * 100f).coerceIn(0f, 800f)
-                } else {
-                    0f
-                }
-                previousTicks[pid] = Pair(totalTicks, systemTotal)
-
-                val oomAdj = runCatching {
-                    File(pidDir, "oom_score_adj").readText().trim().toInt()
-                }.getOrDefault(0)
-
-                processes.add(
-                    ProcessSnapshot(
-                        pid = pid,
-                        name = stat.comm,
-                        state = stat.state,
-                        cpuPercent = cpuPercent,
-                        rssKb = status.rssKb,
-                        threads = stat.numThreads,
-                        uid = status.uid,
-                        oomAdj = oomAdj
-                    )
-                )
+            val totalTicks = stat.utime + stat.stime
+            val prev = previousTicks[pid]
+            val cpuPercent = if (prev != null && systemDelta > 0) {
+                val tickDelta = totalTicks - prev.first
+                (tickDelta.toFloat() / systemDelta * 100f).coerceIn(0f, 800f)
+            } else {
+                0f
             }
+            previousTicks[pid] = Pair(totalTicks, systemTotal)
 
-            previousSystemTotal = systemTotal
-            previousTicks.keys.retainAll(processes.map { it.pid }.toSet())
+            val oomAdj = runCatching {
+                File(pidDir, "oom_score_adj").readText().trim().toInt()
+            }.getOrDefault(0)
 
-            return processes.sortedByDescending { it.cpuPercent }.take(topN)
+            processes.add(
+                ProcessSnapshot(
+                    pid = pid,
+                    name = stat.comm,
+                    state = stat.state,
+                    cpuPercent = cpuPercent,
+                    rssKb = status.rssKb,
+                    threads = stat.numThreads,
+                    uid = status.uid,
+                    oomAdj = oomAdj
+                )
+            )
         }
+
+        previousSystemTotal = systemTotal
+        previousTicks.keys.retainAll(processes.map { it.pid }.toSet())
+
+        return processes.sortedByDescending { it.cpuPercent }
     }
 
     private data class ProcStat(

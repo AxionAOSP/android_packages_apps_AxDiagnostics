@@ -61,7 +61,23 @@ object IoCollector {
     private var previousDisks = mutableMapOf<String, DiskStats>()
     @Volatile private var previousTimestamp = 0L
 
-    fun collect(): IoSnapshot = synchronized(lock) {
+    private var last: IoSnapshot? = null
+    private var lastAtMs = 0L
+
+    /** Rates are measured against the previous call; see [CpuCollector.collect]. */
+    fun collect(maxAgeMs: Long = 0L): IoSnapshot = synchronized(lock) {
+        val cached = last
+        if (cached != null && maxAgeMs > 0 &&
+            android.os.SystemClock.elapsedRealtime() - lastAtMs <= maxAgeMs) {
+            return cached
+        }
+        sample().also {
+            last = it
+            lastAtMs = android.os.SystemClock.elapsedRealtime()
+        }
+    }
+
+    private fun sample(): IoSnapshot {
         val disks = mutableListOf<DiskStats>()
 
         File("/proc/diskstats").forEachLine { line ->
@@ -109,7 +125,7 @@ object IoCollector {
 
         val pressure = readIoPressure()
 
-        IoSnapshot(
+        return IoSnapshot(
             disks = disks,
             readRateKbps = readRate,
             writeRateKbps = writeRate,
