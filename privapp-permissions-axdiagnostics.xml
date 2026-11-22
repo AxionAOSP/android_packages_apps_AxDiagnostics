@@ -14,6 +14,12 @@
      limitations under the License.
 -->
 <permissions>
+    <!-- /proc is mounted hidepid=2,gid=readproc: without this group the app cannot see
+         system_server or any app process, only a few uid-1000 native daemons. -->
+    <permission name="android.permission.DUMP">
+        <group gid="readproc" />
+    </permission>
+
     <privapp-permissions package="com.axion.diagnostics">
         <permission name="android.permission.DUMP" />
         <permission name="android.permission.BATTERY_STATS" />
