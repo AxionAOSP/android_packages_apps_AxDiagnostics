@@ -88,7 +88,14 @@ object HealthAnalyzer {
         val topMem = processes.maxByOrNull { it.rssKb }
 
         val drainSummary = DrainTracker.getSummary()
-        val drainRate = drainSummary?.last5minDrain?.drainPerHour ?: 0f
+        // The tracker only has samples during a tracking session; otherwise estimate from the
+        // present discharge current, the same way DrainTracker.estimateDrainPerHour() does.
+        val drainRate = drainSummary?.last5minDrain?.drainPerHour?.takeIf { it > 0f }
+            ?: if (battery.status == "Discharging" && battery.capacityUah > 0) {
+                kotlin.math.abs(battery.currentNowMa) / (battery.capacityUah / 1000f) * 100f
+            } else {
+                0f
+            }
         val dataVolume = storage.dataVolume
 
         val critCount = insights.count { it.severity == InsightSeverity.CRITICAL }
