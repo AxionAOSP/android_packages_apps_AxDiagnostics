@@ -79,7 +79,7 @@ object SystemServerAnalyzer {
         val ssPid = findSystemServerPid()
         if (ssPid <= 0) {
             return SystemServerSnapshot(0, 0f, 0, 0, 0, emptyList(), null, emptyList(),
-                PsiStats(0f, 0f, 0f, 0f, 0f, 0f), PsiStats(0f, 0f, 0f, 0f, 0f, 0f))
+                readPsi("/proc/pressure/cpu"), readPsi("/proc/pressure/memory"))
         }
 
         val systemTotal = readSystemTotalTicks()
