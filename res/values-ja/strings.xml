@@ -20,7 +20,7 @@
     <string name="disabled_message">バッテリーの消耗を防ぐため、監視機能は無効になっています。\nデバッグを実際に行う場合にのみ有効にしてください。</string>
     <string name="action_start">開始</string>
     <string name="action_stop">停止</string>
-    <string name="action_export">Export</string>
+    <string name="action_export">エクスポート</string>
     <string name="action_export_report">結果をエクスポート</string>
     <string name="action_export_log">ログをエクスポート</string>
     <string name="action_clear">クリア</string>
@@ -275,7 +275,7 @@
     <string name="label_some_60">Some (60s)</string>
     <string name="label_some_300">Some (300s)</string>
     <string name="label_full_10">Full (10s)</string>
-    <string name="more_export">Export</string>
+    <string name="more_export">エクスポート</string>
     <string name="more_export_hint">Export a full diagnostic report to the app external files directory.</string>
     <string name="more_storage">ストレージ</string>
     <string name="storage_data">データ</string>
